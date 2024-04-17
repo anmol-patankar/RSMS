@@ -10,11 +10,11 @@ namespace RSMS.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly RsmsTestContext context;
+        private readonly RsmsTestContext _context;
         private readonly IConfiguration _config;
         public HomeController(ILogger<HomeController> logger, RsmsTestContext context, IConfiguration config)
         {
-            this.context = context;
+            this._context = context;
             _config = config;
             _logger = logger;
         }
@@ -28,9 +28,9 @@ namespace RSMS.Controllers
             byte[] aesKey = Encoding.UTF8.GetBytes(_config["AesEncryption:Key"]);
             if (ModelState.IsValid)
             {
-                RegistrationService.RegisterUser(user, aesKey, out UserInfo userInfo);
-                context.UserInfos.Add(userInfo);
-                context.SaveChanges();
+                RegistrationService.SetDBContext(_context);
+                RegistrationService.RegisterUser(user, aesKey, out UserInfo userInfo, UserRoles.Customer);
+
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -46,9 +46,22 @@ namespace RSMS.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Login()
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult Login(LoginModel login)
+        {
+            byte[] aesKey = Encoding.UTF8.GetBytes(_config["AesEncryption:Key"]);
+            if (ModelState.IsValid)
+            {
+                LoginService.SetDBContext(_context);
+                bool success = LoginService.LoginUser(login, aesKey);
+                ViewBag.Success = success;
+                return Json(new { success });
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

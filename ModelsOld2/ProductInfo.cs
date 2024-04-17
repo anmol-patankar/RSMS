@@ -15,11 +15,5 @@ public partial class ProductInfo
 
     public int PriceBeforeTax { get; set; }
 
-    public virtual ICollection<ProductStock> ProductStocks { get; set; } = new List<ProductStock>();
-
-    public virtual ICollection<TransactionDetail> TransactionDetails { get; set; } = new List<TransactionDetail>();
-
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-
-    public virtual ICollection<TaxRate> TaxTypes { get; set; } = new List<TaxRate>();
 }

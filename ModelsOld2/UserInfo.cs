@@ -31,8 +31,6 @@ public partial class UserInfo
 
     public virtual ICollection<PayrollHistory> PayrollHistoryPayees { get; set; } = new List<PayrollHistory>();
 
-    public virtual ICollection<RoleMap> RoleMaps { get; set; } = new List<RoleMap>();
-
     public virtual Store? Store { get; set; }
 
     public virtual ICollection<Transaction> TransactionCashiers { get; set; } = new List<Transaction>();

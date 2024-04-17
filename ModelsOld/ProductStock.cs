@@ -7,7 +7,7 @@ public partial class ProductStock
 {
     public Guid ProductId { get; set; }
 
-    public int StoreId { get; set; }
+    public Guid StoreId { get; set; }
 
     public int Quantity { get; set; }
 

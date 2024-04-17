@@ -11,7 +11,7 @@ public partial class PayrollHistory
 
     public Guid AuthorizerId { get; set; }
 
-    public int StoreId { get; set; }
+    public Guid StoreId { get; set; }
 
     public DateTime TransactionTime { get; set; }
 

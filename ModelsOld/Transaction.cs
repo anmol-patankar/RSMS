@@ -9,7 +9,7 @@ public partial class Transaction
 
     public Guid ProductId { get; set; }
 
-    public int StoreId { get; set; }
+    public Guid StoreId { get; set; }
 
     public Guid CashierId { get; set; }
 
@@ -26,6 +26,4 @@ public partial class Transaction
     public virtual ProductInfo Product { get; set; } = null!;
 
     public virtual Store Store { get; set; } = null!;
-
-    public virtual TransactionDetail? TransactionDetail { get; set; }
 }

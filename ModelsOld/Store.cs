@@ -15,8 +15,6 @@ public partial class Store
 
     public virtual ICollection<PayrollHistory> PayrollHistories { get; set; } = new List<PayrollHistory>();
 
-    public virtual ICollection<ProductStock> ProductStocks { get; set; } = new List<ProductStock>();
-
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
     public virtual ICollection<UserInfo> UserInfos { get; set; } = new List<UserInfo>();

@@ -23,6 +23,8 @@ public partial class RsmsTestContext : DbContext
 
     public virtual DbSet<ProductStock> ProductStocks { get; set; }
 
+    public virtual DbSet<ProductTaxis> ProductTaxes { get; set; }
+
     public virtual DbSet<RoleMap> RoleMaps { get; set; }
 
     public virtual DbSet<Store> Stores { get; set; }
@@ -43,7 +45,7 @@ public partial class RsmsTestContext : DbContext
     {
         modelBuilder.Entity<Paydesk>(entity =>
         {
-            entity.HasKey(e => e.PaydeskNumber).HasName("PK__Paydesk__BC17994AF7EE7DD7");
+            entity.HasKey(e => e.PaydeskNumber).HasName("PK__Paydesk__BC17994A7E00F7B8");
 
             entity.ToTable("Paydesk");
 
@@ -60,7 +62,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<PayrollHistory>(entity =>
         {
-            entity.HasKey(e => e.PayrollId).HasName("PK__Payroll___D99FC944ACAC2087");
+            entity.HasKey(e => e.PayrollId).HasName("PK__Payroll___D99FC94413E61F2A");
 
             entity.ToTable("Payroll_History");
 
@@ -94,11 +96,11 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<ProductInfo>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Product___47027DF5B46C7C1F");
+            entity.HasKey(e => e.ProductId).HasName("PK__Product___47027DF58FDBB88D");
 
             entity.ToTable("Product_Info");
 
-            entity.HasIndex(e => e.ProductCode, "UQ__Product___AE1A8CC40FD75FF0").IsUnique();
+            entity.HasIndex(e => e.ProductCode, "UQ__Product___AE1A8CC4936AC2EA").IsUnique();
 
             entity.Property(e => e.ProductId)
                 .HasDefaultValueSql("(newid())")
@@ -113,61 +115,62 @@ public partial class RsmsTestContext : DbContext
             entity.Property(e => e.ProductCode)
                 .HasMaxLength(5)
                 .HasColumnName("product_code");
-
-            entity.HasMany(d => d.TaxTypes).WithMany(p => p.Products)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ProductTaxis",
-                    r => r.HasOne<TaxRate>().WithMany()
-                        .HasForeignKey("TaxType")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__Product_T__tax_t__534D60F1"),
-                    l => l.HasOne<ProductInfo>().WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__Product_T__produ__52593CB8"),
-                    j =>
-                    {
-                        j.HasKey("ProductId", "TaxType").HasName("PK__Product___B8891FF7307DC009");
-                        j.ToTable("Product_Taxes");
-                        j.IndexerProperty<Guid>("ProductId").HasColumnName("product_id");
-                        j.IndexerProperty<int>("TaxType").HasColumnName("tax_type");
-                    });
         });
 
         modelBuilder.Entity<ProductStock>(entity =>
         {
-            entity.HasKey(e => new { e.StoreId, e.ProductId }).HasName("PK__Product___E68284D329BAA04F");
+            entity
+                .HasNoKey()
+                .ToTable("Product_Stock");
 
-            entity.ToTable("Product_Stock");
-
-            entity.Property(e => e.StoreId).HasColumnName("store_id");
-            entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.DiscountPercent).HasColumnName("discount_percent");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.StoreId).HasColumnName("store_id");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.ProductStocks)
+            entity.HasOne(d => d.Product).WithMany()
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Product_S__produ__4CA06362");
+                .HasConstraintName("FK__Product_S__produ__4BAC3F29");
 
-            entity.HasOne(d => d.Store).WithMany(p => p.ProductStocks)
+            entity.HasOne(d => d.Store).WithMany()
                 .HasForeignKey(d => d.StoreId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Product_S__store__4D94879B");
+                .HasConstraintName("FK__Product_S__store__4CA06362");
+        });
+
+        modelBuilder.Entity<ProductTaxis>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("Product_Taxes");
+
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.TaxType).HasColumnName("tax_type");
+
+            entity.HasOne(d => d.Product).WithMany()
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Product_T__produ__5070F446");
+
+            entity.HasOne(d => d.TaxTypeNavigation).WithMany()
+                .HasForeignKey(d => d.TaxType)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Product_T__tax_t__5165187F");
         });
 
         modelBuilder.Entity<RoleMap>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.RoleName }).HasName("PK__Role_Map__AE3D1244681F3456");
+            entity
+                .HasNoKey()
+                .ToTable("Role_Map");
 
-            entity.ToTable("Role_Map");
-
-            entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.RoleName)
                 .HasMaxLength(20)
                 .HasColumnName("role_name");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.User).WithMany(p => p.RoleMaps)
+            entity.HasOne(d => d.User).WithMany()
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Role_Map__user_i__3D5E1FD2");
@@ -175,17 +178,19 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.StoreId).HasName("PK__Store__A2F2A30CA15C575B");
+            entity.HasKey(e => e.StoreId).HasName("PK__Store__A2F2A30CCABF6DCA");
 
             entity.ToTable("Store");
 
-            entity.Property(e => e.StoreId).HasColumnName("store_id");
+            entity.Property(e => e.StoreId)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("store_id");
             entity.Property(e => e.Name).HasMaxLength(100);
         });
 
         modelBuilder.Entity<TaxRate>(entity =>
         {
-            entity.HasKey(e => e.TaxType).HasName("PK__Tax_Rate__F8B6202EEE66671D");
+            entity.HasKey(e => e.TaxType).HasName("PK__Tax_Rate__F8B6202E239F3F8D");
 
             entity.ToTable("Tax_Rate");
 
@@ -197,7 +202,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFB2CF2C0C");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AF5854105B");
 
             entity.Property(e => e.TransactionId)
                 .HasDefaultValueSql("(newid())")
@@ -211,57 +216,55 @@ public partial class RsmsTestContext : DbContext
             entity.HasOne(d => d.Cashier).WithMany(p => p.TransactionCashiers)
                 .HasForeignKey(d => d.CashierId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__cashi__59063A47");
+                .HasConstraintName("FK__Transacti__cashi__571DF1D5");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.TransactionCustomers)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__custo__59FA5E80");
+                .HasConstraintName("FK__Transacti__custo__5812160E");
 
             entity.HasOne(d => d.PaydeskNumberNavigation).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.PaydeskNumber)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__payde__5AEE82B9");
+                .HasConstraintName("FK__Transacti__payde__59063A47");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__produ__571DF1D5");
+                .HasConstraintName("FK__Transacti__produ__5535A963");
 
             entity.HasOne(d => d.Store).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.StoreId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__store__5812160E");
+                .HasConstraintName("FK__Transacti__store__5629CD9C");
         });
 
         modelBuilder.Entity<TransactionDetail>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFD2456489");
+            entity
+                .HasNoKey()
+                .ToTable("Transaction_Details");
 
-            entity.ToTable("Transaction_Details");
-
-            entity.Property(e => e.TransactionId)
-                .ValueGeneratedNever()
-                .HasColumnName("transaction_id");
             entity.Property(e => e.DiscountAmount).HasColumnName("discount_amount");
             entity.Property(e => e.PriceBeforeTax).HasColumnName("price_before_tax");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.TaxAmount).HasColumnName("tax_amount");
+            entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.TransactionDetails)
+            entity.HasOne(d => d.Product).WithMany()
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__produ__5EBF139D");
+                .HasConstraintName("FK__Transacti__produ__5BE2A6F2");
 
-            entity.HasOne(d => d.Transaction).WithOne(p => p.TransactionDetail)
-                .HasForeignKey<TransactionDetail>(d => d.TransactionId)
+            entity.HasOne(d => d.Transaction).WithMany()
+                .HasForeignKey(d => d.TransactionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__trans__5DCAEF64");
+                .HasConstraintName("FK__Transacti__trans__5AEE82B9");
         });
 
         modelBuilder.Entity<UserInfo>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User_Inf__B9BE370F48275673");
+            entity.HasKey(e => e.UserId).HasName("PK__User_Inf__B9BE370F9B121B03");
 
             entity.ToTable("User_Info");
 
@@ -272,12 +275,6 @@ public partial class RsmsTestContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .HasColumnName("email");
-            entity.Property(e => e.FirstName)
-                .HasMaxLength(100)
-                .HasColumnName("first_name");
-            entity.Property(e => e.LastName)
-                .HasMaxLength(100)
-                .HasColumnName("last_name");
             entity.Property(e => e.PasswordHashed)
                 .HasMaxLength(256)
                 .HasColumnName("password_hashed");
@@ -297,7 +294,7 @@ public partial class RsmsTestContext : DbContext
 
             entity.HasOne(d => d.Store).WithMany(p => p.UserInfos)
                 .HasForeignKey(d => d.StoreId)
-                .HasConstraintName("FK__User_Info__regis__3A81B327");
+                .HasConstraintName("FK__User_Info__regis__3B75D760");
         });
 
         OnModelCreatingPartial(modelBuilder);

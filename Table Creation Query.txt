@@ -1,20 +1,35 @@
+//TODO
+ADD FIRSTNAME LASTNAME
+ALSO UPDATE ROLE_MAP ON REGISTRATION
+
+
+
+
+
 use RSMS;
 CREATE TABLE Store
 (
-    store_id UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
+    store_id INT IDENTITY(0,1) PRIMARY KEY,
     Name NVARCHAR(100) NOT NULL,
-	Rent int NOT NULL,
+    Rent INT NOT NULL
 );
+
+SET IDENTITY_INSERT Store ON;
+INSERT INTO Store ( Name, Rent)
+VALUES ('Null Store', 0);
+SET IDENTITY_INSERT Store OFF;
 
 CREATE TABLE User_Info
 (
     user_id UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
+	first_name NVARCHAR(100) NOT NULL,
+	last_name NVARCHAR(100) NOT NULL,
     username NVARCHAR(100) NOT NULL,
 	email NVARCHAR(100) NOT NULL,
 	password_hashed VARBINARY(256) NOT NULL,
 	salt VARBINARY(256) NOT NULL,
 	phone NVARCHAR(13) NOT NULL,
-	store_id UNIQUEIDENTIFIER,
+	store_id INT,
 	dob date NOT NULL,
 	registration_date DATETIME NOT NULL
 	FOREIGN KEY(store_id) REFERENCES Store(store_id),
@@ -24,14 +39,15 @@ CREATE TABLE Role_Map
 (
 	user_id UNIQUEIDENTIFIER  NOT NULL,
 	role_name NVARCHAR(20) NOT NULL,
-	FOREIGN KEY(user_id) REFERENCES User_Info(user_id)
+	FOREIGN KEY(user_id) REFERENCES User_Info(user_id),
+	PRIMARY KEY (user_id, role_name),
 );
 
 
 CREATE TABLE Paydesk
 (
 	paydesk_number INT NOT NULL PRIMARY KEY,
-	store_id UNIQUEIDENTIFIER,
+	store_id INT,
 	is_manned BIT,
 	FOREIGN KEY(store_id) REFERENCES Store(store_id)
 );
@@ -41,7 +57,7 @@ CREATE TABLE Payroll_History
 	payroll_id UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY,
 	payee_id UNIQUEIDENTIFIER NOT NULL,
 	authorizer_id UNIQUEIDENTIFIER NOT NULL,
-	store_id UNIQUEIDENTIFIER NOT NULL,
+	store_id INT NOT NULL,
 	transaction_time DATETIME NOT NULL,
 	base_amount INT NOT NULL,
 	tax_deduction INT NOT NULL
@@ -62,11 +78,12 @@ CREATE TABLE Product_Info
 CREATE TABLE Product_Stock
 (
 	product_id UNIQUEIDENTIFIER NOT NULL,
-	store_id UNIQUEIDENTIFIER NOT NULL,
+	store_id INT NOT NULL,
 	quantity INT NOT NULL,
 	discount_percent int NOT NULL,
 	FOREIGN KEY(product_id) REFERENCES Product_Info(product_id),
-	FOREIGN KEY(store_id) REFERENCES Store(store_id)
+	FOREIGN KEY(store_id) REFERENCES Store(store_id),
+	PRIMARY KEY(store_id, product_id)
 );
 
 CREATE TABLE Tax_Rate
@@ -80,15 +97,15 @@ CREATE TABLE Product_Taxes
 	product_id UNIQUEIDENTIFIER NOT NULL,
 	tax_type INT NOT NULL,
 	FOREIGN KEY(product_id) REFERENCES Product_Info(product_id),
-	
 	FOREIGN KEY(tax_type) REFERENCES Tax_Rate(tax_type),
+	PRIMARY KEY(product_id, tax_type)
 );
 
 CREATE TABLE Transactions
 (
 	transaction_id UNIQUEIDENTIFIER  DEFAULT NEWID() NOT NULL PRIMARY KEY,
 	product_id UNIQUEIDENTIFIER NOT NULL,
-	store_id UNIQUEIDENTIFIER  NOT NULL,
+	store_id INT  NOT NULL,
 	cashier_id UNIQUEIDENTIFIER NOT NULL,
 	
 	customer_id UNIQUEIDENTIFIER NOT NULL,
@@ -104,7 +121,7 @@ CREATE TABLE Transactions
 
 CREATE TABLE Transaction_Details
 (
-	transaction_id UNIQUEIDENTIFIER   NOT NULL ,
+	transaction_id UNIQUEIDENTIFIER PRIMARY KEY  NOT NULL ,
 	product_id UNIQUEIDENTIFIER NOT NULL,
 	price_before_tax INT NOT NULL,
 	tax_amount INT NOT NULL,

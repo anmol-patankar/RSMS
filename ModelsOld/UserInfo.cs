@@ -7,10 +7,6 @@ public partial class UserInfo
 {
     public Guid UserId { get; set; }
 
-    public string FirstName { get; set; } = null!;
-
-    public string LastName { get; set; } = null!;
-
     public string Username { get; set; } = null!;
 
     public string Email { get; set; } = null!;
@@ -21,7 +17,7 @@ public partial class UserInfo
 
     public string Phone { get; set; } = null!;
 
-    public int? StoreId { get; set; }
+    public Guid? StoreId { get; set; }
 
     public DateOnly Dob { get; set; }
 
@@ -30,8 +26,6 @@ public partial class UserInfo
     public virtual ICollection<PayrollHistory> PayrollHistoryAuthorizers { get; set; } = new List<PayrollHistory>();
 
     public virtual ICollection<PayrollHistory> PayrollHistoryPayees { get; set; } = new List<PayrollHistory>();
-
-    public virtual ICollection<RoleMap> RoleMaps { get; set; } = new List<RoleMap>();
 
     public virtual Store? Store { get; set; }
 

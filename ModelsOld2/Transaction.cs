@@ -26,6 +26,4 @@ public partial class Transaction
     public virtual ProductInfo Product { get; set; } = null!;
 
     public virtual Store Store { get; set; } = null!;
-
-    public virtual TransactionDetail? TransactionDetail { get; set; }
 }
