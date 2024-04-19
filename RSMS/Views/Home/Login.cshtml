@@ -16,14 +16,5 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Login</button>
-    <script>
-        $(function () {
-            var success = @Html.Raw(Json.Serialize(ViewBag.Success));
-            if (success) {
-                alert('Login Successful!');
-            } else {
-                alert('Login Failed!');
-            }
-        });
-    </script>
+
 </form>
