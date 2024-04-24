@@ -11,9 +11,15 @@ namespace RSMS.Services
     {
         public static RsmsTestContext Context { get; set; }
         public static void SetContext(RsmsTestContext context) { Context = context; }
+        public static List<string> GetRolesOfUser(string username) => (from rolemap in Context.RoleMaps
+                                                                       where rolemap.UserId == (from userInfo in Context.UserInfos
+                                                                                                where userInfo.Username == username
+                                                                                                select userInfo.UserId).First()
+                                                                       select rolemap.RoleName
+                    ).ToList();
         public static List<ValidationResult> IsDuplicateUserRegistration(UserRegistrationModel user)
         {
-            List<ValidationResult> errors = new List<ValidationResult>();
+            List<ValidationResult> errors = [];
             if (Context.UserInfos.FirstOrDefault(u => u.Username == user.Username) != null)
                 errors.Add(new ValidationResult("Username already exists", ["Username"]));
             if (Context.UserInfos.FirstOrDefault(u => u.Email == user.Email) != null)
@@ -34,7 +40,7 @@ namespace RSMS.Services
         public static bool LoginUser(UserLoginModel login)
         {
             var loginUserInDatabase = Context.UserInfos.FirstOrDefault(user => user.Username == login.Username);
-            if (loginUserInDatabase != null && loginUserInDatabase.PasswordHashed.SequenceEqual(EncryptionService.VerifyPassword(login.Password, loginUserInDatabase.Salt)))
+            if (loginUserInDatabase != null && loginUserInDatabase.PasswordHashed.SequenceEqual(SecurityService.VerifyPassword(login.Password ?? "", loginUserInDatabase.Salt)))
                 return true;
             return false;
         }

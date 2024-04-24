@@ -6,8 +6,8 @@ namespace RSMS.ViewModels
 {
     public class UserLoginModel : IValidatableObject
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string? Username { get; set; }
+        public string? Password { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var results = new List<ValidationResult>();
