@@ -60,8 +60,8 @@ namespace RSMS.Services
                 claims,
                 expires: DateTime.Now.AddMinutes(15),
                 signingCredentials: credentials);
-            //return new JwtSecurityTokenHandler().WriteToken(token);
-            return Convert.ToHexString(HashStringWithSalt(new JwtSecurityTokenHandler().WriteToken(token), currentUserSalt));
+            return new JwtSecurityTokenHandler().WriteToken(token);
+            //return Convert.ToHexString(HashStringWithSalt(new JwtSecurityTokenHandler().WriteToken(token), currentUserSalt));
         }
     }
 }

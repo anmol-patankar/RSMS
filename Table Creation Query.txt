@@ -6,7 +6,7 @@ ALSO UPDATE ROLE_MAP ON REGISTRATION
 
 
 
-use RSMS;
+use RSMS_Test;
 CREATE TABLE Store
 (
     store_id INT IDENTITY(0,1) PRIMARY KEY,
@@ -15,8 +15,8 @@ CREATE TABLE Store
 );
 
 SET IDENTITY_INSERT Store ON;
-INSERT INTO Store ( Name, Rent)
-VALUES ('Null Store', 0);
+INSERT INTO Store ( store_id, Name, Rent)
+VALUES (0, 'Null Store', 0);
 SET IDENTITY_INSERT Store OFF;
 
 CREATE TABLE User_Info

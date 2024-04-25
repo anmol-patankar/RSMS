@@ -66,12 +66,18 @@ app.Use(async (context, next) =>
 });
 app.Use(async (context, next) =>
 {
-    string? JWTTokenFromCookie = context.Request.Cookies["JWTToken"];
-    string? JWTUserSaltFromCookie = context.Request.Cookies["UserSalt"];
-    if (JWTTokenFromCookie != null && JWTUserSaltFromCookie != null)
-    {
-        var JWTokenCookie = SecurityService.Decrypt(Convert.FromHexString(JWTTokenFromCookie), Convert.FromHexString(JWTUserSaltFromCookie));
+    //string? JWTTokenFromCookie = context.Request.Cookies["JWTToken"];
+    //string? JWTUserSaltFromCookie = context.Request.Cookies["UserSalt"];
+    //if (JWTTokenFromCookie != null && JWTUserSaltFromCookie != null)
+    //{
+    //    var JWTokenCookie = SecurityService.Decrypt(Convert.FromHexString(JWTTokenFromCookie), Convert.FromHexString(JWTUserSaltFromCookie));
 
+    //    context.Request.Headers.Add("Authorization", "Bearer " + JWTokenCookie);
+    //}
+    //await next();
+    var JWTokenCookie = context.Request.Cookies["JWTToken"];
+    if (!string.IsNullOrEmpty(JWTokenCookie))
+    {
         context.Request.Headers.Add("Authorization", "Bearer " + JWTokenCookie);
     }
     await next();
