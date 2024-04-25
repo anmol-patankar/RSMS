@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using RSMS.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
 
@@ -65,10 +66,13 @@ app.Use(async (context, next) =>
 });
 app.Use(async (context, next) =>
 {
-    var JWTokenCookie = context.Request.Cookies["JWTToken"];
-    if (!string.IsNullOrEmpty(JWTokenCookie))
+    string? JWTTokenFromCookie = context.Request.Cookies["JWTToken"];
+    string? JWTUserSaltFromCookie = context.Request.Cookies["UserSalt"];
+    if (JWTTokenFromCookie != null && JWTUserSaltFromCookie != null)
     {
-        context.Request.Headers.Append("Authorization", "Bearer " + JWTokenCookie);
+        var JWTokenCookie = SecurityService.Decrypt(Convert.FromHexString(JWTTokenFromCookie), Convert.FromHexString(JWTUserSaltFromCookie));
+
+        context.Request.Headers.Add("Authorization", "Bearer " + JWTokenCookie);
     }
     await next();
 });

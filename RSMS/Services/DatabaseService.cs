@@ -1,9 +1,7 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using RSMS.ViewModels;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace RSMS.Services
 {
@@ -37,12 +35,21 @@ namespace RSMS.Services
             Context.SaveChanges();
 
         }
-        public static bool LoginUser(UserLoginModel login)
+        public static bool LoginCredentialValidity(UserLoginModel login)
         {
             var loginUserInDatabase = Context.UserInfos.FirstOrDefault(user => user.Username == login.Username);
-            if (loginUserInDatabase != null && loginUserInDatabase.PasswordHashed.SequenceEqual(SecurityService.VerifyPassword(login.Password ?? "", loginUserInDatabase.Salt)))
+            if (loginUserInDatabase != null && loginUserInDatabase.PasswordHashed.SequenceEqual(SecurityService.HashStringWithSalt(login.Password ?? "", loginUserInDatabase.Salt)))
                 return true;
             return false;
+        }
+        public static UserInfo GetUser(Guid userId)
+        {
+            return Context.UserInfos.FirstOrDefault(u => u.UserId == userId) ?? new UserInfo();
+        }
+
+        public static UserInfo GetUser(string userNameOrEmail)
+        {
+            return Context.UserInfos.FirstOrDefault(u => u.Username == userNameOrEmail || u.Email == userNameOrEmail) ?? new UserInfo();
         }
     }
 }

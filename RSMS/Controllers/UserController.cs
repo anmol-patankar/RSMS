@@ -54,7 +54,7 @@ namespace RSMS.Controllers
                 }
 
                 var userGuid = Guid.NewGuid();
-                var passwordHashed = SecurityService.HashPassword(user.Password ?? "", out byte[] aesIV);
+                var passwordHashed = SecurityService.GetHashedAndSaltedString(user.Password ?? "", out byte[] aesIV);
                 var userInfo = new UserInfo()
                 {
                     UserId = userGuid,
@@ -105,10 +105,11 @@ namespace RSMS.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool success = DatabaseService.LoginUser(login);
+                bool success = DatabaseService.LoginCredentialValidity(login);
                 if (success)
                 {
-                    string token = SecurityService.GenerateToken(login);
+                    byte[] tokenSalt;
+                    string token = SecurityService.GenerateEncryptedToken(login, out tokenSalt);
                     var cookieOptions = new CookieOptions
                     {
                         HttpOnly = true,
@@ -116,6 +117,7 @@ namespace RSMS.Controllers
                         SameSite = SameSiteMode.Strict
                     };
                     HttpContext.Response.Cookies.Append("JWTToken", token, cookieOptions);
+                    HttpContext.Response.Cookies.Append("UserSalt", Convert.ToHexString(tokenSalt), cookieOptions);
                     //return View("LoginSuccess", login);
                     return RedirectToAction("LoginSuccess", "User");
                 }
