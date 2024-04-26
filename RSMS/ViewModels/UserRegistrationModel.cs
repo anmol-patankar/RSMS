@@ -1,6 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+
 namespace RSMS.ViewModels
 {
     public class UserRegistrationModel : IValidatableObject
@@ -12,6 +12,7 @@ namespace RSMS.ViewModels
         public string? Password { get; set; }
         public string? Phone { get; set; }
         public DateOnly Dob { get; set; }
+
         /// <summary>
         /// /
         /// </summary>
@@ -19,7 +20,6 @@ namespace RSMS.ViewModels
         /// <returns></returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-
             var dateNow = DateOnly.FromDateTime(DateTime.Now);
             var results = new List<ValidationResult>();
             if (Username == null || !Regex.Match(Username, "^[a-zA-Z][a-zA-Z0-9_-]{2,19}$").Success) results.Add(new ValidationResult("Username should be between 3-20 characters long, should start with a letter, and shouldn't have special characters", [nameof(Username)]));
@@ -33,9 +33,9 @@ namespace RSMS.ViewModels
             else if (Dob.AddYears(18).CompareTo(dateNow) > -1) results.Add(new ValidationResult("You must be atleast 18 years old to register", [nameof(Dob)]));
 
             return results;
-
         }
     }
+
     public enum UserRoles
     {
         Customer, Manager, Admin, Employee

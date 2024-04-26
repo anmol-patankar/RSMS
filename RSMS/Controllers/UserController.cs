@@ -9,7 +9,6 @@ using System.Text;
 
 namespace RSMS.Controllers
 {
-
     public class UserController : Controller
     {
         //private readonly RsmsTestContext _context;
@@ -27,6 +26,55 @@ namespace RSMS.Controllers
         {
             return View();
         }
+
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated == true) return RedirectToAction("LoginSuccess", "User");
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(UserLoginModel login)
+        {
+            if (ModelState.IsValid)
+            {
+                bool success = DatabaseService.LoginCredentialValidity(login.Username, login.Password);
+                if (success)
+                {
+                    string token = SecurityService.GenerateEncryptedToken(login);
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict
+                    };
+                    HttpContext.Response.Cookies.Append("JWTToken", token, cookieOptions);
+                    //HttpContext.Response.Cookies.Append("UserSalt", Convert.ToHexString(tokenSalt), cookieOptions);
+                    //return View("LoginSuccess", login);
+                    if (DatabaseService.GetRolesOfUser(login.Username).Contains(UserRoles.Admin.ToString()))
+                        return RedirectToAction("AdminDashboard", "Admin", login);
+                    return RedirectToAction("LoginSuccess", "User");
+                }
+                //return Json(new { success });
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        [NoCache]
+        [Authorize(Roles = "Customer")]
+        public IActionResult LoginSuccess()
+        {
+            return View();
+        }
+
+        public IActionResult Logout()
+        {
+            //HttpContext.Response.Cookies.Delete("JWTToken");
+            Response.Cookies.Delete("JWTToken");
+            return RedirectToAction("Login", "User");
+        }
+
         [AllowAnonymous]
         public IActionResult Register()
         {
@@ -78,52 +126,6 @@ namespace RSMS.Controllers
                 return RedirectToAction("Index", "Home");
             }
             return View(user);
-        }
-
-        [AllowAnonymous]
-        public IActionResult Login()
-        {
-            if (User.Identity != null && User.Identity.IsAuthenticated == true) return RedirectToAction("LoginSuccess", "User");
-            return View();
-        }
-
-        public IActionResult Logout()
-        {
-
-            //HttpContext.Response.Cookies.Delete("JWTToken");
-            Response.Cookies.Delete("JWTToken");
-            return RedirectToAction("Login", "User");
-        }
-        [NoCache]
-        [Authorize(Roles = "Customer")]
-        public IActionResult LoginSuccess()
-        {
-            return View();
-        }
-        [HttpPost]
-        public IActionResult Login(UserLoginModel login)
-        {
-            if (ModelState.IsValid)
-            {
-                bool success = DatabaseService.LoginCredentialValidity(login);
-                if (success)
-                {
-                    byte[] tokenSalt;
-                    string token = SecurityService.GenerateEncryptedToken(login, out tokenSalt);
-                    var cookieOptions = new CookieOptions
-                    {
-                        HttpOnly = true,
-                        Secure = true,
-                        SameSite = SameSiteMode.Strict
-                    };
-                    HttpContext.Response.Cookies.Append("JWTToken", token, cookieOptions);
-                    HttpContext.Response.Cookies.Append("UserSalt", Convert.ToHexString(tokenSalt), cookieOptions);
-                    //return View("LoginSuccess", login);
-                    return RedirectToAction("LoginSuccess", "User");
-                }
-                //return Json(new { success });
-            }
-            return RedirectToAction("Index", "Home");
         }
     }
 }
