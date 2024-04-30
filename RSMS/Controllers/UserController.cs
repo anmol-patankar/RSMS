@@ -18,7 +18,7 @@ namespace RSMS.Controllers
         {
             //_context = context;
             //_config = config;
-            SecurityService.SetKeyConfig(Encoding.UTF8.GetBytes(config["AesEncryption:Key"]), config);
+            SecurityService.SetKeyConfig((config["AesEncryption:Key"]), config);
             DatabaseService.SetContext(context);
         }
 
@@ -52,8 +52,8 @@ namespace RSMS.Controllers
                     HttpContext.Response.Cookies.Append("JWTToken", token, cookieOptions);
                     //HttpContext.Response.Cookies.Append("UserSalt", Convert.ToHexString(tokenSalt), cookieOptions);
                     //return View("LoginSuccess", login);
-                    if (DatabaseService.GetRolesOfUser(login.Username).Contains(UserRoles.Admin.ToString()))
-                        return RedirectToAction("AdminDashboard", "Admin", login);
+                    if (DatabaseService.GetRolesOfUser(login.Username).Any(roles => roles.RoleName == UserRoles.Admin.ToString()))
+                        return RedirectToAction("AdminDashboard", "Admin");
                     return RedirectToAction("LoginSuccess", "User");
                 }
                 //return Json(new { success });

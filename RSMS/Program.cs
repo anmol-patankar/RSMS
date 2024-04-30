@@ -2,6 +2,7 @@ using Domain.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RSMS.Services;
 using System.Net;
 using System.Text;
 
@@ -25,13 +26,16 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = false,
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true
     };
 });
+
 builder.Services.AddAuthorization();
 // Add configuration from appsettings.json
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddEnvironmentVariables();
+//SecurityService.SetKeyConfig(builder.Configuration["AesEncryption:Key"], builder.Configuration);
+//DatabaseService.SetContext(IServiceProvider.GetService<RsmsTestContext>() )));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

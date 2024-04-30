@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,22 +9,24 @@ namespace RSMS.Services
     {
         public static RsmsTestContext Context { get; set; }
 
+        //public static DatabaseService(RsmsTestContext context) { Context=context; }
+
         public static void SetContext(RsmsTestContext context)
         { Context = context; }
 
-        public static List<string> GetRolesOfUser(string username) => (from rolemap in Context.RoleMaps
-                                                                       where rolemap.UserId == (from userInfo in Context.UserInfos
-                                                                                                where userInfo.Username == username
-                                                                                                select userInfo.UserId).First()
-                                                                       select rolemap.RoleName
+        public static List<RoleMap> GetRolesOfUser(string username) => (from rolemap in Context.RoleMaps
+                                                                        where rolemap.UserId == (from userInfo in Context.UserInfos
+                                                                                                 where userInfo.Username == username
+                                                                                                 select userInfo.UserId).First()
+                                                                        select rolemap
                     ).ToList();
 
         public static List<ValidationResult> IsDuplicateUserRegistration(UserRegistrationModel user)
         {
             List<ValidationResult> errors = [];
-            if (Context.UserInfos.FirstOrDefault(u => u.Username == user.Username) != null)
+            if (GetUser(user.Username) != null)
                 errors.Add(new ValidationResult("Username already exists", ["Username"]));
-            if (Context.UserInfos.FirstOrDefault(u => u.Email == user.Email) != null)
+            if (GetUser(user.Email) != null)
                 errors.Add(new ValidationResult("Email is already registered", ["Email"]));
             return errors;
         }
@@ -41,7 +44,7 @@ namespace RSMS.Services
 
         public static bool LoginCredentialValidity(string username, string password)
         {
-            var loginUserInDatabase = Context.UserInfos.FirstOrDefault(user => user.Username == username);
+            var loginUserInDatabase = GetUser(username);
             if (loginUserInDatabase != null && loginUserInDatabase.PasswordHashed.SequenceEqual(SecurityService.HashStringWithSalt(password ?? "", loginUserInDatabase.Salt)))
                 return true;
             return false;
@@ -49,12 +52,30 @@ namespace RSMS.Services
 
         public static UserInfo GetUser(Guid userId)
         {
-            return Context.UserInfos.FirstOrDefault(u => u.UserId == userId) ?? new UserInfo();
+            return Context.UserInfos.FirstOrDefault(u => u.UserId == userId);
         }
 
         public static UserInfo GetUser(string userNameOrEmail)
         {
-            return Context.UserInfos.FirstOrDefault(u => u.Username == userNameOrEmail || u.Email == userNameOrEmail) ?? new UserInfo();
+            return Context.UserInfos.FirstOrDefault(u => u.Username == userNameOrEmail || u.Email == userNameOrEmail);
+        }
+        public static List<UserInfo> GetAllUsers()
+        {
+            return Context.UserInfos.ToList();
+        }
+        public static List<Store> GetAllStores()
+        {
+            return Context.Stores.ToList();
+        }
+        public static bool DeleteUser(Guid userId)
+        {
+            var userToDelete = GetUser(userId);
+            //bool isSuccessful=false;
+            var currentUserRoles = GetRolesOfUser(userToDelete.Username);
+            Context.RoleMaps.RemoveRange(currentUserRoles);
+            Context.UserInfos.Remove(userToDelete);
+            Context.SaveChanges();
+            return true;
         }
     }
 }

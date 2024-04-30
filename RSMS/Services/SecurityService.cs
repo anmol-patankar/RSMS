@@ -14,9 +14,9 @@ namespace RSMS.Services
         private static SymmetricSecurityKey securityKey;
         private static IConfiguration Config { get; set; }
 
-        public static void SetKeyConfig(byte[] aesKey, IConfiguration config)
+        public static void SetKeyConfig(string aesKey, IConfiguration config)
         {
-            _aesObject.Key = aesKey;
+            _aesObject.Key = Encoding.UTF8.GetBytes(aesKey);
             Config = config;
             securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["Jwt:Key"]));
         }
@@ -59,11 +59,11 @@ namespace RSMS.Services
             var userRoles = DatabaseService.GetRolesOfUser(login.Username);
             var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, login.Username) };
             foreach (var roles in userRoles)
-                claims.Add(new Claim(ClaimTypes.Role, roles));
+                claims.Add(new Claim(ClaimTypes.Role, roles.RoleName));
             var token = new JwtSecurityToken(Config["Jwt:Issuer"],
                 Config["Jwt:Audience"],
                 claims,
-                expires: DateTime.Now.AddMinutes(15),
+                expires: DateTime.Now.AddMinutes(1),
                 signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
             //return Convert.ToHexString(HashStringWithSalt(new JwtSecurityTokenHandler().WriteToken(token), currentUserSalt));
