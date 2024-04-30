@@ -1,5 +1,4 @@
 ﻿using Domain.Models;
-using Microsoft.EntityFrameworkCore;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
