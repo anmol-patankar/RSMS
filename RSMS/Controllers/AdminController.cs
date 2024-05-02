@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RSMS.Services;
 using RSMS.ViewModels;
-using System.Text;
 
 namespace RSMS.Controllers
 {

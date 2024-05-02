@@ -1,7 +1,7 @@
 ﻿using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RSMS.ActionAttribute;
+using RSMS.ActionAttributes;
 using RSMS.Services;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;

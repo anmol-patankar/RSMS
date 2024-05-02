@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace RSMS.ActionAttribute
+namespace RSMS.ActionAttributes
 {
     public class NoCacheAttribute : ActionFilterAttribute
     {
