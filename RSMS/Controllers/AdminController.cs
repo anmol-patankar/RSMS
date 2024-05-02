@@ -17,7 +17,7 @@ namespace RSMS.Controllers
             DatabaseService.SetContext(context);
         }
         [Authorize(Roles = "Admin")]
-        public IActionResult AdminDashboard()
+        public IActionResult Dashboard()
         {
             List<UserInfo> allUsers = DatabaseService.GetAllUsers();
             List<Store> allStores = DatabaseService.GetAllStores();
@@ -27,7 +27,7 @@ namespace RSMS.Controllers
                 var currentUserRoles = DatabaseService.GetRolesOfUser(user.Username);
                 foreach (var currentUser in currentUserRoles)
                 {
-                    allRoleMaps.Add(new UserRoleView { userId = user.UserId, Username = user.Username, roleName = currentUser.RoleName });
+                    allRoleMaps.Add(new UserRoleView { UserId = user.UserId, Username = user.Username, RoleName = currentUser.RoleName });
                 }
             }
 
@@ -50,7 +50,7 @@ namespace RSMS.Controllers
 
             //}
             DatabaseService.DeleteUser(userId);
-            return RedirectToAction("AdminDashboard", "Admin");
+            return RedirectToAction("Dashboard", "Admin");
         }
 
     }

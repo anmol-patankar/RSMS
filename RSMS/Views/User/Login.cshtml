@@ -18,3 +18,10 @@
     <button type="submit" class="btn btn-primary">Login</button>
 
 </form>
+@if (ViewBag.Message != null)
+{
+    <script>
+        window.onload = function () {
+            alert("@ViewBag.Message");
+        };</script>
+}

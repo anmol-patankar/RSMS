@@ -2,8 +2,8 @@
 {
     public class UserRoleView
     {
-        public Guid userId { get; set; }
+        public Guid UserId { get; set; }
         public string Username { get; set; }
-        public string roleName { get; set; }
+        public string RoleName { get; set; }
     }
 }

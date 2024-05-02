@@ -5,6 +5,7 @@ using RSMS.ActionAttributes;
 using RSMS.Services;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using System.Text;
 
 namespace RSMS.Controllers
@@ -30,10 +31,10 @@ namespace RSMS.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
-            if (User.Identity != null && User.Identity.IsAuthenticated == true) return RedirectToAction("LoginSuccess", "User");
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+                return RedirectToAction("SelectUserType");
             return View();
         }
-
         [HttpPost]
         public IActionResult Login(UserLoginModel login)
         {
@@ -49,23 +50,29 @@ namespace RSMS.Controllers
                         Secure = true,
                         SameSite = SameSiteMode.Strict
                     };
-                    HttpContext.Response.Cookies.Append("JWTToken", token, cookieOptions);
-                    //HttpContext.Response.Cookies.Append("UserSalt", Convert.ToHexString(tokenSalt), cookieOptions);
-                    //return View("LoginSuccess", login);
-                    if (DatabaseService.GetRolesOfUser(login.Username).Any(roles => roles.RoleName == UserRoles.Admin.ToString()))
-                        return RedirectToAction("AdminDashboard", "Admin");
-                    return RedirectToAction("LoginSuccess", "User");
-                }
-                //return Json(new { success });
-            }
-            return RedirectToAction("Index", "Home");
-        }
 
-        [NoCache]
-        [Authorize(Roles = "Customer")]
-        public IActionResult LoginSuccess()
+                    HttpContext.Response.Cookies.Append("JWTToken", token, cookieOptions);
+                    var roles = DatabaseService.GetRolesOfUser(login.Username).Select(role => role.RoleName).ToList();
+                    if (roles.Count > 1)
+                    {
+                        ViewBag.Roles = roles;
+                        return View("SelectUserType", login);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Dashboard", roles.First());
+                    }
+                }
+            }
+            ViewBag.Message = "Invalid username or password";
+            return View(login);
+        }
+        [HttpPost]
+
+        public IActionResult SelectUserType(string selectedRole)
         {
-            return View();
+            if (!string.IsNullOrEmpty(selectedRole)) return RedirectToAction("Dashboard", selectedRole);
+            return RedirectToAction("Login", "User");
         }
 
         public IActionResult Logout()
@@ -74,11 +81,33 @@ namespace RSMS.Controllers
             Response.Cookies.Delete("JWTToken");
             return RedirectToAction("Login", "User");
         }
-
+        public IActionResult SelectUserType()
+        {
+            var userRoles = User.Claims.Where(claim => claim.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();
+            if (userRoles.Count > 1)
+            {
+                ViewBag.Roles = userRoles;
+                return View("SelectUserType");
+            }
+            return RedirectToAction("Dashboard", userRoles.First());
+        }
+        internal IActionResult AuthenticatedRedirect()
+        {
+            var userRoles = User.Claims.Where(claim => claim.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();
+            if (userRoles.Count > 1)
+            {
+                ViewBag.Roles = userRoles;
+                return View("SelectUserType");
+            }
+            return RedirectToAction("Dashboard", userRoles.First());
+        }
         [AllowAnonymous]
         public IActionResult Register()
         {
-            if (User.Identity != null && User.Identity.IsAuthenticated == true) return RedirectToAction("LoginSuccess", "User");
+            if (User.Identity != null && User.Identity.IsAuthenticated == true)
+            {
+                return RedirectToAction("SelectUserType");
+            }
             return View();
         }
 

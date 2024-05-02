@@ -1,0 +1,16 @@
+﻿
+<h1>Select Role</h1>
+
+@if (ViewBag.Roles != null)
+{
+    <form asp-action="SelectUserType" asp-controller="User" method="post">
+        <label for="role">Select Role:</label>
+        <select id="role" name="SelectedRole">
+            @foreach (var role in ViewBag.Roles)
+            {
+                <option value="@role">@role</option>
+            }
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+}
