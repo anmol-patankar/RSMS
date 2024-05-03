@@ -57,16 +57,16 @@ namespace RSMS.Services
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var userRoles = DatabaseService.GetRolesOfUser(login.Username);
-            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, login.Username) };
-            foreach (var roles in userRoles)
-                claims.Add(new Claim(ClaimTypes.Role, roles.RoleName));
-            var token = new JwtSecurityToken(Config["Jwt:Issuer"],
-                Config["Jwt:Audience"],
-                claims,
+            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, login.Username), new(ClaimTypes.Name, login.Username) };
+            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role.RoleName)));
+            var token = new JwtSecurityToken(
+                issuer: Config["Jwt:Issuer"],
+                audience: Config["Jwt:Audience"],
+                claims: claims,
                 expires: DateTime.Now.AddMinutes(1),
                 signingCredentials: credentials);
+
             return new JwtSecurityTokenHandler().WriteToken(token);
-            //return Convert.ToHexString(HashStringWithSalt(new JwtSecurityTokenHandler().WriteToken(token), currentUserSalt));
         }
     }
 }

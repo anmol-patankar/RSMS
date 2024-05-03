@@ -1,3 +1,4 @@
+/* Font Sizes */
 html {
     font-size: 14px;
 }
@@ -8,15 +9,21 @@ html {
     }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+/* Buttons and Form Controls */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
+/* Layout */
 html {
     position: relative;
     min-height: 100%;
 }
 
 body {
-    margin-bottom: 60px;
+    margin-bottom: 60px; /* Adjust as needed */
 }

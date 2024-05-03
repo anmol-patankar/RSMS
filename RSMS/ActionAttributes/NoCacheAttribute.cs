@@ -8,7 +8,7 @@ namespace RSMS.ActionAttributes
         {
             var response = context.HttpContext.Response;
             response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
-            response.Headers.Expires = "1";
+            response.Headers.Expires = "-1";
             response.Headers.Pragma = "no-cache";
             base.OnResultExecuting(context);
         }

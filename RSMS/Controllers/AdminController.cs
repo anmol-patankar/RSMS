@@ -1,11 +1,14 @@
 ﻿using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RSMS.ActionAttributes;
 using RSMS.Services;
 using RSMS.ViewModels;
 
 namespace RSMS.Controllers
 {
+    [Authorize(Roles = "Admin")]
+    [NoCache]
     public class AdminController : Controller
     {
 
@@ -16,7 +19,6 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig((config["AesEncryption:Key"]), config);
             DatabaseService.SetContext(context);
         }
-        [Authorize(Roles = "Admin")]
         public IActionResult Dashboard()
         {
             List<UserInfo> allUsers = DatabaseService.GetAllUsers();
@@ -37,7 +39,7 @@ namespace RSMS.Controllers
             return View();
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+
         public IActionResult DeleteUser(Guid userId)
         {
             //if (DatabaseService.DeleteUser(userId))

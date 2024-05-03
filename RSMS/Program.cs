@@ -32,10 +32,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
-// Add configuration from appsettings.json
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddEnvironmentVariables();
-//SecurityService.SetKeyConfig(builder.Configuration["AesEncryption:Key"], builder.Configuration);
-//DatabaseService.SetContext(IServiceProvider.GetService<RsmsTestContext>() )));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -68,15 +65,6 @@ app.Use(async (context, next) =>
 });
 app.Use(async (context, next) =>
 {
-    //string? JWTTokenFromCookie = context.Request.Cookies["JWTToken"];
-    //string? JWTUserSaltFromCookie = context.Request.Cookies["UserSalt"];
-    //if (JWTTokenFromCookie != null && JWTUserSaltFromCookie != null)
-    //{
-    //    var JWTokenCookie = SecurityService.Decrypt(Convert.FromHexString(JWTTokenFromCookie), Convert.FromHexString(JWTUserSaltFromCookie));
-
-    //    context.Request.Headers.Add("Authorization", "Bearer " + JWTokenCookie);
-    //}
-    //await next();
     var JWTokenCookie = context.Request.Cookies["JWTToken"];
     if (!string.IsNullOrEmpty(JWTokenCookie))
     {

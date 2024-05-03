@@ -1,16 +1,25 @@
-﻿
-<h1>Select Role</h1>
+﻿<link rel="stylesheet" href="~/css/selectuser.css" />
 
-@if (ViewBag.Roles != null)
-{
-    <form asp-action="SelectUserType" asp-controller="User" method="post">
-        <label for="role">Select Role:</label>
-        <select id="role" name="SelectedRole">
-            @foreach (var role in ViewBag.Roles)
-            {
-                <option value="@role">@role</option>
-            }
-        </select>
-        <button type="submit">Submit</button>
-    </form>
-}
+
+<div class="card">
+    <div class="card-header">
+        <h2>Select Role</h2>
+    </div>
+    <div class="card-body">
+        @if (ViewBag.Roles != null)
+        {
+            <form asp-action="SelectUserType" asp-controller="User" method="post">
+                <div class="form-group">
+                    <label for="role">Roles</label>
+                    <select id="role" name="SelectedRole" class="form-control">
+                        @foreach (var role in ViewBag.Roles)
+                        {
+                            <option value="@role">@role</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </form>
+        }
+    </div>
+</div>
