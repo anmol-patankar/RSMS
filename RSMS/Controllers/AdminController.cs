@@ -14,8 +14,6 @@ namespace RSMS.Controllers
 
         public AdminController(RsmsTestContext context, IConfiguration config)
         {
-            //_context = context;
-            //_config = config;
             SecurityService.SetKeyConfig((config["AesEncryption:Key"]), config);
             DatabaseService.SetContext(context);
         }
@@ -42,15 +40,6 @@ namespace RSMS.Controllers
 
         public IActionResult DeleteUser(Guid userId)
         {
-            //if (DatabaseService.DeleteUser(userId))
-            //{
-            //    return Json(new { success = true, message = "Deleted Successfully" });
-            //}
-            //else
-            //{
-            //    return Json(new { success = false, message = "Deletion failed" });
-
-            //}
             DatabaseService.DeleteUser(userId);
             return RedirectToAction("Dashboard", "Admin");
         }

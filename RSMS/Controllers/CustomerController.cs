@@ -11,7 +11,7 @@ namespace RSMS.Controllers
     {
         public IActionResult Dashboard()
         {
-            ViewBag.User = HttpContext.User.Identity.Name;
+            ViewBag.User = HttpContext.User.Identity?.Name;
             return View();
         }
     }

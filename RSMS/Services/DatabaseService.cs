@@ -7,9 +7,6 @@ namespace RSMS.Services
     public static class DatabaseService
     {
         public static RsmsTestContext Context { get; set; }
-
-        //public static DatabaseService(RsmsTestContext context) { Context=context; }
-
         public static void SetContext(RsmsTestContext context)
         { Context = context; }
 
@@ -29,11 +26,6 @@ namespace RSMS.Services
                 errors.Add(new ValidationResult("Email is already registered", ["Email"]));
             return errors;
         }
-
-        /// <summary>
-        /// Adds user, and also updates RoleMap
-        /// </summary>
-        /// <param name="userInfo"></param>
         public static void AddUserAndRole(UserInfo userInfo, RoleMap roleMap)
         {
             Context.UserInfos.Add(userInfo);
@@ -76,6 +68,5 @@ namespace RSMS.Services
             Context.SaveChanges();
             return true;
         }
-        //public static bool
     }
 }
