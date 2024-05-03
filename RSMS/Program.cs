@@ -2,7 +2,6 @@ using Domain.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using RSMS.Services;
 using System.Net;
 using System.Text;
 

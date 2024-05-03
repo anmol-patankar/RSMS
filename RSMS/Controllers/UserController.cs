@@ -1,13 +1,10 @@
 ﻿using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using RSMS.ActionAttributes;
 using RSMS.Services;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using System.Text;
 
 namespace RSMS.Controllers
 {
@@ -36,6 +33,7 @@ namespace RSMS.Controllers
                 return RedirectToAction("SelectUserType");
             return View();
         }
+
         [HttpPost]
         public IActionResult Login(UserLoginModel login)
         {
@@ -59,42 +57,13 @@ namespace RSMS.Controllers
             ViewBag.Message = "Invalid username or password";
             return View(login);
         }
-        [Authorize]
-        public IActionResult SelectUserType()
-        {
-            var roles = User.Claims.Where(claim => claim.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();
-            if (roles.Count > 1)
-            {
-                ViewBag.Roles = roles;
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("Dashboard", roles.First());
-            }
-        }
-        [HttpPost]
-        public IActionResult SelectUserType(string selectedRole)
-        {
-            if (!string.IsNullOrEmpty(selectedRole)) return RedirectToAction("Dashboard", selectedRole);
-            return RedirectToAction("Login", "User");
-        }
 
         public IActionResult Logout()
         {
             Response.Cookies.Delete("JWTToken");
             return RedirectToAction("Login", "User");
         }
-        internal IActionResult AuthenticatedRedirect()
-        {
-            var userRoles = User.Claims.Where(claim => claim.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();
-            if (userRoles.Count > 1)
-            {
-                ViewBag.Roles = userRoles;
-                return View("SelectUserType");
-            }
-            return RedirectToAction("Dashboard", userRoles.First());
-        }
+
         [AllowAnonymous]
         public IActionResult Register()
         {
@@ -149,6 +118,34 @@ namespace RSMS.Controllers
                 return RedirectToAction("Index", "Home");
             }
             return View(user);
+        }
+
+        [Authorize]
+        public IActionResult SelectUserType()
+        {
+            var roles = User.Claims.Where(claim => claim.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();
+            if (roles.Count > 1)
+            {
+                ViewBag.Roles = roles;
+                return View();
+            }
+            return RedirectToAction("Dashboard", roles.First());
+        }
+        [HttpPost]
+        public IActionResult SelectUserType(string selectedRole)
+        {
+            if (!string.IsNullOrEmpty(selectedRole)) return RedirectToAction("Dashboard", selectedRole);
+            return RedirectToAction("Login", "User");
+        }
+        internal IActionResult AuthenticatedRedirect()
+        {
+            var userRoles = User.Claims.Where(claim => claim.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();
+            if (userRoles.Count > 1)
+            {
+                ViewBag.Roles = userRoles;
+                return View("SelectUserType");
+            }
+            return RedirectToAction("Dashboard", userRoles.First());
         }
     }
 }

@@ -11,12 +11,12 @@ namespace RSMS.Controllers
     [NoCache]
     public class AdminController : Controller
     {
-
         public AdminController(RsmsTestContext context, IConfiguration config)
         {
             SecurityService.SetKeyConfig((config["AesEncryption:Key"]), config);
             DatabaseService.SetContext(context);
         }
+
         public IActionResult Dashboard()
         {
             List<UserInfo> allUsers = DatabaseService.GetAllUsers();
@@ -36,13 +36,12 @@ namespace RSMS.Controllers
             ViewData["RoleMap"] = allRoleMaps;
             return View();
         }
-        [HttpPost]
 
+        [HttpPost]
         public IActionResult DeleteUser(Guid userId)
         {
             DatabaseService.DeleteUser(userId);
             return RedirectToAction("Dashboard", "Admin");
         }
-
     }
 }
