@@ -50,7 +50,7 @@
             <thead>
                 <tr>
                     <th>Store ID</th>
-                    <th>Store Name</th>
+                    <th>Store Address</th>
                     <th>Store Rent</th>
                 </tr>
             </thead>
@@ -59,8 +59,10 @@
                 {
                     <tr>
                         <td>@store.StoreId</td>
-                        <td>@store.Name</td>
+                        <td>@store.Address</td>
                         <td>@store.Rent</td>
+                        <td>@store.IsOpen</td>
+                        <td>@store.IsDeleted</td>
 
                     </tr>
                 }

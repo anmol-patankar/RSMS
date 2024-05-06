@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Domain.Models;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,8 @@ namespace RSMS.Services
 {
     public static class DatabaseService
     {
+
+
         public static RsmsTestContext Context { get; set; }
 
         public static void AddUserAndRole(UserInfo userInfo, RoleMap roleMap)
@@ -36,12 +39,16 @@ namespace RSMS.Services
             return Context.UserInfos.ToList();
         }
 
-        public static List<RoleMap> GetRolesOfUser(string username) => (from rolemap in Context.RoleMaps
-                                                                        where rolemap.UserId == (from userInfo in Context.UserInfos
-                                                                                                 where userInfo.Username == username
-                                                                                                 select userInfo.UserId).First()
-                                                                        select rolemap
-                    ).ToList();
+        public static List<RoleMap> GetRolesOfUser(string username)
+        {  //(from rolemap in Context.RoleMaps
+           //                                                                where rolemap.UserId == (from userInfo in Context.UserInfos
+           //                                                                                         where userInfo.Username == username
+           //                                                                                         select userInfo.UserId).First()
+           //                                                                select rolemap
+           //            ).ToList();
+
+            return (List<RoleMap>)Context.UserInfos.First(u => u.Username == username).RoleMaps;
+        }
 
         public static UserInfo GetUser(Guid userId)
         {

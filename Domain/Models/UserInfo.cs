@@ -1,4 +1,7 @@
-﻿namespace Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Models;
 
 public partial class UserInfo
 {
@@ -23,6 +26,8 @@ public partial class UserInfo
     public DateOnly Dob { get; set; }
 
     public DateTime RegistrationDate { get; set; }
+
+    public bool? IsDisabled { get; set; }
 
     public virtual ICollection<PayrollHistory> PayrollHistoryAuthorizers { get; set; } = new List<PayrollHistory>();
 

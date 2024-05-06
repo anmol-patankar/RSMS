@@ -1,4 +1,7 @@
-﻿namespace Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Models;
 
 public partial class ProductInfo
 {
@@ -11,6 +14,8 @@ public partial class ProductInfo
     public string? Description { get; set; }
 
     public int PriceBeforeTax { get; set; }
+
+    public string? Photo { get; set; }
 
     public virtual ICollection<ProductStock> ProductStocks { get; set; } = new List<ProductStock>();
 

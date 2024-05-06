@@ -1,12 +1,19 @@
-﻿namespace Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Models;
 
 public partial class Store
 {
     public int StoreId { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string Address { get; set; } = null!;
 
     public int Rent { get; set; }
+
+    public bool? IsOpen { get; set; }
+
+    public bool? IsDeleted { get; set; }
 
     public virtual ICollection<Paydesk> Paydesks { get; set; } = new List<Paydesk>();
 
