@@ -37,6 +37,13 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Dashboard">Admin Dashboard</a>
                             </li>
                         }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Manager" asp-action="Dashboard">Manager Dashboard</a>
+                            </li>
+                        }
+
                         @if (User.IsInRole("Admin") || User.IsInRole("Customer"))
                         {
                             <li class="nav-item">

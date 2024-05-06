@@ -27,7 +27,7 @@ public partial class UserInfo
 
     public DateTime RegistrationDate { get; set; }
 
-    public bool? IsDisabled { get; set; }
+    public bool IsDisabled { get; set; }
 
     public virtual ICollection<PayrollHistory> PayrollHistoryAuthorizers { get; set; } = new List<PayrollHistory>();
 

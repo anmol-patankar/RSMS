@@ -12,8 +12,8 @@ CREATE TABLE Store
     store_id INT IDENTITY(0,1) PRIMARY KEY,
     address NVARCHAR(100) NOT NULL,
     rent INT NOT NULL,
-	is_open	 BIT DEFAULT 1,
-    is_deleted BIT DEFAULT 0
+	is_open	 BIT DEFAULT 1 NOT NULL,
+    is_deleted BIT DEFAULT 0 NOT NULL
 );
 GO
 SET IDENTITY_INSERT Store ON;
@@ -34,7 +34,7 @@ CREATE TABLE User_Info
 	store_id INT,
 	dob date NOT NULL,
 	registration_date DATETIME NOT NULL,
-	is_disabled BIT DEFAULT 0,
+	is_disabled BIT DEFAULT 0 NOT NULL,
 	FOREIGN KEY(store_id) REFERENCES Store(store_id),
 );
 
@@ -133,4 +133,14 @@ CREATE TABLE Transaction_Details
 	FOREIGN KEY(transaction_id) REFERENCES Transactions(transaction_id),
 	FOREIGN KEY(product_id) REFERENCES Product_Info(product_id),
 );
+GO
+-- Inserting data into User_Info table
+INSERT INTO User_Info (user_id, first_name, last_name, username, email, password_hashed, salt, phone, store_id, dob, registration_date, is_disabled)
+VALUES ('cb425222-e1d7-40dc-9c65-c417298d1035', 'Anmol', 'Patankar', 'anmol_asterISK', 'anmolpatankar@gmail.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '9604439891', 0, '2002-07-26', '2024-05-06 11:45:16.197', 0);
+
+-- Inserting data into Role_Map table
+INSERT INTO Role_Map (user_id, role_name)
+VALUES ('cb425222-e1d7-40dc-9c65-c417298d1035', 'Admin'),
+       ('cb425222-e1d7-40dc-9c65-c417298d1035', 'Customer'),
+       ('cb425222-e1d7-40dc-9c65-c417298d1035', 'Manager');
 GO

@@ -17,7 +17,11 @@ namespace RSMS.Services
             Context.RoleMaps.Add(roleMap);
             Context.SaveChanges();
         }
-
+        public static void EditUser(UserInfo userInfo)
+        {
+            Context.UserInfos.Update(userInfo);
+            Context.SaveChanges();
+        }
         public static bool DeleteUser(Guid userId)
         {
             var userToDelete = GetUser(userId);
@@ -39,16 +43,14 @@ namespace RSMS.Services
             return Context.UserInfos.ToList();
         }
 
-        public static List<RoleMap> GetRolesOfUser(string username)
-        {  //(from rolemap in Context.RoleMaps
-           //                                                                where rolemap.UserId == (from userInfo in Context.UserInfos
-           //                                                                                         where userInfo.Username == username
-           //                                                                                         select userInfo.UserId).First()
-           //                                                                select rolemap
-           //            ).ToList();
+        public static List<RoleMap> GetRolesOfUser(string username) =>
+          (from rolemap in Context.RoleMaps
+           where rolemap.UserId == (from userInfo in Context.UserInfos
+                                    where userInfo.Username == username
+                                    select userInfo.UserId).First()
+           select rolemap
+                       ).ToList();
 
-            return (List<RoleMap>)Context.UserInfos.First(u => u.Username == username).RoleMaps;
-        }
 
         public static UserInfo GetUser(Guid userId)
         {

@@ -8,8 +8,7 @@
 
 <h1>Welcome to the Admin Dashboard</h1>
 <div>
-    <!-- Add dashboard content here -->
-    <p>This is your admin dashboard. You can manage users, settings, etc. here.</p>
+    <p>This is the admin dashboard. You can manage users, stores, etc. here.</p>
 
     <button id="showUsersBtn" class="toggle-btn">Show Users</button>
     <button id="showStoresBtn" class="toggle-btn">Show Stores</button>
@@ -35,10 +34,20 @@
                         <td>@user.Email</td>
                         <td>@user.Dob</td>
                         <td>
-                            <form method="post" action="@Url.Action("DeleteUser", "Admin")">
-                                <input type="hidden" name="userId" value="@user.UserId" />
-                                <button type="submit" class="delete-btn">Delete</button>
-                            </form>
+                            <div>
+                                <table>
+                                    <form method="post" action="@Url.Action("DeleteUser", "Admin")">
+                                        <input type="hidden" name="userId" value="@user.UserId" />
+                                        <button type="submit" class="delete-btn">Delete</button>
+                                    </form>
+
+                                    <form method="get" action="@Url.Action("EditUser", "Admin")">
+                                        <input type="hidden" name="userId" value="@user.UserId" />
+                                        <button type="submit" class="edit-btn">Edit</button>
+                                    </form>
+                                </table>
+                            </div>
+
                         </td>
                     </tr>
                 }
@@ -50,8 +59,10 @@
             <thead>
                 <tr>
                     <th>Store ID</th>
-                    <th>Store Address</th>
-                    <th>Store Rent</th>
+                    <th>Address</th>
+                    <th>Rent</th>
+                    <th>Status</th>
+                    <th>Operational</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,9 +72,8 @@
                         <td>@store.StoreId</td>
                         <td>@store.Address</td>
                         <td>@store.Rent</td>
-                        <td>@store.IsOpen</td>
-                        <td>@store.IsDeleted</td>
-
+                        <td>@((bool)store.IsOpen ? "Open" : "Closed")</td>
+                        <td>@((bool)store.IsDeleted ? "Yes" : "No")</td>
                     </tr>
                 }
             </tbody>
@@ -146,6 +156,19 @@
 
             .delete-btn:hover {
                 background-color: #d32f2f;
+            }
+
+        .edit-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+            .edit-btn:hover {
+                background-color: #0b7dda;
             }
 
         .toggle-btn {

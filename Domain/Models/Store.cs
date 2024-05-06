@@ -11,9 +11,9 @@ public partial class Store
 
     public int Rent { get; set; }
 
-    public bool? IsOpen { get; set; }
+    public bool IsOpen { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<Paydesk> Paydesks { get; set; } = new List<Paydesk>();
 

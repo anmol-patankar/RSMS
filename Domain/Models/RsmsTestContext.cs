@@ -43,7 +43,7 @@ public partial class RsmsTestContext : DbContext
     {
         modelBuilder.Entity<Paydesk>(entity =>
         {
-            entity.HasKey(e => e.PaydeskNumber).HasName("PK__Paydesk__BC17994AD2169232");
+            entity.HasKey(e => e.PaydeskNumber).HasName("PK__Paydesk__BC17994A34153F5A");
 
             entity.ToTable("Paydesk");
 
@@ -60,7 +60,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<PayrollHistory>(entity =>
         {
-            entity.HasKey(e => e.PayrollId).HasName("PK__Payroll___D99FC944A516F3F9");
+            entity.HasKey(e => e.PayrollId).HasName("PK__Payroll___D99FC944AC442218");
 
             entity.ToTable("Payroll_History");
 
@@ -94,11 +94,11 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<ProductInfo>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Product___47027DF5AA635D09");
+            entity.HasKey(e => e.ProductId).HasName("PK__Product___47027DF5FF516C11");
 
             entity.ToTable("Product_Info");
 
-            entity.HasIndex(e => e.ProductCode, "UQ__Product___AE1A8CC4579781F1").IsUnique();
+            entity.HasIndex(e => e.ProductCode, "UQ__Product___AE1A8CC4F5C4F4EC").IsUnique();
 
             entity.Property(e => e.ProductId)
                 .HasDefaultValueSql("(newid())")
@@ -130,7 +130,7 @@ public partial class RsmsTestContext : DbContext
                         .HasConstraintName("FK__Product_T__produ__5535A963"),
                     j =>
                     {
-                        j.HasKey("ProductId", "TaxType").HasName("PK__Product___B8891FF799A263D3");
+                        j.HasKey("ProductId", "TaxType").HasName("PK__Product___B8891FF7124AEF19");
                         j.ToTable("Product_Taxes");
                         j.IndexerProperty<Guid>("ProductId").HasColumnName("product_id");
                         j.IndexerProperty<int>("TaxType").HasColumnName("tax_type");
@@ -139,7 +139,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<ProductStock>(entity =>
         {
-            entity.HasKey(e => new { e.StoreId, e.ProductId }).HasName("PK__Product___E68284D39D7E7EA8");
+            entity.HasKey(e => new { e.StoreId, e.ProductId }).HasName("PK__Product___E68284D330DD3BC5");
 
             entity.ToTable("Product_Stock");
 
@@ -161,7 +161,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<RoleMap>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.RoleName }).HasName("PK__Role_Map__AE3D1244F9A6DB59");
+            entity.HasKey(e => new { e.UserId, e.RoleName }).HasName("PK__Role_Map__AE3D12447E368C80");
 
             entity.ToTable("Role_Map");
 
@@ -178,7 +178,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.StoreId).HasName("PK__Store__A2F2A30C83A56990");
+            entity.HasKey(e => e.StoreId).HasName("PK__Store__A2F2A30C9ADD47BB");
 
             entity.ToTable("Store");
 
@@ -186,9 +186,7 @@ public partial class RsmsTestContext : DbContext
             entity.Property(e => e.Address)
                 .HasMaxLength(100)
                 .HasColumnName("address");
-            entity.Property(e => e.IsDeleted)
-                .HasDefaultValue(false)
-                .HasColumnName("is_deleted");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.IsOpen)
                 .HasDefaultValue(true)
                 .HasColumnName("is_open");
@@ -197,7 +195,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<TaxRate>(entity =>
         {
-            entity.HasKey(e => e.TaxType).HasName("PK__Tax_Rate__F8B6202EA6F8E2CB");
+            entity.HasKey(e => e.TaxType).HasName("PK__Tax_Rate__F8B6202EC8DA2127");
 
             entity.ToTable("Tax_Rate");
 
@@ -209,7 +207,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFA367EF7E");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFFF64875B");
 
             entity.Property(e => e.TransactionId)
                 .HasDefaultValueSql("(newid())")
@@ -248,7 +246,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<TransactionDetail>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AF36A1BF00");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFCAAFEF8B");
 
             entity.ToTable("Transaction_Details");
 
@@ -273,7 +271,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<UserInfo>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User_Inf__B9BE370FD187D810");
+            entity.HasKey(e => e.UserId).HasName("PK__User_Inf__B9BE370FCB27E1BA");
 
             entity.ToTable("User_Info");
 
@@ -287,9 +285,7 @@ public partial class RsmsTestContext : DbContext
             entity.Property(e => e.FirstName)
                 .HasMaxLength(100)
                 .HasColumnName("first_name");
-            entity.Property(e => e.IsDisabled)
-                .HasDefaultValue(false)
-                .HasColumnName("is_disabled");
+            entity.Property(e => e.IsDisabled).HasColumnName("is_disabled");
             entity.Property(e => e.LastName)
                 .HasMaxLength(100)
                 .HasColumnName("last_name");
