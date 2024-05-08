@@ -10,13 +10,8 @@ namespace RSMS.Controllers
 {
     public class UserController : Controller
     {
-        //private readonly RsmsTestContext _context;
-        //private readonly IConfiguration _config;
-
         public UserController(RsmsTestContext context, IConfiguration config)
         {
-            //_context = context;
-            //_config = config;
             SecurityService.SetKeyConfig((config["AesEncryption:Key"]), config);
             DatabaseService.SetContext(context);
         }
@@ -112,7 +107,7 @@ namespace RSMS.Controllers
                 var roleMap = new RoleMap()
                 {
                     UserId = userGuid,
-                    RoleName = UserRoles.Customer.ToString()
+                    RoleName = DatabaseService.UserRoles.Customer.ToString()
                 };
                 DatabaseService.AddUserAndRole(userInfo, roleMap);
                 return RedirectToAction("Index", "Home");
@@ -131,12 +126,14 @@ namespace RSMS.Controllers
             }
             return RedirectToAction("Dashboard", roles.First());
         }
+
         [HttpPost]
         public IActionResult SelectUserType(string selectedRole)
         {
             if (!string.IsNullOrEmpty(selectedRole)) return RedirectToAction("Dashboard", selectedRole);
             return RedirectToAction("Login", "User");
         }
+
         internal IActionResult AuthenticatedRedirect()
         {
             var userRoles = User.Claims.Where(claim => claim.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();

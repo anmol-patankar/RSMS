@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RSMS.Services;
-using RSMS.ViewModels;
+using static RSMS.Services.DatabaseService;
 
 namespace RSMS.Controllers
 {
@@ -13,18 +13,17 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig((config["AesEncryption:Key"]), config);
             DatabaseService.SetContext(context);
         }
+
         [Authorize(Roles = "Admin,Manager")]
         public IActionResult Dashboard()
         {
             var manager = DatabaseService.GetUser(User.Identity.Name);
             ViewBag.Employees = DatabaseService.GetAllUsers()
                 .Where(u => u.StoreId == manager.StoreId
-                && DatabaseService.GetRolesOfUser(u.Username).Any(role => role.RoleName == UserRoles.Employee.ToString())).ToList();
+                && DatabaseService.GetRolesOfUser(u.Username).Any(role => role == UserRoles.Employee.ToString())).ToList();
             ViewBag.Products = null;
             ViewBag.Transactions = null;
             return View();
-
-
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Domain.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace RSMS.ViewModels
@@ -14,11 +13,6 @@ namespace RSMS.ViewModels
         public string? Phone { get; set; }
         public DateOnly Dob { get; set; }
 
-        /// <summary>
-        /// /
-        /// </summary>
-        /// <param name="validationContext"></param>
-        /// <returns></returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var dateNow = DateOnly.FromDateTime(DateTime.Now);
@@ -35,10 +29,5 @@ namespace RSMS.ViewModels
 
             return results;
         }
-    }
-
-    public enum UserRoles
-    {
-        Customer, Manager, Admin, Employee
     }
 }

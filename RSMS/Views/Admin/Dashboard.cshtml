@@ -8,7 +8,7 @@
 
 <h1>Welcome to the Admin Dashboard</h1>
 <div>
-    <p>This is the admin dashboard. You can manage users, stores, etc. here.</p>
+    <p>This is the admin dashboard. You can manage users, stores, and roles here.</p>
 
     <button id="showUsersBtn" class="toggle-btn">Show Users</button>
     <button id="showStoresBtn" class="toggle-btn">Show Stores</button>
@@ -72,8 +72,24 @@
                         <td>@store.StoreId</td>
                         <td>@store.Address</td>
                         <td>@store.Rent</td>
-                        <td>@((bool)store.IsOpen ? "Open" : "Closed")</td>
-                        <td>@((bool)store.IsDeleted ? "Yes" : "No")</td>
+                        @if (store.IsOpen)
+                        {
+                            <td>Open</td>
+                        }
+                        else
+                        {
+                            <td>Closed</td>
+                        }
+
+                        @if (store.IsDeleted)
+                        {
+                            <td>No</td>
+                        }
+                        else
+                        {
+                            <td>Yes</td>
+                        }
+
                     </tr>
                 }
             </tbody>
@@ -149,7 +165,6 @@
             background-color: #f44336;
             color: white;
             border: none;
-            padding: 6px 12px;
             cursor: pointer;
             border-radius: 4px;
         }
@@ -162,7 +177,6 @@
             background-color: #2196F3;
             color: white;
             border: none;
-            padding: 6px 12px;
             cursor: pointer;
             border-radius: 4px;
         }

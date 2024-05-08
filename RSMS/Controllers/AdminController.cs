@@ -1,13 +1,11 @@
 ﻿using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using RSMS.ActionAttributes;
 using RSMS.Services;
 using RSMS.ViewModels;
-using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using static RSMS.Services.DatabaseService;
 
 namespace RSMS.Controllers
 {
@@ -29,9 +27,9 @@ namespace RSMS.Controllers
             foreach (var user in allUsers)
             {
                 var currentUserRoles = DatabaseService.GetRolesOfUser(user.Username);
-                foreach (var currentUser in currentUserRoles)
+                foreach (var currentRole in currentUserRoles)
                 {
-                    allRoleMaps.Add(new UserRoleView { UserId = user.UserId, Username = user.Username, RoleName = currentUser.RoleName });
+                    allRoleMaps.Add(new UserRoleView { UserId = user.UserId, Username = user.Username, RoleName = currentRole });
                 }
             }
 
@@ -47,28 +45,20 @@ namespace RSMS.Controllers
             DatabaseService.DeleteUser(userId);
             return RedirectToAction("Dashboard", "Admin");
         }
+
         public IActionResult EditUser(Guid userId)
         {
-            return View(DatabaseService.GetUser(userId));
+            var userDetails = new UserDetailsEditorModel
+            {
+                UserInfo = DatabaseService.GetUser(userId),
+                AllRoles = DatabaseService.GetRolesOfUser(userId)
+            };
+            return View(userDetails);
         }
+
         [HttpPost]
-        public IActionResult EditUser(UserInfo userInfo)
+        public IActionResult EditUserInfo(UserInfo userInfo)
         {
-
-            //UserRegistrationModel userValidation = new UserRegistrationModel()
-            //{
-            //    Username = userInfo.Username,
-            //    FirstName = userInfo.FirstName,
-            //    LastName = userInfo.LastName,
-            //    Email = userInfo.Email,
-            //    Password = userInfo.PasswordHashed.ToString(),
-            //    Phone = userInfo.Phone
-
-            //};
-            //var validationResults = userValidation.Validate(new ValidationContext(userInfo));
-            //foreach (var validationResult in validationResults)
-            //    ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
-
             var dateNow = DateOnly.FromDateTime(DateTime.Now);
             if (userInfo.Username == null || !Regex.Match(userInfo.Username, "^[a-zA-Z][a-zA-Z0-9_-]{2,19}$").Success) ModelState.AddModelError(nameof(userInfo.Username), "Username should be between 3-20 characters long, should start with a letter, and shouldn't have special characters");
             if (userInfo.FirstName == null || !Regex.Match(userInfo.FirstName, "^[a-zA-Z'-]+$").Success) ModelState.AddModelError(nameof(userInfo.FirstName), "Name can only have the English alphabet, hyphens, and apostrophes");
@@ -86,6 +76,26 @@ namespace RSMS.Controllers
                 return RedirectToAction("Dashboard", "Admin");
             }
             return View(userInfo);
+        }
+        //TODO ERROR HANDLING BELOW ISNT WORKING DO IT ITITITITITITITITIT
+        [HttpPost]
+        public IActionResult EditUserRoles(List<string> rolesToAdd, string username)
+        {
+            if (rolesToAdd.Count == 0) ModelState.AddModelError(nameof(rolesToAdd), "Atleast one role must be selected");
+            if (rolesToAdd.Contains("Employee") && rolesToAdd.Contains("Manager")) ModelState.AddModelError(nameof(rolesToAdd), "User cannot be manager and employee at the same time");
+            if (ModelState.IsValid)
+            {
+                var userGuid = DatabaseService.GetUser(username).UserId;
+                List<string> rolesToRemove = Enum.GetNames(typeof(UserRoles)).ToList();
+                foreach (var selectedRole in rolesToAdd)
+                {
+                    rolesToRemove.Remove(selectedRole);
+                }
+                DatabaseService.EditRoles(rolesToAdd, rolesToRemove, userGuid);
+                return RedirectToAction("Dashboard", "Admin");
+
+            }
+            return PartialView("_EditUserRolesPartial", rolesToAdd);
         }
     }
 }
