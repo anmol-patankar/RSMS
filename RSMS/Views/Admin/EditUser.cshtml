@@ -1,72 +1,96 @@
 ﻿@model RSMS.ViewModels.UserDetailsEditorModel
-@{
-    ViewBag.Username = Model.UserInfo.Username;
-}
 <link rel="stylesheet" href="~/css/edituser.css" />
 <div class="container">
     <div class="card">
         <div class="card-header">
             <h2>Edit User Information</h2>
         </div>
+        <div class="card-body">
+            <form method="post">
 
-        @await Html.PartialAsync("_EditUserInfoPartial", Model.UserInfo)
-        @await Html.PartialAsync("_EditUserRolesPartial", Model.AllRoles)
-        @* <div class="card-body">
-        <form asp-action="EditUser" method="post">
-        <input type="hidden" asp-for="UserId" />
-        <input type="hidden" asp-for="RegistrationDate" />
-        <input type="hidden" asp-for="PasswordHashed" />
-        <input type="hidden" asp-for="Salt" />
+                <input type="hidden" asp-for="UserInfo.UserId" />
+                <input type="hidden" asp-for="UserInfo.RegistrationDate" />
+                <input type="hidden" asp-for="UserInfo.PasswordHashed" />
+                <input type="hidden" asp-for="UserInfo.Salt" />
+                <div class="form-group">
+                    <label asp-for="UserInfo.UserId">UserId</label>
+                    <input asp-for="UserInfo.UserId" class="form-control form-control-sm" readonly />
+                </div>
+                <div class="form-group">
+                    <label asp-for="UserInfo.Username">Username</label>
+                    <input asp-for="UserInfo.Username" class="form-control form-control-sm" readonly />
+                </div>
 
-        <div class="form-group">
-        <label asp-for="Username">Username</label>
-        <input asp-for="Username" class="form-control form-control-sm" readonly />
-        <span asp-validation-for="Username" class="text-danger"></span>
+                <div class="form-group">
+                    <label asp-for="UserInfo.FirstName">First Name</label>
+                    <input asp-for="UserInfo.FirstName" class="form-control form-control-sm" />
+                    <span asp-validation-for="@Model.UserInfo.FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UserInfo.LastName">Last Name</label>
+                    <input asp-for="UserInfo.LastName" class="form-control form-control-sm" />
+                    <span asp-validation-for="@Model.UserInfo.LastName" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="UserInfo.Email">Email Address</label>
+                    <input asp-for="UserInfo.Email" class="form-control form-control-sm" />
+                    <span asp-validation-for="UserInfo.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UserInfo.Phone">Phone Number</label>
+                    <input asp-for="UserInfo.Phone" class="form-control form-control-sm" />
+                    <span asp-validation-for="UserInfo.Phone" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UserInfo.StoreId">Store ID</label>
+                    <input asp-for="UserInfo.StoreId" class="form-control form-control-sm" />
+                    <span asp-validation-for="UserInfo.StoreId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UserInfo.Dob">Date Of Birth</label>
+                    <input asp-for="UserInfo.Dob" type="date" class="form-control form-control-sm" />
+                    <span asp-validation-for="UserInfo.Dob" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UserInfo.IsDisabled"> Disable User</label>
+                    <input asp-for="UserInfo.IsDisabled" type="checkbox" class="form-check-input" />
+                </div>
+                <div>
+                    <label>
+                        <input type="checkbox" name="RolesUserHas" value="Admin" @(Model.RolesUserHas.Contains("Admin") ? "checked" : "") />
+                        Admin
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input type="checkbox" name="RolesUserHas" value="Manager" @(Model.RolesUserHas.Contains("Manager") ? "checked" : "") />
+                        Manager
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input type="checkbox" name="RolesUserHas" value="Employee" @(Model.RolesUserHas.Contains("Employee") ? "checked" : "") />
+                        Employee
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input type="checkbox" name="RolesUserHas" value="Customer" @(Model.RolesUserHas.Contains("Customer") ? "checked" : "") />
+                        Customer
+                    </label>
+
+                </div>
+                <span asp-validation-for="RolesUserHas" class="text-danger"></span>
+                <button type="submit" class="btn btn-primary btn-block">Update</button>
+            </form>
         </div>
-
-        <div class="form-group">
-        <label asp-for="FirstName">First Name</label>
-        <input asp-for="FirstName" class="form-control form-control-sm" />
-        <span asp-validation-for="FirstName" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-        <label asp-for="LastName">Last Name</label>
-        <input asp-for="LastName" class="form-control form-control-sm" />
-        <span asp-validation-for="LastName" class="text-danger"></span>
-        </div>
-
-
-        <div class="form-group">
-        <label asp-for="Email">Email Address</label>
-        <input asp-for="Email" class="form-control form-control-sm" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-        <label asp-for="Phone">Phone Number</label>
-        <input asp-for="Phone" class="form-control form-control-sm" />
-        <span asp-validation-for="Phone" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-        <label asp-for="StoreId">Store ID</label>
-        <input asp-for="StoreId" class="form-control form-control-sm" />
-        <span asp-validation-for="StoreId" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-        <label asp-for="Dob">Date Of Birth</label>
-        <input asp-for="Dob" type="date" class="form-control form-control-sm" />
-        <span asp-validation-for="Dob" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-        <label asp-for="IsDisabled"> Disable User</label>
-        <input asp-for="IsDisabled" type="checkbox" class="form-check-input" />
-        </div>
-        @Html.ValidationSummary(true)
-        <button type="submit" class="btn btn-primary btn-block">Update</button>
-        </form>
-        </div> *@
     </div>
+
+</div>
 </div>

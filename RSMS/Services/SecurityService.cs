@@ -33,7 +33,7 @@ namespace RSMS.Services
                 issuer: Config["Jwt:Issuer"],
                 audience: Config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(1),
+                expires: DateTime.Now.AddMinutes(10),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

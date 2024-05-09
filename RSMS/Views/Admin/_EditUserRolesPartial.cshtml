@@ -4,22 +4,21 @@
     ViewBag.Title = "Role Selection";
 }
 
-<h2>Select Roles:</h2>
-<form asp-action="EditUserRoles" method="post">
-    <div>
-        <label>
-            <input type="checkbox" name="rolesToAdd" value="Admin" @(Model.Contains("Admin") ? "checked" : "")> Admin
-        </label><br />
-        <label>
-            <input type="checkbox" name="rolesToAdd" value="Manager" @(Model.Contains("Manager") ? "checked" : "")> Manager
-        </label><br />
-        <label>
-            <input type="checkbox" name="rolesToAdd" value="Employee" @(Model.Contains("Employee") ? "checked" : "")> Employee
-        </label><br />
-        <label>
-            <input type="checkbox" name="rolesToAdd" value="Customer" @(Model.Contains("Customer") ? "checked" : "")> Customer
-        </label><br />
-        <input type="hidden" name="username" value="@ViewBag.Username" />
-    </div>
-    <input type="submit" value="Submit" />
-</form>
+
+<div>
+    <label>
+        <input type="checkbox" name="rolesToAdd" value="Admin" @(Model.Contains("Admin") ? "checked" : "")> Admin
+    </label><br />
+    <label>
+        <input type="checkbox" name="rolesToAdd" value="Manager" @(Model.Contains("Manager") ? "checked" : "")> Manager
+    </label><br />
+    <label>
+        <input type="checkbox" name="rolesToAdd" value="Employee" @(Model.Contains("Employee") ? "checked" : "")> Employee
+    </label><br />
+    <label>
+        <input type="checkbox" name="rolesToAdd" value="Customer" @(Model.Contains("Customer") ? "checked" : "")> Customer
+    </label><br />
+    <input type="hidden" name="username" value="@ViewBag.Username" />
+</div>
+<input type="submit" value="Submit" />
+
