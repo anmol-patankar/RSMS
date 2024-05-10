@@ -6,19 +6,22 @@ using System.Net;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
 var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<RsmsTestContext>(optionsBuilder => optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("dbcs")));
+builder.Services.AddDbContext<RsmsTestContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("dbcs")));
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(o =>
+})
+.AddJwtBearer(options =>
 {
-    o.TokenValidationParameters = new TokenValidationParameters
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
@@ -31,19 +34,20 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddEnvironmentVariables();
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.Use(async (context, next) =>
 {
     await next();
@@ -62,6 +66,7 @@ app.Use(async (context, next) =>
         }
     }
 });
+
 app.Use(async (context, next) =>
 {
     var JWTokenCookie = context.Request.Cookies["JWTToken"];
@@ -71,11 +76,11 @@ app.Use(async (context, next) =>
     }
     await next();
 });
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-IConfiguration configuration = app.Configuration;
-IWebHostEnvironment environment = app.Environment;
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

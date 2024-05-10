@@ -19,6 +19,7 @@ namespace RSMS.Services
             Context.RoleMaps.Add(roleMap);
             Context.SaveChanges();
         }
+
         public static void SetRoles(Guid userId, List<string> rolesToSet)
         {
             var tempRoleMap = new RoleMap();
@@ -34,12 +35,11 @@ namespace RSMS.Services
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
-
             }
         }
+
         public static void EditUser(UserInfo userInfo)
         {
             Context.UserInfos.Update(userInfo);
@@ -49,7 +49,6 @@ namespace RSMS.Services
         public static bool DeleteUser(Guid userId)
         {
             var userToDelete = GetUser(userId);
-            //bool isSuccessful=false;
             var currentUserRoles = GetRolesOfUser(userToDelete.Username);
             foreach (var currentRole in currentUserRoles)
             {
@@ -70,6 +69,7 @@ namespace RSMS.Services
         {
             return Context.UserInfos.ToList();
         }
+
         public static void EditRoles(List<string> rolesToAdd, List<string> rolesToRemove, Guid userId)
         {
             RemoveRoles(rolesToRemove, userId);
@@ -77,33 +77,7 @@ namespace RSMS.Services
             AddRoles(rolesToAdd, userId);
             Context.SaveChanges();
         }
-        //public static void RemoveRoles(List<string> rolesToRemove, Guid userId)
-        //{
-        //    foreach (var role in rolesToRemove)
-        //    {
-        //        if (Context.RoleMaps.FirstOrDefault(rm => rm.UserId == userId && rm.RoleName == role) != null)
-        //        {
-        //            var tempRoleMap = new RoleMap() { UserId = userId, RoleName = role };
-        //            Context.RoleMaps.Remove(tempRoleMap);
-        //        }
-        //        Context.SaveChanges();
-        //    }
-        //}
-        //public static void AddRoles(List<string> rolesToAdd, Guid userId)
-        //{
 
-        //    foreach (var role in rolesToAdd)
-        //    {
-
-        //        if (Context.RoleMaps.FirstOrDefault(rm => rm.UserId == userId && rm.RoleName == role) == null)
-        //        {
-        //            var tempRoleMap = new RoleMap() { UserId = userId, RoleName = role };
-        //            Context.RoleMaps.Add(tempRoleMap);
-        //        }
-        //        Context.SaveChanges();
-        //    }
-
-        //}
         public static void RemoveRoles(List<string> rolesToRemove, Guid userId)
         {
             using (var context = new RsmsTestContext())
@@ -143,6 +117,7 @@ namespace RSMS.Services
                                     select userInfo.UserId).First()
            select rolemap.RoleName
                        ).ToList();
+
         public static List<string> GetRolesOfUser(Guid userId) =>
           (from rolemap in Context.RoleMaps
            where rolemap.UserId == (from userInfo in Context.UserInfos

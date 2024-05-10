@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RSMS.Services;
-using static RSMS.Services.DatabaseService;
+
 
 namespace RSMS.Controllers
 {
@@ -20,7 +20,7 @@ namespace RSMS.Controllers
             var manager = DatabaseService.GetUser(User.Identity.Name);
             ViewBag.Employees = DatabaseService.GetAllUsers()
                 .Where(u => u.StoreId == manager.StoreId
-                && DatabaseService.GetRolesOfUser(u.Username).Any(role => role == UserRoles.Employee.ToString())).ToList();
+                && DatabaseService.GetRolesOfUser(u.Username).Any(role => role == DatabaseService.UserRoles.Employee.ToString())).ToList();
             ViewBag.Products = null;
             ViewBag.Transactions = null;
             return View();

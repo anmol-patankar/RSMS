@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RSMS.ActionAttributes;
 using RSMS.Services;
 using RSMS.ViewModels;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace RSMS.Controllers
@@ -44,6 +45,7 @@ namespace RSMS.Controllers
             DatabaseService.DeleteUser(userId);
             return RedirectToAction("Dashboard", "Admin");
         }
+
         public IActionResult EditUser(Guid userId)
         {
             var userToEdit = new UserDetailsEditorModel
@@ -53,6 +55,7 @@ namespace RSMS.Controllers
             };
             return View(userToEdit);
         }
+
         [HttpPost]
         public IActionResult EditUser(UserDetailsEditorModel userToEdit)
         {
@@ -67,8 +70,15 @@ namespace RSMS.Controllers
             if (userToEdit.UserInfo.Dob.ToString() == null || userToEdit.UserInfo.Dob.CompareTo(dateNow) > -1) ModelState.AddModelError(("UserInfo.Dob"), "Date of birth should be a valid date");
             else if (userToEdit.UserInfo.Dob.AddYears(122).CompareTo(dateNow) < 0) ModelState.AddModelError(("UserInfo.Dob"), "User is not that old, input a valid date");
             else if (userToEdit.UserInfo.Dob.AddYears(18).CompareTo(dateNow) > -1) ModelState.AddModelError(("UserInfo.Dob"), "User must be atleast 18 years old ");
-            if (userToEdit.RolesUserHas == null || userToEdit.RolesUserHas.Count == 0) ModelState.AddModelError(nameof(userToEdit.RolesUserHas), "Atleast one role must be selected");
-            if (userToEdit.RolesUserHas.Contains("Employee") && userToEdit.RolesUserHas.Contains("Manager")) ModelState.AddModelError(nameof(userToEdit.RolesUserHas), "User cannot be manager and employee at the same time");
+            string roleErrors = "";
+            if (userToEdit.RolesUserHas == null || userToEdit.RolesUserHas.Count == 0) roleErrors += "Atleast one role must be selected. ";//
+            else
+            {
+                if (userToEdit.RolesUserHas.Contains("Employee") && userToEdit.RolesUserHas.Contains("Manager")) roleErrors += "User cannot be manager and employee at the same time. ";
+                if (!userToEdit.RolesUserHas.Contains("Admin") && userToEdit.UserInfo.Username == User.Identity.Name) roleErrors += "You cannot remove yourself as an admin, that would be VERY bad.";
+            }
+            if (roleErrors != "") ModelState.AddModelError(nameof(userToEdit.RolesUserHas), roleErrors);
+
             if (ModelState.IsValid)
             {
                 DatabaseService.EditUser(userToEdit.UserInfo);
@@ -82,35 +92,5 @@ namespace RSMS.Controllers
             }
             return View(userToEdit);
         }
-
-        //[HttpPost]
-        //public IActionResult EditUserInfo(UserInfo userInfo)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        DatabaseService.EditUser(userInfo);
-        //        return RedirectToAction("Dashboard", "Admin");
-        //    }
-        //    return View("EditUser");
-        //}
-        ////TODO ERROR HANDLING BELOW ISNT WORKING DO IT ITITITITITITITITIT
-        //[HttpPost]
-        //public IActionResult EditUserRoles(List<string> rolesToAdd, string username)
-        //{
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        var userGuid = DatabaseService.GetUser(username).UserId;
-        //        List<string> rolesToRemove = Enum.GetNames(typeof(DatabaseService.UserRoles)).ToList();
-        //        foreach (var selectedRole in rolesToAdd)
-        //        {
-        //            rolesToRemove.Remove(selectedRole);
-        //        }
-        //        DatabaseService.EditRoles(rolesToAdd, rolesToRemove, userGuid);
-        //        return RedirectToAction("Dashboard", "Admin");
-
-        //    }
-        //    return PartialView("_EditUserRolesPartial", rolesToAdd);
-        //}
     }
 }
