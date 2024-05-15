@@ -1,8 +1,3 @@
-//TODO
-ADD FIRSTNAME LASTNAME
-ALSO UPDATE ROLE_MAP ON REGISTRATION
-
-
 GO
 CREATE DATABASE RSMS_Test;
 GO
@@ -16,11 +11,6 @@ CREATE TABLE Store
     is_deleted BIT DEFAULT 0 NOT NULL
 );
 GO
-SET IDENTITY_INSERT Store ON;
-INSERT INTO Store ( store_id, Address, Rent, is_open)
-VALUES (0, 'Null Store', 0, 0);
-SET IDENTITY_INSERT Store OFF;
-GO
 CREATE TABLE User_Info
 (
     user_id UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
@@ -31,7 +21,7 @@ CREATE TABLE User_Info
 	password_hashed VARBINARY(256) NOT NULL,
 	salt VARBINARY(256) NOT NULL,
 	phone NVARCHAR(13) NOT NULL,
-	role INT NOT NULL,
+	role_id INT NOT NULL,
 	store_id INT,
 	dob date NOT NULL,
 	registration_date DATETIME NOT NULL,
@@ -127,9 +117,40 @@ CREATE TABLE Transaction_Details
 	FOREIGN KEY(transaction_id) REFERENCES Transactions(transaction_id),
 	FOREIGN KEY(product_id) REFERENCES Product_Info(product_id),
 );
+
+GO
+INSERT INTO Store (  Address, Rent, is_open)
+VALUES ( 'Null Store', 0, 0),( 'Store 1', 1000, 1),( 'Store 2', 2000, 1),( 'Store 3', 3000, 1);
+
 GO
 -- Inserting data into User_Info table
-INSERT INTO User_Info (user_id, first_name, last_name, username, email, password_hashed, salt, phone, store_id, dob, registration_date, is_disabled)
+INSERT INTO User_Info (user_id, first_name, last_name, username, email, password_hashed, salt, phone, role_id, store_id, dob, registration_date, is_disabled)
 VALUES ('cb425222-e1d7-40dc-9c65-c417298d1035', 'Anmol', 'Patankar', 'anmol_asterISK', 'anmolpatankar@gmail.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '9604439891', 8, 0, '2002-07-26', '2024-05-06 11:45:16.197', 0);
 
 GO
+
+INSERT INTO User_Info (user_id, first_name, last_name, username, email, password_hashed, salt, phone, role_id, store_id, dob, registration_date, is_disabled)
+VALUES
+('4b585f45-7500-4e8f-ba8b-73ee7b9b2718', 'John', 'Doe', 'john_doe', 'johndoe@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '1234567890', 2, 1, '1995-09-15', '2024-05-06 12:30:00', 0),
+('6f899d6e-731b-4da8-bcd0-13b7a3a75424', 'Emily', 'Smith', 'emilysmith', 'emilysmith@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '9876543210', 4, 2, '1988-03-21', '2024-05-07 10:15:00', 0),
+('1e9b8853-bf7c-44a3-a45c-72d579c78b5e', 'Alice', 'Johnson', 'alicejohnson', 'alicejohnson@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '4561237890', 6, 3, '1976-11-10', '2024-05-08 09:45:00', 1),
+('45d91c1d-71a9-43b3-96b2-063d24e97de5', 'Michael', 'Brown', 'michaelbrown', 'michaelbrown@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '7894561230', 8, 1, '1982-06-08', '2024-05-09 08:30:00', 0),
+('afecf9d3-3d4e-42c5-af90-26c049a834d2', 'Sophia', 'Anderson', 'sophiaanderson', 'sophiaanderson@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '6549873210', 2, 2, '1990-12-05', '2024-05-10 11:00:00', 0),
+('8af53e06-318d-41df-b72e-76c5ff9d70e0', 'James', 'Wilson', 'jameswilson', 'jameswilson@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '1472583690', 4, 3, '1978-04-17', '2024-05-11 10:45:00', 0),
+('d8d62516-0751-4b68-b888-7cb6cf046d6e', 'Emma', 'Martinez', 'emmamartinez', 'emmamartinez@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '1237896540', 6, 1, '1985-08-29', '2024-05-12 09:30:00', 1),
+('e792f8c7-e21b-4f50-88d0-6ddc8903d2ef', 'William', 'Taylor', 'williamtaylor', 'williamtaylor@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '7893216540', 8, 2, '1993-02-14', '2024-05-13 08:15:00', 0),
+('0a048787-d259-4385-8230-c7edf6e1665c', 'Olivia', 'Thomas', 'oliviathomas', 'oliviathomas@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '6547893210', 2, 3, '1973-07-03', '2024-05-14 07:00:00', 0),
+('31630997-eb32-490a-bd7e-277c1fc70667', 'Daniel', 'Garcia', 'danielgarcia', 'danielgarcia@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '9876543210', 4, 1, '1980-10-22', '2024-05-15 11:30:00', 0),
+('e148c2f2-89dc-4c2b-8986-cb42b630946a', 'Mia', 'Rodriguez', 'miarodriguez', 'miarodriguez@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '3216549870', 6, 2, '1987-05-18', '2024-05-16 10:15:00', 0),
+('be6f5b6b-39f1-49b1-a9b2-49dc9b79c05a', 'Alexander', 'Lopez', 'alexanderlopez', 'alexanderlopez@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '1472583690', 8, 3, '1984-01-09', '2024-05-17 09:00:00', 0),
+('f5a3f0bb-bc26-4042-9912-bf5fd698f914', 'Sofia', 'Hernandez', 'sofiahernandez', 'sofiahernandez@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '3692581470', 2, 1, '1991-04-05', '2024-05-18 08:45:00', 0),
+('e008032f-0865-48da-bb6a-776739221109', 'Benjamin', 'Gonzalez', 'benjamingonzalez', 'benjamingonzalez@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '9873216540', 4, 2, '1975-02-28', '2024-05-19 11:30:00', 0),
+('93d573c1-d9b3-4569-8b40-f55ef5ee1c53', 'Charlotte', 'Perez', 'charlotteperez', 'charlotteperez@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '7896543210', 6, 3, '1983-09-12', '2024-05-20 10:15:00', 1),
+('33e1799a-5fb0-4a5d-80b2-1441d4bf426f', 'Aiden', 'Morgan', 'aidenmorgan', 'aidenmorgan@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '1234567890', 8, 1, '1989-08-07', '2024-05-21 09:00:00', 0),
+('97b44fbb-0c27-4d67-9151-e76d953b7cf1', 'Grace', 'Rossi', 'gracerossi', 'gracerossi@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '7891236540', 2, 2, '1971-12-29', '2024-05-22 08:45:00', 0),
+('c0448a34-ef7d-4f48-b43e-b087ae017db0', 'Liam', 'Russo', 'liamrusso', 'liamrusso@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '3219876540', 4, 3, '1992-03-26', '2024-05-23 11:30:00', 0),
+('40263e22-0e7e-4549-94fd-b6273d8264e4', 'Ella', 'Fisher', 'ellafisher', 'ellafisher@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '6547891230', 6, 1, '1986-06-14', '2024-05-24 10:15:00', 0),
+('e570f365-4a0e-4a1f-a9c6-0867b18db37b', 'Logan', 'Valentino', 'loganvalentino', 'loganvalentino@example.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '7896541230', 8, 2, '1974-11-02', '2024-05-25 09:00:00', 1);
+
+GO
+

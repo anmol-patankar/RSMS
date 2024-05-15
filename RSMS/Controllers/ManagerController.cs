@@ -14,16 +14,16 @@ namespace RSMS.Controllers
             DatabaseService.SetContext(context);
         }
 
-        [Authorize(Roles = "Admin,Manager")]
-        public IActionResult Dashboard()
-        {
-            var manager = DatabaseService.GetUser(User.Identity.Name);
-            ViewBag.Employees = DatabaseService.GetAllUsers()
-                .Where(u => u.StoreId == manager.StoreId
-                && DatabaseService.GetRolesOfUser(u.Username).Any(role => role == DatabaseService.UserRoles.Employee.ToString())).ToList();
-            ViewBag.Products = null;
-            ViewBag.Transactions = null;
-            return View();
-        }
+        //[Authorize(Roles = "Admin,Manager")]
+        //public IActionResult Dashboard()
+        //{
+        //    var manager = DatabaseService.GetUser(User.Identity.Name);
+        //    ViewBag.Employees = DatabaseService.GetAllUsers()
+        //        .Where(u => u.StoreId == manager.StoreId
+        //        && DatabaseService.GetRoleOfUser(u.Username).Any(role => role == DatabaseService.UserRoles.Employee.ToString())).ToList();
+        //    ViewBag.Products = null;
+        //    ViewBag.Transactions = null;
+        //    return View();
+        //}
     }
 }

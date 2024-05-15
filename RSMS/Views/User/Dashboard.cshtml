@@ -1,0 +1,220 @@
+﻿
+<h1>Welcome to the dashboard</h1>
+<div>
+    <p>This is the dashboard. You can manage users, stores, and roles here.</p>
+
+    <button id="showUsersBtn" class="toggle-btn">Show Users</button>
+    <button id="showStoresBtn" class="toggle-btn">Show Stores</button>
+    <div style="margin-top: 20px;">
+        <table id="userTable" class="data-table">
+            <caption class="table-caption">List of users</caption>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>First Name</th>
+                    <th>Email</th>
+                    <th>Date of Birth</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in ViewBag.AllUsers)
+                {
+                    <tr>
+                        <td>@user.Username</td>
+                        <td>@user.FirstName</td>
+                        <td>@user.Email</td>
+                        <td>@user.Dob</td>
+                        <td>
+                            <div>
+                                @if (ViewBag.CurrentUser.RoleId == 8)
+                                {
+
+                                    <table>
+
+                                        <form method="post" action="@Url.Action("DeleteUser", "User")">
+                                            <input type="hidden" name="userId" value="@user.UserId" />
+                                            <button type="submit" class="delete-btn">Delete</button>
+                                        </form>
+                                        <form method="get" action="@Url.Action("EditUser", "User")">
+                                            <input type="hidden" name="userId" value="@user.UserId" />
+                                            <button type="submit" class="edit-btn">Edit</button>
+                                        </form>
+
+                                    </table>
+                                }
+                                else if (ViewBag.CurrentUser.RoleId == 6)
+                                {
+                                    if (user.Store == ViewBag.CurrentUser.Store)
+                                    {
+                                        <form method="get" action="@Url.Action("EditUser", "User")">
+                                            <input type="hidden" name="userId" value="@user.UserId" />
+                                            <button type="submit" class="edit-btn">Edit</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <p>No authorized actions for this user.</p>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No authorized actions for this user.</p>
+                                }
+                            </div>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <table id="storeTable" class="data-table">
+            <caption class="table-caption">List of Stores</caption>
+            <thead>
+                <tr>
+                    <th>Store ID</th>
+                    <th>Address</th>
+                    <th>Rent</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var store in ViewBag.AllStores)
+                {
+                    <tr>
+                        <td>@store.StoreId</td>
+                        <td>@store.Address</td>
+                        <td>@store.Rent</td>
+                        <td>
+                            <div>
+                                @if (ViewBag.CurrentUser.RoleId == 8)
+                                {
+                                    <table>
+                                        <form method="post" action="@Url.Action("DeleteStore", "Store")">
+                                            <input type="hidden" name="storeId" value="@store.StoreId" />
+                                            <button type="submit" class="delete-btn">Delete</button>
+                                        </form>
+                                        <form method="get" action="@Url.Action("EditStore", "Store")">
+                                            <input type="hidden" name="storeId" value="@store.StoreId" />
+                                            <button type="submit" class="edit-btn">Edit</button>
+                                        </form>
+                                    </table>
+                                }
+                                else if (ViewBag.CurrentUser.RoleId == 6)
+                                {
+                                    if (ViewBag.CurrentUser.StoreId == store.StoreId)
+                                    {
+                                        <form method="post" action="@Url.Action("EditStore", "Store")">
+                                            <input type="hidden" name="storeId" value="@store.StoreId" />
+                                            <button type="submit" class="edit-btn">Edit</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <p>No authorized actions for this store.</p>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No authorized actions for this store.</p>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#showUsersBtn').click(function () {
+                $('#userTable').show();
+                $('#storeTable').hide();
+                $('#roleMapTable').hide();
+            });
+
+            $('#showStoresBtn').click(function () {
+                $('#userTable').hide();
+                $('#storeTable').show();
+                $('#roleMapTable').hide();
+            });
+            $('#showRoleMapsBtn').click(function () {
+                $('#userTable').hide();
+                $('#storeTable').hide();
+                $('#roleMapTable').show();
+            });
+        });
+    </script>
+    <style>
+        .data-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+            .data-table th, .data-table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            .data-table th {
+                background-color: #f2f2f2;
+            }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+            .delete-btn:hover {
+                background-color: #d32f2f;
+            }
+
+        .edit-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+            .edit-btn:hover {
+                background-color: #0b7dda;
+            }
+
+        .toggle-btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-right: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+            .toggle-btn:hover {
+                background-color: #45a049;
+            }
+
+        .table-caption {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            padding: 10px;
+        }
+    </style>
+}
+

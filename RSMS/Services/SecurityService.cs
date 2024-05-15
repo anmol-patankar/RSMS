@@ -26,9 +26,13 @@ namespace RSMS.Services
         public static string GenerateEncryptedToken(UserLoginModel login)
         {
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var userRoles = DatabaseService.GetRolesOfUser(login.Username);
-            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, login.Username), new(ClaimTypes.Name, login.Username) };
-            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            var userRole = DatabaseService.GetRoleOfUser(login.Username);
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, login.Username),
+                new(ClaimTypes.Name, login.Username),
+                new(ClaimTypes.Role, userRole)
+            };
             var token = new JwtSecurityToken(
                 issuer: Config["Jwt:Issuer"],
                 audience: Config["Jwt:Audience"],
