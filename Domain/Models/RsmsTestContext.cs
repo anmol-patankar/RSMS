@@ -41,7 +41,7 @@ public partial class RsmsTestContext : DbContext
     {
         modelBuilder.Entity<Paydesk>(entity =>
         {
-            entity.HasKey(e => e.PaydeskNumber).HasName("PK__Paydesk__BC17994AB7221D6A");
+            entity.HasKey(e => e.PaydeskNumber).HasName("PK__Paydesk__BC17994A1A782D65");
 
             entity.ToTable("Paydesk");
 
@@ -58,7 +58,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<PayrollHistory>(entity =>
         {
-            entity.HasKey(e => e.PayrollId).HasName("PK__Payroll___D99FC94430D9BF6D");
+            entity.HasKey(e => e.PayrollId).HasName("PK__Payroll___D99FC944FD8C0791");
 
             entity.ToTable("Payroll_History");
 
@@ -92,11 +92,11 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<ProductInfo>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Product___47027DF562BF35EA");
+            entity.HasKey(e => e.ProductId).HasName("PK__Product___47027DF53197D388");
 
             entity.ToTable("Product_Info");
 
-            entity.HasIndex(e => e.ProductCode, "UQ__Product___AE1A8CC487968401").IsUnique();
+            entity.HasIndex(e => e.ProductCode, "UQ__Product___AE1A8CC469A6EE62").IsUnique();
 
             entity.Property(e => e.ProductId)
                 .HasDefaultValueSql("(newid())")
@@ -128,7 +128,7 @@ public partial class RsmsTestContext : DbContext
                         .HasConstraintName("FK__Product_T__produ__52593CB8"),
                     j =>
                     {
-                        j.HasKey("ProductId", "TaxType").HasName("PK__Product___B8891FF7F9724E5E");
+                        j.HasKey("ProductId", "TaxType").HasName("PK__Product___B8891FF760BFD34D");
                         j.ToTable("Product_Taxes");
                         j.IndexerProperty<Guid>("ProductId").HasColumnName("product_id");
                         j.IndexerProperty<int>("TaxType").HasColumnName("tax_type");
@@ -137,7 +137,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<ProductStock>(entity =>
         {
-            entity.HasKey(e => new { e.StoreId, e.ProductId }).HasName("PK__Product___E68284D3975888AA");
+            entity.HasKey(e => new { e.StoreId, e.ProductId }).HasName("PK__Product___E68284D3DD36B2AA");
 
             entity.ToTable("Product_Stock");
 
@@ -159,7 +159,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.StoreId).HasName("PK__Store__A2F2A30C81752672");
+            entity.HasKey(e => e.StoreId).HasName("PK__Store__A2F2A30C82BCACE5");
 
             entity.ToTable("Store");
 
@@ -176,7 +176,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<TaxRate>(entity =>
         {
-            entity.HasKey(e => e.TaxType).HasName("PK__Tax_Rate__F8B6202ECF7FDD34");
+            entity.HasKey(e => e.TaxType).HasName("PK__Tax_Rate__F8B6202E52760C4B");
 
             entity.ToTable("Tax_Rate");
 
@@ -188,7 +188,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AF7CA8205C");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AF3EF1A10D");
 
             entity.Property(e => e.TransactionId)
                 .HasDefaultValueSql("(newid())")
@@ -227,7 +227,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<TransactionDetail>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFB79E96CB");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AF74CE9283");
 
             entity.ToTable("Transaction_Details");
 
@@ -252,7 +252,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<UserInfo>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User_Inf__B9BE370FA9589BE5");
+            entity.HasKey(e => e.UserId).HasName("PK__User_Inf__B9BE370F19A911C9");
 
             entity.ToTable("User_Info");
 

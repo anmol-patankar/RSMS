@@ -71,32 +71,6 @@
                     </select>
                     <span asp-validation-for="RoleId" class="text-danger"></span>
                 </div>
-                @*                 <div>
-                <label>
-                <input type="checkbox" name="RolesUserHas" value="Admin" @(Model.RolesUserHas != null && Model.RolesUserHas.Contains("Admin") ? "checked" : "") />
-                Admin
-                </label>
-                </div>
-                <div>
-                <label>
-                <input type="checkbox" name="RolesUserHas" value="Manager" @(Model.RolesUserHas != null && Model.RolesUserHas.Contains("Manager") ? "checked" : "") />
-                Manager
-                </label>
-                </div>
-                <div>
-                <label>
-                <input type="checkbox" name="RolesUserHas" value="Employee" @(Model.RolesUserHas != null && Model.RolesUserHas.Contains("Employee") ? "checked" : "") />
-                Employee
-                </label>
-                </div>
-                <div>
-                <label>
-                <input type="checkbox" name="RolesUserHas" value="Customer" @(Model.RolesUserHas != null && Model.RolesUserHas.Contains("Customer") ? "checked" : "") />
-                Customer
-                </label>
-
-                </div>
-                <span asp-validation-for="RolesUserHas" class="text-danger"></span> *@
                 <button type="submit" class="btn btn-primary btn-block">Update</button>
             </form>
         </div>

@@ -6,7 +6,6 @@ using RSMS.ViewModels;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using static RSMS.Services.DatabaseService;
 using System.Text.RegularExpressions;
 
 namespace RSMS.Controllers
@@ -159,12 +158,12 @@ namespace RSMS.Controllers
         public IActionResult DeleteUser(Guid userId)
         {
             DatabaseService.DeleteUser(userId);
-            return RedirectToAction("Dashboard", "Admin");
+            return RedirectToAction("Dashboard", "User");
         }
         [Authorize(Roles = "Admin,Manager")]
         public IActionResult EditUser(Guid userId)
         {
-            return View(GetUser(userId));
+            return View(DatabaseService.GetUser(userId));
         }
 
         [HttpPost]
@@ -188,7 +187,7 @@ namespace RSMS.Controllers
             }
             else
             {
-                var roleIdOfEditingUser = (int)(UserRole)Enum.Parse(typeof(UserRole), HttpContext.User.FindFirst(ClaimTypes.Role).Value);
+                var roleIdOfEditingUser = (int)(DatabaseService.UserRole)Enum.Parse(typeof(DatabaseService.UserRole), HttpContext.User.FindFirst(ClaimTypes.Role).Value);
                 if (userToEdit.RoleId > roleIdOfEditingUser)
                     roleErrors += "You cannot add privileges higher than your own. ";
             }

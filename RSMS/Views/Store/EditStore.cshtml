@@ -1,0 +1,53 @@
+﻿@model Domain.Models.Store
+<link rel="stylesheet" href="~/css/edituser.css" />
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Edit Store Information</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">
+
+                <input type="hidden" asp-for="StoreId" />
+                <input type="hidden" asp-for="IsOpen" />
+                <input type="hidden" asp-for="IsDeleted" />
+                <div class="form-group">
+                    <label asp-for="StoreId">Store ID</label>
+                    <input asp-for="StoreId" class="form-control form-control-sm" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Address">Address</label>
+                    <input asp-for="Address" class="form-control form-control-sm" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Rent">Rent</label>
+                    <input asp-for="Rent" class="form-control form-control-sm" />
+                    <span asp-validation-for="Rent" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IsOpen">Is Open</label>
+                    <select asp-for="IsOpen" class="form-control form-control-sm">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                    <span asp-validation-for="IsOpen" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IsDeleted">Is Deleted</label>
+                    <select asp-for="IsDeleted" class="form-control form-control-sm">
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                    </select>
+                    <span asp-validation-for="IsDeleted" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Update</button>
+            </form>
+        </div>
+    </div>
+</div>

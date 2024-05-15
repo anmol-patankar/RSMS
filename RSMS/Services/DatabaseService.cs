@@ -40,7 +40,13 @@ namespace RSMS.Services
             Context.SaveChanges();
             return true;
         }
-
+        public static bool DeleteStore(int storeId)
+        {
+            var storeToDelete = GetStore(storeId);
+            Context.Stores.Remove(storeToDelete);
+            Context.SaveChanges();
+            return true;
+        }
         public static List<Store> GetAllStores()
         {
             return Context.Stores.ToList();
@@ -50,6 +56,16 @@ namespace RSMS.Services
         {
             return Context.UserInfos.ToList();
         }
+        public static Store GetStore(int storeId)
+        {
+            return Context.Stores.First(s => s.StoreId == storeId);
+        }
+        public static void EditStore(Store store)
+        {
+            Context.Stores.Update(store);
+            Context.SaveChanges();
+        }
+
 
         //        public static void EditRoles(List<string> rolesToAdd, List<string> rolesToRemove, Guid userId)
         //        {

@@ -4,7 +4,7 @@ GO
 use RSMS_Test;
 CREATE TABLE Store
 (
-    store_id INT IDENTITY(0,1) PRIMARY KEY,
+    store_id INT IDENTITY(0,1) PRIMARY KEY NOT NULL,
     address NVARCHAR(100) NOT NULL,
     rent INT NOT NULL,
 	is_open	 BIT DEFAULT 1 NOT NULL,
