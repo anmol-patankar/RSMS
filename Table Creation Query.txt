@@ -31,6 +31,7 @@ CREATE TABLE User_Info
 	password_hashed VARBINARY(256) NOT NULL,
 	salt VARBINARY(256) NOT NULL,
 	phone NVARCHAR(13) NOT NULL,
+	role INT NOT NULL,
 	store_id INT,
 	dob date NOT NULL,
 	registration_date DATETIME NOT NULL,
@@ -38,13 +39,6 @@ CREATE TABLE User_Info
 	FOREIGN KEY(store_id) REFERENCES Store(store_id),
 );
 
-CREATE TABLE Role_Map
-(
-	user_id UNIQUEIDENTIFIER  NOT NULL,
-	role_name NVARCHAR(20) NOT NULL,
-	FOREIGN KEY(user_id) REFERENCES User_Info(user_id),
-	PRIMARY KEY (user_id, role_name),
-);
 
 
 CREATE TABLE Paydesk
@@ -136,11 +130,6 @@ CREATE TABLE Transaction_Details
 GO
 -- Inserting data into User_Info table
 INSERT INTO User_Info (user_id, first_name, last_name, username, email, password_hashed, salt, phone, store_id, dob, registration_date, is_disabled)
-VALUES ('cb425222-e1d7-40dc-9c65-c417298d1035', 'Anmol', 'Patankar', 'anmol_asterISK', 'anmolpatankar@gmail.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '9604439891', 0, '2002-07-26', '2024-05-06 11:45:16.197', 0);
+VALUES ('cb425222-e1d7-40dc-9c65-c417298d1035', 'Anmol', 'Patankar', 'anmol_asterISK', 'anmolpatankar@gmail.com', 0xC2B175785508D30F3FFD824094A19D06, 0xFC875C70269AE88E5EFF0321714CDD59, '9604439891', 8, 0, '2002-07-26', '2024-05-06 11:45:16.197', 0);
 
--- Inserting data into Role_Map table
-INSERT INTO Role_Map (user_id, role_name)
-VALUES ('cb425222-e1d7-40dc-9c65-c417298d1035', 'Admin'),
-       ('cb425222-e1d7-40dc-9c65-c417298d1035', 'Customer'),
-       ('cb425222-e1d7-40dc-9c65-c417298d1035', 'Manager');
 GO

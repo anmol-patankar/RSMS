@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Models;
 
@@ -21,8 +23,6 @@ public partial class RsmsTestContext : DbContext
 
     public virtual DbSet<ProductStock> ProductStocks { get; set; }
 
-    public virtual DbSet<RoleMap> RoleMaps { get; set; }
-
     public virtual DbSet<Store> Stores { get; set; }
 
     public virtual DbSet<TaxRate> TaxRates { get; set; }
@@ -41,7 +41,7 @@ public partial class RsmsTestContext : DbContext
     {
         modelBuilder.Entity<Paydesk>(entity =>
         {
-            entity.HasKey(e => e.PaydeskNumber).HasName("PK__Paydesk__BC17994A34153F5A");
+            entity.HasKey(e => e.PaydeskNumber).HasName("PK__Paydesk__BC17994AB7221D6A");
 
             entity.ToTable("Paydesk");
 
@@ -53,12 +53,12 @@ public partial class RsmsTestContext : DbContext
 
             entity.HasOne(d => d.Store).WithMany(p => p.Paydesks)
                 .HasForeignKey(d => d.StoreId)
-                .HasConstraintName("FK__Paydesk__store_i__4316F928");
+                .HasConstraintName("FK__Paydesk__store_i__403A8C7D");
         });
 
         modelBuilder.Entity<PayrollHistory>(entity =>
         {
-            entity.HasKey(e => e.PayrollId).HasName("PK__Payroll___D99FC944AC442218");
+            entity.HasKey(e => e.PayrollId).HasName("PK__Payroll___D99FC94430D9BF6D");
 
             entity.ToTable("Payroll_History");
 
@@ -77,26 +77,26 @@ public partial class RsmsTestContext : DbContext
             entity.HasOne(d => d.Authorizer).WithMany(p => p.PayrollHistoryAuthorizers)
                 .HasForeignKey(d => d.AuthorizerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Payroll_H__autho__47DBAE45");
+                .HasConstraintName("FK__Payroll_H__autho__44FF419A");
 
             entity.HasOne(d => d.Payee).WithMany(p => p.PayrollHistoryPayees)
                 .HasForeignKey(d => d.PayeeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Payroll_H__tax_d__46E78A0C");
+                .HasConstraintName("FK__Payroll_H__tax_d__440B1D61");
 
             entity.HasOne(d => d.Store).WithMany(p => p.PayrollHistories)
                 .HasForeignKey(d => d.StoreId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Payroll_H__store__48CFD27E");
+                .HasConstraintName("FK__Payroll_H__store__45F365D3");
         });
 
         modelBuilder.Entity<ProductInfo>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Product___47027DF5FF516C11");
+            entity.HasKey(e => e.ProductId).HasName("PK__Product___47027DF562BF35EA");
 
             entity.ToTable("Product_Info");
 
-            entity.HasIndex(e => e.ProductCode, "UQ__Product___AE1A8CC4F5C4F4EC").IsUnique();
+            entity.HasIndex(e => e.ProductCode, "UQ__Product___AE1A8CC487968401").IsUnique();
 
             entity.Property(e => e.ProductId)
                 .HasDefaultValueSql("(newid())")
@@ -121,14 +121,14 @@ public partial class RsmsTestContext : DbContext
                     r => r.HasOne<TaxRate>().WithMany()
                         .HasForeignKey("TaxType")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__Product_T__tax_t__5629CD9C"),
+                        .HasConstraintName("FK__Product_T__tax_t__534D60F1"),
                     l => l.HasOne<ProductInfo>().WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__Product_T__produ__5535A963"),
+                        .HasConstraintName("FK__Product_T__produ__52593CB8"),
                     j =>
                     {
-                        j.HasKey("ProductId", "TaxType").HasName("PK__Product___B8891FF7124AEF19");
+                        j.HasKey("ProductId", "TaxType").HasName("PK__Product___B8891FF7F9724E5E");
                         j.ToTable("Product_Taxes");
                         j.IndexerProperty<Guid>("ProductId").HasColumnName("product_id");
                         j.IndexerProperty<int>("TaxType").HasColumnName("tax_type");
@@ -137,7 +137,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<ProductStock>(entity =>
         {
-            entity.HasKey(e => new { e.StoreId, e.ProductId }).HasName("PK__Product___E68284D330DD3BC5");
+            entity.HasKey(e => new { e.StoreId, e.ProductId }).HasName("PK__Product___E68284D3975888AA");
 
             entity.ToTable("Product_Stock");
 
@@ -149,34 +149,17 @@ public partial class RsmsTestContext : DbContext
             entity.HasOne(d => d.Product).WithMany(p => p.ProductStocks)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Product_S__produ__4F7CD00D");
+                .HasConstraintName("FK__Product_S__produ__4CA06362");
 
             entity.HasOne(d => d.Store).WithMany(p => p.ProductStocks)
                 .HasForeignKey(d => d.StoreId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Product_S__store__5070F446");
-        });
-
-        modelBuilder.Entity<RoleMap>(entity =>
-        {
-            entity.HasKey(e => new { e.UserId, e.RoleName }).HasName("PK__Role_Map__AE3D12447E368C80");
-
-            entity.ToTable("Role_Map");
-
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-            entity.Property(e => e.RoleName)
-                .HasMaxLength(20)
-                .HasColumnName("role_name");
-
-            entity.HasOne(d => d.User).WithMany(p => p.RoleMaps)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Role_Map__user_i__403A8C7D");
+                .HasConstraintName("FK__Product_S__store__4D94879B");
         });
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.StoreId).HasName("PK__Store__A2F2A30C9ADD47BB");
+            entity.HasKey(e => e.StoreId).HasName("PK__Store__A2F2A30C81752672");
 
             entity.ToTable("Store");
 
@@ -193,7 +176,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<TaxRate>(entity =>
         {
-            entity.HasKey(e => e.TaxType).HasName("PK__Tax_Rate__F8B6202EC8DA2127");
+            entity.HasKey(e => e.TaxType).HasName("PK__Tax_Rate__F8B6202ECF7FDD34");
 
             entity.ToTable("Tax_Rate");
 
@@ -205,7 +188,7 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFFF64875B");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AF7CA8205C");
 
             entity.Property(e => e.TransactionId)
                 .HasDefaultValueSql("(newid())")
@@ -219,32 +202,32 @@ public partial class RsmsTestContext : DbContext
             entity.HasOne(d => d.Cashier).WithMany(p => p.TransactionCashiers)
                 .HasForeignKey(d => d.CashierId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__cashi__5BE2A6F2");
+                .HasConstraintName("FK__Transacti__cashi__59063A47");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.TransactionCustomers)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__custo__5CD6CB2B");
+                .HasConstraintName("FK__Transacti__custo__59FA5E80");
 
             entity.HasOne(d => d.PaydeskNumberNavigation).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.PaydeskNumber)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__payde__5DCAEF64");
+                .HasConstraintName("FK__Transacti__payde__5AEE82B9");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__produ__59FA5E80");
+                .HasConstraintName("FK__Transacti__produ__571DF1D5");
 
             entity.HasOne(d => d.Store).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.StoreId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__store__5AEE82B9");
+                .HasConstraintName("FK__Transacti__store__5812160E");
         });
 
         modelBuilder.Entity<TransactionDetail>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFCAAFEF8B");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFB79E96CB");
 
             entity.ToTable("Transaction_Details");
 
@@ -259,17 +242,17 @@ public partial class RsmsTestContext : DbContext
             entity.HasOne(d => d.Product).WithMany(p => p.TransactionDetails)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__produ__619B8048");
+                .HasConstraintName("FK__Transacti__produ__5EBF139D");
 
             entity.HasOne(d => d.Transaction).WithOne(p => p.TransactionDetail)
                 .HasForeignKey<TransactionDetail>(d => d.TransactionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__trans__60A75C0F");
+                .HasConstraintName("FK__Transacti__trans__5DCAEF64");
         });
 
         modelBuilder.Entity<UserInfo>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__User_Inf__B9BE370FCB27E1BA");
+            entity.HasKey(e => e.UserId).HasName("PK__User_Inf__B9BE370FA9589BE5");
 
             entity.ToTable("User_Info");
 
@@ -296,6 +279,7 @@ public partial class RsmsTestContext : DbContext
             entity.Property(e => e.RegistrationDate)
                 .HasColumnType("datetime")
                 .HasColumnName("registration_date");
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.Salt)
                 .HasMaxLength(256)
                 .HasColumnName("salt");

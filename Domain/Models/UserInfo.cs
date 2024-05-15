@@ -1,4 +1,7 @@
-﻿namespace Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Models;
 
 public partial class UserInfo
 {
@@ -18,6 +21,8 @@ public partial class UserInfo
 
     public string Phone { get; set; } = null!;
 
+    public int RoleId { get; set; }
+
     public int? StoreId { get; set; }
 
     public DateOnly Dob { get; set; }
@@ -29,8 +34,6 @@ public partial class UserInfo
     public virtual ICollection<PayrollHistory> PayrollHistoryAuthorizers { get; set; } = new List<PayrollHistory>();
 
     public virtual ICollection<PayrollHistory> PayrollHistoryPayees { get; set; } = new List<PayrollHistory>();
-
-    public virtual ICollection<RoleMap> RoleMaps { get; set; } = new List<RoleMap>();
 
     public virtual Store? Store { get; set; }
 

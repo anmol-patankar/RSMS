@@ -109,7 +109,7 @@ namespace RSMS.Controllers
                     UserId = userGuid,
                     RoleName = DatabaseService.UserRoles.Customer.ToString()
                 };
-                DatabaseService.AddUserAndRole(userInfo, roleMap);
+                DatabaseService.AddUser(userInfo, roleMap);
                 return RedirectToAction("Index", "Home");
             }
             return View(user);
