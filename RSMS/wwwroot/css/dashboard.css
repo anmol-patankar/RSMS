@@ -1,0 +1,118 @@
+﻿
+.data-table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+    .data-table th, .data-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .data-table th {
+        background-color: #f2f2f2;
+    }
+
+.disabled-edit-btn {
+    background-color: #144d7a;
+    color: lightgrey;
+    cursor: not-allowed;
+    pointer-events: none;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+    .disabled-edit-btn:hover {
+        background-color: darkgrey;
+    }
+
+.disabled-delete-btn {
+    background-color: #bf1b06;
+    color: lightgrey;
+    cursor: not-allowed;
+    pointer-events: none;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+    .disabled-delete-btn:hover {
+        background-color: darkgrey;
+    }
+
+.delete-btn {
+    background-color: #e8250c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+    .delete-btn:hover {
+        background-color: #d32f2f;
+    }
+
+.edit-btn {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+    .edit-btn:hover {
+        background-color: #0b7dda;
+    }
+
+.toggle-btn {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+    .toggle-btn:hover {
+        background-color: #45a049;
+    }
+
+.table-caption {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 10px;
+}
+
+.button-column-table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: 0 auto;
+}
+
+    .button-column-table th, .button-column-table td {
+        border: none;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .button-column-table th {
+        background-color: #f2f2f2;
+    }
+
+
+.button-column {
+    border: none;
+}

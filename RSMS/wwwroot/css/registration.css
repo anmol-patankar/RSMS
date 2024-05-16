@@ -5,7 +5,11 @@
 .card {
     border: none;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
 }
+
+.col
 
 .card-header {
     background-color: #007bff;
@@ -14,9 +18,9 @@
     padding: 1rem;
 }
 
-    .card-header h2 {
-        margin-bottom: 0;
-    }
+.card-header h2 {
+    margin-bottom: 0;
+}
 
 .card-body {
     padding: 2rem;
