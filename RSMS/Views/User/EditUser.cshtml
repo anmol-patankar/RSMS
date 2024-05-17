@@ -1,6 +1,11 @@
-﻿@model Domain.Models.UserInfo
+﻿@using System.Security.Claims
+@using RSMS.Services
+@{
+    var currentEditingUser = DatabaseService.GetUser(User.Identity.Name);
+}
+@model Domain.Models.UserInfo
 <link rel="stylesheet" href="~/css/edituser.css" />
-<div class="container" style="max-width: fit-content;">
+<div class="container" style="max-width: 500px;">
     <div class="card">
         <div class="card-header">
             <h2>Edit @Model.Username</h2>
@@ -58,16 +63,39 @@
                     <label asp-for="IsDisabled"> Disable User</label>
                     <input asp-for="IsDisabled" type="checkbox" class="form-check-input" />
                 </div>
-                <div class="form-group">
-                    <label asp-for="RoleId">User Role</label>
-                    <select asp-for="RoleId" class="form-control form-control-sm">
-                        <option value="2">Customer</option>
-                        <option value="4">Employee</option>
-                        <option value="6">Manager</option>
-                        <option value="8">Admin</option>
-                    </select>
-                    <span asp-validation-for="RoleId" class="text-danger"></span>
-                </div>
+                @if (Model.Username == User.Identity.Name)
+                {
+                    //if its true, show only the role of the currently selected user, and make the dropdown disalbed
+                    <div class="form-group">
+                        <label asp-for="RoleId">User Role</label>
+                        <select asp-for="RoleId" class="form-control form-control-sm ">
+                            <option value="@currentEditingUser.RoleId">@Enum.GetName(typeof(DatabaseService.UserRole), currentEditingUser.RoleId)</option>
+                        </select>
+                        <span asp-validation-for="RoleId" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label asp-for="RoleId">User Role</label>
+                        <select asp-for="RoleId" class="form-control form-control-sm ">
+                            @if (DatabaseService.RoleNameToRoleId(User.FindFirstValue(ClaimTypes.Role)) > 6)
+                            {
+                                <option value="8">Admin</option>
+                            }
+                            @if (DatabaseService.RoleNameToRoleId(User.FindFirstValue(ClaimTypes.Role)) > 4)
+                            {
+                                <option value="6">Manager</option>
+                            }
+                            <option value="4">Employee</option>
+                            <option value="2">Customer</option>
+
+
+                        </select>
+                        <span asp-validation-for="RoleId" class="text-danger"></span>
+                    </div>
+                }
+
                 <button type="submit" class="btn btn-primary btn-block">Update</button>
             </form>
         </div>

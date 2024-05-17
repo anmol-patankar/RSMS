@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace RSMS.Services
 {
@@ -13,7 +14,11 @@ namespace RSMS.Services
             Manager = 6,
             Admin = 8
         }
+        public static int RoleNameToRoleId(string roleName)
+        {
+            return (int)(UserRole)Enum.Parse(typeof(UserRole), roleName);
 
+        }
         public static RsmsTestContext Context { get; set; }
 
         public static void AddUser(UserInfo userInfo)
@@ -22,9 +27,9 @@ namespace RSMS.Services
             Context.SaveChanges();
         }
 
-        public static void SetRole(Guid userId, string rolesToSet)
+        public static void SetRole(Guid userId, string roleToSet)
         {
-            var updatedUser = Context.UserInfos.Where(u => u.UserId == userId).First().RoleId = (int)(UserRole)Enum.Parse(typeof(UserRole), rolesToSet);
+            var updatedUser = Context.UserInfos.Where(u => u.UserId == userId).First().RoleId = RoleNameToRoleId(roleToSet);
         }
 
         public static void EditUser(UserInfo userInfo)

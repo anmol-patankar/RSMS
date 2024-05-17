@@ -114,7 +114,7 @@ namespace RSMS.Controllers
                     Salt = aesIV,
                     PasswordHashed = passwordHashed,
                     Phone = user.Phone,
-                    RoleId = (int)(DatabaseService.UserRole)Enum.Parse(typeof(DatabaseService.UserRole), "Customer"),
+                    RoleId = DatabaseService.RoleNameToRoleId("Customer"),
                     RegistrationDate = DateTime.Now,
                     StoreId = 0
                 };
@@ -180,19 +180,11 @@ namespace RSMS.Controllers
             if (userToEdit.Dob.ToString() == null || userToEdit.Dob.CompareTo(dateNow) > -1) ModelState.AddModelError(("Dob"), "Date of birth should be a valid date");
             else if (userToEdit.Dob.AddYears(122).CompareTo(dateNow) < 0) ModelState.AddModelError(("Dob"), "User is not that old, input a valid date");
             else if (userToEdit.Dob.AddYears(18).CompareTo(dateNow) > -1) ModelState.AddModelError(("Dob"), "User must be atleast 18 years old ");
-            string roleErrors = "";
-            if (userToEdit.Username == User.Identity.Name)
+            var roleIdOfEditingUser = DatabaseService.RoleNameToRoleId(User.FindFirstValue(ClaimTypes.Role));
+            if (userToEdit.RoleId > roleIdOfEditingUser)
             {
-                roleErrors += "You cannot edit your own privileges. ";
+                ModelState.AddModelError(("RoleId"), "You cannot add privileges higher than your own. ");
             }
-            else
-            {
-                var roleIdOfEditingUser = (int)(DatabaseService.UserRole)Enum.Parse(typeof(DatabaseService.UserRole), HttpContext.User.FindFirst(ClaimTypes.Role).Value);
-                if (userToEdit.RoleId > roleIdOfEditingUser)
-                    roleErrors += "You cannot add privileges higher than your own. ";
-            }
-            if (roleErrors != "") ModelState.AddModelError(("RoleId"), roleErrors);
-
             if (ModelState.IsValid)
             {
                 DatabaseService.EditUser(userToEdit);
