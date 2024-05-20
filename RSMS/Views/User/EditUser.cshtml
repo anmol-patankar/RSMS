@@ -17,7 +17,6 @@
                 <input type="hidden" asp-for="RegistrationDate" />
                 <input type="hidden" asp-for="PasswordHashed" />
                 <input type="hidden" asp-for="Salt" />
-
                 <div class="form-group">
                     <label asp-for="Username">Username</label>
                     <input asp-for="Username" class="form-control form-control-sm" readonly />
@@ -65,7 +64,6 @@
                 </div>
                 @if (Model.Username == User.Identity.Name)
                 {
-                    //if its true, show only the role of the currently selected user, and make the dropdown disalbed
                     <div class="form-group">
                         <label asp-for="RoleId">User Role</label>
                         <select asp-for="RoleId" class="form-control form-control-sm ">
@@ -89,8 +87,6 @@
                             }
                             <option value="4">Employee</option>
                             <option value="2">Customer</option>
-
-
                         </select>
                         <span asp-validation-for="RoleId" class="text-danger"></span>
                     </div>

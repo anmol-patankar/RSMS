@@ -3,14 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RSMS.Services;
 using RSMS.ViewModels;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace RSMS.Controllers
 {
-
     public class UserController : Controller
     {
         public UserController(RsmsTestContext context, IConfiguration config)

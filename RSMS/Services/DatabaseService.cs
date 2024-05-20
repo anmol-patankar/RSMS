@@ -1,7 +1,6 @@
 ﻿using Domain.Models;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 
 namespace RSMS.Services
 {
@@ -14,11 +13,12 @@ namespace RSMS.Services
             Manager = 6,
             Admin = 8
         }
+
         public static int RoleNameToRoleId(string roleName)
         {
             return (int)(UserRole)Enum.Parse(typeof(UserRole), roleName);
-
         }
+
         public static RsmsTestContext Context { get; set; }
 
         public static void AddUser(UserInfo userInfo)
@@ -45,6 +45,7 @@ namespace RSMS.Services
             Context.SaveChanges();
             return true;
         }
+
         public static bool DeleteStore(int storeId)
         {
             var storeToDelete = GetStore(storeId);
@@ -52,6 +53,7 @@ namespace RSMS.Services
             Context.SaveChanges();
             return true;
         }
+
         public static List<Store> GetAllStores()
         {
             return Context.Stores.ToList();
@@ -61,16 +63,17 @@ namespace RSMS.Services
         {
             return Context.UserInfos.ToList();
         }
+
         public static Store GetStore(int storeId)
         {
             return Context.Stores.First(s => s.StoreId == storeId);
         }
+
         public static void EditStore(Store store)
         {
             Context.Stores.Update(store);
             Context.SaveChanges();
         }
-
 
         //        public static void EditRoles(List<string> rolesToAdd, List<string> rolesToRemove, Guid userId)
         //        {
@@ -114,13 +117,14 @@ namespace RSMS.Services
 
         public static string GetRoleOfUser(string username)
         {
-
             return (Enum.GetName(typeof(UserRole), (from userinfo in Context.UserInfos where userinfo.Username == username select userinfo.RoleId).First()));
         }
+
         public static string GetRoleOfUser(Guid userid)
         {
             return (Enum.GetName(typeof(UserRole), (from userinfo in Context.UserInfos where userinfo.UserId == userid select userinfo.RoleId).First()));
         }
+
         public static UserInfo GetUser(Guid userId)
         {
             return Context.UserInfos.FirstOrDefault(u => u.UserId == userId);

@@ -12,11 +12,13 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig((config["AesEncryption:Key"]), config);
             DatabaseService.SetContext(context);
         }
+
         [Authorize(Roles = "Admin,Manager")]
         public IActionResult EditStore(int storeId)
         {
             return View(DatabaseService.GetStore(storeId));
         }
+
         [HttpPost]
         public IActionResult DeleteStore(int storeId)
         {

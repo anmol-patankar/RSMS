@@ -6,7 +6,7 @@
         if (confirm("Are you sure you want to delete this user?")) {
             // Send AJAX request to delete user
             $.ajax({
-                url: '/Admin/DeleteUser',
+                url: '/User/DeleteUser',
                 type: 'POST',
                 data: { id: userId },
                 success: function (response) {
