@@ -1,10 +1,13 @@
-﻿namespace Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Models;
 
 public partial class TransactionDetail
 {
     public Guid TransactionId { get; set; }
 
-    public Guid ProductId { get; set; }
+    public string ProductId { get; set; } = null!;
 
     public int PriceBeforeTax { get; set; }
 

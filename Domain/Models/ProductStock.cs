@@ -1,8 +1,11 @@
-﻿namespace Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Models;
 
 public partial class ProductStock
 {
-    public Guid ProductId { get; set; }
+    public string ProductId { get; set; } = null!;
 
     public int StoreId { get; set; }
 

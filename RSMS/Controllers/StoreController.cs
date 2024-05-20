@@ -31,8 +31,8 @@ namespace RSMS.Controllers
         {
             if (storeToEdit.Address == null || storeToEdit.Address.Trim() == "")
                 ModelState.AddModelError("Address", "Address cannot be empty");
-            if (storeToEdit.Rent <= 0)
-                ModelState.AddModelError("Rent", "Rent must be greater than 0");
+            if (storeToEdit.Rent < 0)
+                ModelState.AddModelError("Rent", "Rent cannot be lesser than 0");
 
             if (ModelState.IsValid)
             {

@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Microsoft.CodeAnalysis;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,7 +14,56 @@ namespace RSMS.Services
             Manager = 6,
             Admin = 8
         }
+        public static ProductInfo GetProductInfo(string productId)
+        {
+            return Context.ProductInfos.Where(p => p.ProductId == productId).First();
+        }
+        public static bool EditProductInfo(ProductInfo productInfo)
+        {
 
+            var existingProductInfo = Context.ProductInfos.First(pi => pi.ProductId == productInfo.ProductId);
+            existingProductInfo.Name = productInfo.Name;
+            existingProductInfo.Description = productInfo.Description;
+            existingProductInfo.PriceBeforeTax = productInfo.PriceBeforeTax;
+            existingProductInfo.Photo = productInfo.Photo;
+
+            Context.SaveChanges();
+            return true;
+
+        }
+        public static List<TotalProductInfoModel> GetTotalProductInfo(int storeId)
+        {
+            var productsInStore = Context.ProductStocks.Where(p => p.StoreId == storeId).ToList();
+            List<TotalProductInfoModel> totalProductInfo = new();
+            foreach (var product in productsInStore)
+            {
+                var productInfo = Context.ProductInfos.Where(p => p.ProductId == product.ProductId).First();
+                totalProductInfo.Add(new TotalProductInfoModel
+                {
+                    ProductId = product.ProductId,
+                    Description = productInfo.Description,
+                    DiscountPercent = product.DiscountPercent,
+                    Name = productInfo.Name,
+                    PriceBeforeTax = productInfo.PriceBeforeTax,
+                    Quantity = product.Quantity,
+                    Photo = productInfo.Photo
+                });
+            }
+            return totalProductInfo;
+        }
+
+        public static void UpdateProductStock(int storeId, string productId, int quantity)
+        {
+            Context.ProductStocks.First(ps => ps.StoreId == storeId && ps.ProductId == productId).Quantity = quantity;
+            Context.SaveChanges();
+
+        }
+        public static void UpdateProductDiscount(int storeId, string productId, int discountPercent)
+        {
+            Context.ProductStocks.First(ps => ps.StoreId == storeId && ps.ProductId == productId).DiscountPercent = discountPercent;
+            Context.SaveChanges();
+
+        }
         public static int RoleNameToRoleId(string roleName)
         {
             return (int)(UserRole)Enum.Parse(typeof(UserRole), roleName);

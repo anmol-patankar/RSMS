@@ -14,6 +14,7 @@
     }
 
     .data-table th {
+        text-wrap: balance;
         background-color: #f2f2f2;
     }
 
@@ -89,6 +90,25 @@
         background-color: #45a049;
     }
 
+
+
+.viewproduct-btn {
+    background-color: #2e55d9;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+    .viewproduct-btn:hover {
+        background-color: #2041b0;
+    }
+
+
+
+
+
 .table-caption {
     text-align: center;
     font-weight: bold;
@@ -111,6 +131,7 @@
     .button-column-table th {
         background-color: #f2f2f2;
     }
+
 
 
 .button-column {

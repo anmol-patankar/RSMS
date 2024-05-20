@@ -1,0 +1,39 @@
+﻿@model Domain.Models.ProductInfo
+<link rel="stylesheet" href="~/css/editstore.css" />
+<div class="container" style="max-width: 500px;">
+    <div class="card">
+        <div class="card-header">
+            <h2>Edit @Model.Name</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <input type="hidden" asp-for="ProductId" />
+                <div class="form-group">
+                    <label asp-for="Name">Product Name</label>
+                    <input asp-for="Name" class="form-control form-control-sm" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description">Description</label>
+                    <textarea asp-for="Description" class="form-control form-control-sm"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PriceBeforeTax">Price Before Tax</label>
+                    <input asp-for="PriceBeforeTax" type="number" min="1" class="form-control form-control-sm" />
+                    <span asp-validation-for="PriceBeforeTax" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    @* <label asp-for="Photo">Photo URL</label> *@
+                    <input type="hidden" asp-for="Photo" class="form-control form-control-sm" />
+                    <span asp-validation-for="Photo" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Update</button>
+            </form>
+        </div>
+    </div>
+</div>

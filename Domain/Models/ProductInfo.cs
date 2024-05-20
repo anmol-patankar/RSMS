@@ -1,10 +1,11 @@
-﻿namespace Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Models;
 
 public partial class ProductInfo
 {
-    public Guid ProductId { get; set; }
-
-    public string ProductCode { get; set; } = null!;
+    public string ProductId { get; set; } = null!;
 
     public string Name { get; set; } = null!;
 

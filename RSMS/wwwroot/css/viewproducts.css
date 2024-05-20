@@ -1,0 +1,56 @@
+﻿.quantity-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-input {
+    width: 50px;
+    padding: 2px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 5px;
+}
+
+.quantity-adjust-btn {
+    background-color: #f0c14b; /* Amazon's primary button color */
+    color: #111; /* Text color */
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+    .quantity-adjust-btn:hover {
+        background-color: #e0b040; /* Darker shade on hover */
+    }
+
+discount-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.discount-input {
+    width: 50px;
+    padding: 2px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 5px;
+}
+
+
+.discount-adjust-btn {
+    background-color: #f0c14b; /* Amazon's primary button color */
+    color: #111; /* Text color */
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+    .discount-adjust-btn:hover {
+        background-color: #e0b040; /* Darker shade on hover */
+    }
