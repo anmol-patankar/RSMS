@@ -120,12 +120,14 @@
     border-collapse: collapse;
     width: 80%;
     margin: 0 auto;
+    text-wrap: nowrap;
 }
 
     .button-column-table th, .button-column-table td {
         border: none;
         padding: 8px;
         text-align: center;
+        text-wrap: nowrap;
     }
 
     .button-column-table th {

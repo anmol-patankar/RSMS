@@ -2,6 +2,7 @@
 <h1 style="text-align: center;">Store Products</h1>
 <link rel="stylesheet" href="~/css/dashboard.css" />
 <link rel="stylesheet" href="~/css/viewproducts.css" />
+@* <script src="~/js/storeproducts.js"></script> *@
 
 <div style="display: flex; justify-content: center;">
     <p>This is the list of products available in the store.</p>
@@ -19,7 +20,11 @@
                 @*<th>Photo</th>*@
                 <th style="text-wrap:nowrap;">Discount Percent</th>
                 <th>Quantity</th>
-                <th>Actions</th>
+                @if (ViewBag.CurrentUser.RoleId > 6 || ViewBag.CurrentUser.StoreId == ViewBag.StoreId)
+                {
+                    <th>Actions</th>
+                }
+
             </tr>
         </thead>
         <tbody>
@@ -30,97 +35,133 @@
                     <td>@product.Name</td>
                     <td>@product.Description</td>
                     <td>@product.PriceBeforeTax</td>
-                    <form asp-controller="Product" asp-action="UpdateStoreQtyAndDiscount" method="post" id="UpdateStoreQtyAndDiscount">
-                        @if (ViewBag.CurrentUser.RoleId > 6 || ViewBag.CurrentUser.StoreId == ViewBag.StoreId)
-                        {
+
+                    @if (ViewBag.CurrentUser.RoleId > 6 || (ViewBag.CurrentUser.RoleId == 6 && ViewBag.CurrentUser.StoreId == ViewBag.StoreId))
+                    {
                         <td>
                             <div class="discount-wrapper">
                                 <button type="button" class="discount-adjust-btn subtract-btn" data-operation="subtract">-</button>
-                                <input type="number" min="0" max="100" name="discountPercent" class="discount-input" value="@product.DiscountPercent" />
+                                <input type="number" min="0" max="100" name="discountPercent" class="discount-input" id="@product.ProductId-discountPercent" value="@product.DiscountPercent" />
                                 <button type="button" class="discount-adjust-btn add-btn" data-operation="add">+</button>
                             </div>
                         </td>
                         <td>
                             <div class="quantity-wrapper">
                                 <button type="button" class="quantity-adjust-btn subtract-btn" data-operation="subtract">-</button>
-                                <input type="number" min="0" max="10000" name="quantity" class="quantity-input" value="@product.Quantity" />
+                                <input type="number" min="0" max="10000" name="quantity" class="quantity-input" id="@product.ProductId-quantity" value="@product.Quantity" />
                                 <button type="button" class="quantity-adjust-btn add-btn" data-operation="add">+</button>
                             </div>
                         </td>
-                        }
-                        else
-                        {
+                    }
+                    else
+                    {
                         <td>@product.DiscountPercent</td>
                         <td>@product.Quantity</td>
-                        }
-                    <td style="text-align: center;">
-                        <div>
-                            <table class="button-column-table" id="buttonColumnTable">
-                                <tr>
-                                    <td>
+                    }
+                    @if (ViewBag.CurrentUser.RoleId == 6 && ViewBag.CurrentUser.StoreId != ViewBag.StoreId)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        <td style="text-align: center;">
+                            <div>
+                                <table class="button-column-table" id="buttonColumnTable">
+                                    <tr>
+                                        <td>
                                             @if (ViewBag.CurrentUser.RoleId > 6 || ViewBag.CurrentUser.StoreId == ViewBag.StoreId)
                                             {
-                                            <input type="hidden" name="storeId" value="@ViewBag.StoreId" />
-                                            <input type="hidden" name="productId" value="@product.ProductId" />
-                                            <input type="hidden" name="discountPercent" id="discountPercentInput">
-                                            <input type="hidden" name="quantity" id="quantityInput">
-                                            <button type="submit" class="save-quantity-btn edit-btn">Save</button>
+
+                                                <button type="submit" data-product-id="@product.ProductId" class="qty-discount-update save-quantity-btn edit-btn">Save</button>
                                             }
                                             else
                                             {
-                                            <button type="submit" class="save-quantity-btn disabled-edit-btn">Save</button>
+                                                <button type="submit" class="save-quantity-btn disabled-edit-btn">Save</button>
                                             }
-                                    </td>
-                                    <td>
+                                        </td>
+                                        <td>
                                             @if (ViewBag.CurrentUser.RoleId > 6)
                                             {
-                                            <form method="get" action="@Url.Action("EditProductInfo", "Product")">
-                                                <input type="hidden" name="productId" value="@product.ProductId" />
-                                                <button type="submit" class="edit-btn">Edit</button>
-                                            </form>
+                                                <form method="get" action="@Url.Action("EditProductInfo", "Product")">
+                                                    <input type="hidden" name="productId" value="@product.ProductId" />
+                                                    <button type="submit" class="edit-btn">Edit</button>
+                                                </form>
                                             }
                                             else
                                             {
-                                            <button type="button" class="disabled-edit-btn">Edit</button>
+                                                <button type="button" class="disabled-edit-btn">Edit</button>
                                             }
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </td>
-                    </form>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
 </div>
-
 <script>
-    document.querySelectorAll('.discount-adjust-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const input = btn.parentElement.querySelector('.discount-input');
-            let value = parseInt(input.value);
-            value = btn.dataset.operation === 'add' ? Math.min(value + 1, 100) : Math.max(value - 1, 0);
-            input.value = value;
-            updateHiddenInputs(input, 'discountPercentInput');
+    $(document).ready(function () {
+
+
+
+        $(document).on("click", ".qty-discount-update", function () {
+            const product_id = $(this).data("product-id");
+            const quantity = document.getElementById(`${product_id}-quantity`).value;
+            const discountPercent = document.getElementById(`${product_id}-discountPercent`).value;
+            const store_id = @ViewBag.StoreId;
+            console.log(quantity + discountPercent);
+            $.ajax({
+                url: '/Product/UpdateStoreQtyAndDiscount',
+                type: 'POST',
+                data: {
+                    storeId: store_id,
+                    productId: product_id,
+                    quantity: quantity,
+                    discountPercent: discountPercent
+
+                },
+                success: function (response) {
+                    const test = JSON.parse(response);
+                    const quantityElement = document.getElementById(`${product_id}-quantity`);
+                    const discountPercentElement = document.getElementById(`${product_id}-discountPercent`);
+                    quantityElement.value = test.Quantity;
+                    discountPercentElement.value = test.DiscountPercent;
+                    console.log(test);
+                }
+            });
         });
-    });
 
-    document.querySelectorAll('.quantity-adjust-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const input = btn.parentElement.querySelector('.quantity-input');
-            let value = parseInt(input.value);
-            value = btn.dataset.operation === 'add' ? value + 1 : Math.max(value - 1, 0);
-            input.value = value;
-            updateHiddenInputs(input, 'quantityInput');
+
+        document.querySelectorAll('.discount-adjust-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.parentElement.querySelector('.discount-input');
+                let value = parseInt(input.value);
+                value = btn.dataset.operation === 'add' ? Math.min(value + 1, 100) : Math.max(value - 1, 0);
+                input.value = value;
+                updateHiddenInputs(input, 'discountPercentInput');
+            });
         });
-    });
 
-    document.querySelectorAll('.discount-input, .quantity-input').forEach(input => {
-        input.addEventListener('input', () => updateHiddenInputs(input, input.classList.contains('discount-input') ? 'discountPercentInput' : 'quantityInput'));
-    });
+        document.querySelectorAll('.quantity-adjust-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.parentElement.querySelector('.quantity-input');
+                let value = parseInt(input.value);
+                value = btn.dataset.operation === 'add' ? value + 1 : Math.max(value - 1, 0);
+                input.value = value;
+                updateHiddenInputs(input, 'quantityInput');
+            });
+        });
 
-    function updateHiddenInputs(input, hiddenInputId) {
-        document.getElementById(hiddenInputId).value = input.value;
-    }
+        document.querySelectorAll('.discount-input, .quantity-input').forEach(input => {
+            input.addEventListener('input', () => updateHiddenInputs(input, input.classList.contains('discount-input') ? 'discountPercentInput' : 'quantityInput'));
+        });
+
+        function updateHiddenInputs(input, hiddenInputId) {
+            document.getElementById(hiddenInputId).value = input.value;
+        }
+
+    });
 </script>

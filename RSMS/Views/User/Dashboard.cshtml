@@ -18,7 +18,10 @@
                 <th style="width: 150px;">First Name</th>
                 <th style="width: 250px;">Email</th>
                 <th style="width: 150px;">Date of Birth</th>
-                <th style="width: 200px;">Actions</th>
+                @if (ViewBag.CurrentUser.RoleId >= 6)
+                {
+                    <th style="width: max-content;">Actions</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -29,10 +32,11 @@
                     <td>@user.FirstName</td>
                     <td>@user.Email</td>
                     <td>@user.Dob</td>
-                    <td style="text-align: center;">
-                        <div>
-                            @if (ViewBag.CurrentUser.RoleId == 8)
-                            {
+
+                    @if (ViewBag.CurrentUser.RoleId == 8)
+                    {
+                        <td style="text-align: center;">
+                            <div>
                                 <table class="button-column-table" id="buttonColumnTable">
                                     <tr>
                                         <td>
@@ -49,9 +53,13 @@
                                         </td>
                                     </tr>
                                 </table>
-                            }
-                            else if (ViewBag.CurrentUser.RoleId == 6)
-                            {
+                            </div>
+                        </td>
+                    }
+                    else if (ViewBag.CurrentUser.RoleId == 6)
+                    {
+                        <td style="text-align: center;">
+                            <div>
                                 <table class="button-column-table" id="buttonColumnTable">
                                     <tr>
 
@@ -68,38 +76,12 @@
                                                 }
                                             </form>
                                         </td>
-                                        <td>
-                                            <form method="post" action="@Url.Action("DeleteUser", "User")">
-                                                <input type="hidden" name="userId" value="@user.UserId" />
-                                                <button type="submit" class="disabled-delete-btn">Delete</button>
-                                            </form>
-                                        </td>
                                     </tr>
                                 </table>
+                            </div>
+                        </td>
+                    }
 
-                            }
-                            else
-                            {
-                                <table class="button-column-table" id="buttonColumnTable">
-                                    <tr>
-
-                                        <td>
-                                            <form method="get" action="@Url.Action("EditUser", "User")">
-                                                <input type="hidden" name="userId" value="@user.UserId" />
-                                                <button type="submit" class="disabled-edit-btn">Edit</button>
-                                            </form>
-                                        </td>
-                                        <td>
-                                            <form method="post" action="@Url.Action("DeleteUser", "User")">
-                                                <input type="hidden" name="userId" value="@user.UserId" />
-                                                <button type="submit" class="disabled-delete-btn">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                </table>
-                            }
-                        </div>
-                    </td>
                 </tr>
             }
         </tbody>
@@ -114,7 +96,11 @@
                     <th style="width: 100px;">Rent</th>
                     <th style="width: 100px;">Store Status</th>
                     <th style="width: 100px;">Store Operation</th>
+
+
                     <th style="width: 200px;">Actions</th>
+
+
                 </tr>
             </thead>
             <tbody>
@@ -173,12 +159,6 @@
                                                 </form>
                                             </td>
                                             <td>
-                                                <form method="post" action="@Url.Action("DeleteStore", "Store")">
-                                                    <input type="hidden" name="storeId" value="@store.StoreId" />
-                                                    <button type="submit" class="disabled-delete-btn">Delete</button>
-                                                </form>
-                                            </td>
-                                            <td>
                                                 <form method="post" action="@Url.Action("StoreProducts", "Product")">
                                                     <input type="hidden" name="storeId" value="@store.StoreId" />
                                                     <button type="submit" class="viewproduct-btn">View Products</button>
@@ -191,18 +171,6 @@
                                 {
                                     <table class="button-column-table" id="buttonColumnTable">
                                         <tr>
-                                            <td>
-                                                <form method="post" action="@Url.Action("DeleteStore", "Store")">
-                                                    <input type="hidden" name="storeId" value="@store.StoreId" />
-                                                    <button type="submit" class="disabled-delete-btn">Delete</button>
-                                                </form>
-                                            </td>
-                                            <td>
-                                                <form method="get" action="@Url.Action("EditStore", "Store")">
-                                                    <input type="hidden" name="storeId" value="@store.StoreId" />
-                                                    <button type="submit" class="disabled-edit-btn">Edit</button>
-                                                </form>
-                                            </td>
                                             <td>
                                                 <form method="post" action="@Url.Action("StoreProducts", "Product")">
                                                     <input type="hidden" name="storeId" value="@store.StoreId" />

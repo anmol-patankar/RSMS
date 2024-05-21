@@ -49,7 +49,7 @@
 
                 <div class="form-group">
                     <label asp-for="StoreId">Store ID</label>
-                    <input asp-for="StoreId" class="form-control form-control-sm" />
+                    <input asp-for="StoreId" class="form-control form-control-sm" readonly="@(currentEditingUser.RoleId<8)" />
                     <span asp-validation-for="StoreId" class="text-danger"></span>
                 </div>
 
@@ -60,8 +60,9 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="IsDisabled"> Disable User</label>
-                    <input asp-for="IsDisabled" type="checkbox" class="form-check-input" />
+                    <input asp-for="IsDisabled" type="checkbox" class="form-check-input" disabled="@(currentEditingUser.RoleId<8)" />
                 </div>
+
                 @if (Model.Username == User.Identity.Name)
                 {
                     <div class="form-group">

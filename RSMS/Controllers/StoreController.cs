@@ -5,6 +5,7 @@ using RSMS.Services;
 
 namespace RSMS.Controllers
 {
+
     public class StoreController : Controller
     {
         public StoreController(RsmsTestContext context, IConfiguration config)
