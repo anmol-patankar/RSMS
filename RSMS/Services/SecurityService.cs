@@ -34,8 +34,8 @@ namespace RSMS.Services
                 new(ClaimTypes.Role, userRole)
             };
             var token = new JwtSecurityToken(
-                issuer: Config["Jwt:Issuer"],
-                audience: Config["Jwt:Audience"],
+                issuer: Config[Constants.JwtKeyIssuer],
+                audience: Config[Constants.JwtKeyAudience],
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(10),
                 signingCredentials: credentials);
@@ -60,7 +60,7 @@ namespace RSMS.Services
         {
             _aesObject.Key = Encoding.UTF8.GetBytes(aesKey);
             Config = config;
-            securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["Jwt:Key"]));
+            securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config[Constants.JwtKeyString]));
         }
 
         private static byte[] Encrypt(string stringToEncrypt)

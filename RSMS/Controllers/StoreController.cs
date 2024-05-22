@@ -10,7 +10,7 @@ namespace RSMS.Controllers
     {
         public StoreController(RsmsTestContext context, IConfiguration config)
         {
-            SecurityService.SetKeyConfig((config["AesEncryption:Key"]), config);
+            SecurityService.SetKeyConfig((config[Constants.AesKeyString]), config);
             DatabaseService.SetContext(context);
         }
 

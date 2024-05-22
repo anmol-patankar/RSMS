@@ -5,21 +5,24 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
+using RSMS.ActionAttributes;
 
 namespace RSMS.Controllers
 {
     [Authorize(Roles = "Admin, Manager, Customer")]
+    [NoCache]
     public class ProductController : Controller
     {
         public ProductController(RsmsTestContext context, IConfiguration config)
         {
-            SecurityService.SetKeyConfig((config["AesEncryption:Key"]), config);
+            SecurityService.SetKeyConfig((config[Constants.AesKeyString]), config);
             DatabaseService.SetContext(context);
         }
         public IActionResult Index()
         {
             return View();
         }
+
         public IActionResult StoreProducts(int storeId)
         {
             var productsOfStore = DatabaseService.GetTotalProductInfo(storeId);

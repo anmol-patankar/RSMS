@@ -7,7 +7,11 @@
 <div style="display: flex; justify-content: center;">
     <p>This is the list of products available in the store.</p>
 </div>
-
+@{
+    bool isAdmin = ViewBag.CurrentUser.RoleId > 6;
+    bool isManager = ViewBag.CurrentUser.RoleId > 6;
+    bool isManagerOfStore = isManager || ViewBag.CurrentUser.StoreId == ViewBag.StoreId;
+}
 <div style="margin-top: 20px; display: flex; justify-content: center;">
     <table class="data-table">
         <caption class="table-caption">List of Store Products</caption>
@@ -20,7 +24,7 @@
                 @*<th>Photo</th>*@
                 <th style="text-wrap:nowrap;">Discount Percent</th>
                 <th>Quantity</th>
-                @if (ViewBag.CurrentUser.RoleId > 6 || ViewBag.CurrentUser.StoreId == ViewBag.StoreId)
+                @if (isAdmin || isManagerOfStore)
                 {
                     <th>Actions</th>
                 }
@@ -36,7 +40,7 @@
                     <td>@product.Description</td>
                     <td>@product.PriceBeforeTax</td>
 
-                    @if (ViewBag.CurrentUser.RoleId > 6 || (ViewBag.CurrentUser.RoleId == 6 && ViewBag.CurrentUser.StoreId == ViewBag.StoreId))
+                    @if (isAdmin || isManagerOfStore)
                     {
                         <td>
                             <div class="discount-wrapper">
@@ -58,40 +62,27 @@
                         <td>@product.DiscountPercent</td>
                         <td>@product.Quantity</td>
                     }
-                    @if (ViewBag.CurrentUser.RoleId == 6 && ViewBag.CurrentUser.StoreId != ViewBag.StoreId)
-                    {
-                        continue;
-                    }
-                    else
+
+                    @if (isAdmin || isManagerOfStore)
                     {
                         <td style="text-align: center;">
                             <div>
                                 <table class="button-column-table" id="buttonColumnTable">
                                     <tr>
                                         <td>
-                                            @if (ViewBag.CurrentUser.RoleId > 6 || ViewBag.CurrentUser.StoreId == ViewBag.StoreId)
-                                            {
+                                            <button type="submit" data-product-id="@product.ProductId" class="qty-discount-update save-quantity-btn edit-btn">Save</button>
 
-                                                <button type="submit" data-product-id="@product.ProductId" class="qty-discount-update save-quantity-btn edit-btn">Save</button>
-                                            }
-                                            else
-                                            {
-                                                <button type="submit" class="save-quantity-btn disabled-edit-btn">Save</button>
-                                            }
+
                                         </td>
-                                        <td>
-                                            @if (ViewBag.CurrentUser.RoleId > 6)
-                                            {
+                                        @if (isAdmin)
+                                        {
+                                            <td>
                                                 <form method="get" action="@Url.Action("EditProductInfo", "Product")">
                                                     <input type="hidden" name="productId" value="@product.ProductId" />
                                                     <button type="submit" class="edit-btn">Edit</button>
                                                 </form>
-                                            }
-                                            else
-                                            {
-                                                <button type="button" class="disabled-edit-btn">Edit</button>
-                                            }
-                                        </td>
+                                            </td>
+                                        }
                                     </tr>
                                 </table>
                             </div>
@@ -104,9 +95,6 @@
 </div>
 <script>
     $(document).ready(function () {
-
-
-
         $(document).on("click", ".qty-discount-update", function () {
             const product_id = $(this).data("product-id");
             const quantity = document.getElementById(`${product_id}-quantity`).value;

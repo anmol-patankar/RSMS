@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RSMS.ActionAttributes;
 using RSMS.Services;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
@@ -13,10 +14,11 @@ namespace RSMS.Controllers
     {
         public UserController(RsmsTestContext context, IConfiguration config)
         {
-            SecurityService.SetKeyConfig((config["AesEncryption:Key"]), config);
+            SecurityService.SetKeyConfig(config[Constants.AesKeyString], config);
             DatabaseService.SetContext(context);
         }
         [Authorize]
+        [NoCache]
         public IActionResult Dashboard()
         {
             var currentAccessingUser = DatabaseService.GetUser(User.Identity.Name);
@@ -27,11 +29,11 @@ namespace RSMS.Controllers
             ViewBag.AllStores = allStores;
             return View();
         }
+        [Authorize]
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Dashboard");
         }
-
         [AllowAnonymous]
         public IActionResult Login()
         {
@@ -75,7 +77,7 @@ namespace RSMS.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated == true)
             {
-                return RedirectToAction("SelectUserType");
+                return RedirectToAction("Dashboard");
             }
             return View();
         }
@@ -123,35 +125,6 @@ namespace RSMS.Controllers
             return View(user);
         }
 
-        //[Authorize]
-        //public IActionResult SelectUserType()
-        //{
-        //    var roles = User.Claims.Where(claim => claim.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();
-        //    if (roles.Count > 1)
-        //    {
-        //        ViewBag.Roles = roles;
-        //        return View();
-        //    }
-        //    return RedirectToAction("Dashboard", roles.First());
-        //}
-
-        //[HttpPost]
-        //public IActionResult SelectUserType(string selectedRole)
-        //{
-        //    if (!string.IsNullOrEmpty(selectedRole)) return RedirectToAction("Dashboard", selectedRole);
-        //    return RedirectToAction("Login", "User");
-        //}
-        //internal IActionResult AuthenticatedRedirect()
-        //{
-        //    var userRoles = User.Claims.Where(claim => claim.Type == ClaimTypes.Role).Select(claim => claim.Value).ToList();
-        //    if (userRoles.Count > 1)
-        //    {
-        //        ViewBag.Roles = userRoles;
-        //        return View("SelectUserType");
-        //    }
-        //    return RedirectToAction("Dashboard", userRoles.First());
-        //}
-
         [HttpPost]
         public IActionResult DeleteUser(Guid userId)
         {
@@ -163,7 +136,7 @@ namespace RSMS.Controllers
         {
             return View(DatabaseService.GetUser(userId));
         }
-
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         public IActionResult EditUser(UserInfo userToEdit)
         {

@@ -2,16 +2,17 @@ using Domain.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RSMS.Services;
 using System.Net;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
-var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
+var jwtIssuer = builder.Configuration.GetSection(Constants.JwtKeyIssuer).Get<string>();
 
+var jwtKey = builder.Configuration.GetSection(Constants.JwtKeyString).Get<string>();
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<RsmsTestContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("dbcs")));
+builder.Services.AddDbContext<RsmsTestContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString(Constants.DbConnectionString)));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -23,9 +24,11 @@ builder.Services.AddAuthentication(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration[Constants.JwtKeyString])),
+
+        ValidIssuer = builder.Configuration[Constants.JwtKeyIssuer],
+
+        ValidAudience = builder.Configuration[Constants.JwtKeyAudience],
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
@@ -34,7 +37,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+builder.Configuration.AddJsonFile(Constants.AppSettingsFile, optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
 var app = builder.Build();
@@ -72,7 +75,7 @@ app.Use(async (context, next) =>
     var JWTokenCookie = context.Request.Cookies["JWTToken"];
     if (!string.IsNullOrEmpty(JWTokenCookie))
     {
-        context.Request.Headers.Add("Authorization", "Bearer " + JWTokenCookie);
+        context.Request.Headers.Append("Authorization", "Bearer " + JWTokenCookie);
     }
     await next();
 });
@@ -83,6 +86,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=User}/{action=Login}/{id?}");
 
 app.Run();

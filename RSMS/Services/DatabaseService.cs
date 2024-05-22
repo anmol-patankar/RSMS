@@ -20,7 +20,6 @@ namespace RSMS.Services
         }
         public static bool EditProductInfo(ProductInfo productInfo)
         {
-
             var existingProductInfo = Context.ProductInfos.First(pi => pi.ProductId == productInfo.ProductId);
             existingProductInfo.Name = productInfo.Name;
             existingProductInfo.Description = productInfo.Description;
@@ -125,62 +124,22 @@ namespace RSMS.Services
             Context.SaveChanges();
         }
 
-        //        public static void EditRoles(List<string> rolesToAdd, List<string> rolesToRemove, Guid userId)
-        //        {
-        //            RemoveRoles(rolesToRemove, userId);
-        //            Context.SaveChanges();
-        //            AddRoles(rolesToAdd, userId);
-        //            Context.SaveChanges();
-        //        }
-
-        //        public static void RemoveRoles(List<string> rolesToRemove, Guid userId)
-        //        {
-        //            using (var context = new RsmsTestContext())
-        //            {
-        //                foreach (var role in rolesToRemove)
-        //                {
-        //                    var roleToRemove = context.RoleMaps.FirstOrDefault(rm => rm.UserId == userId && rm.RoleName == role);
-        //                    if (roleToRemove != null)
-        //                    {
-        //                        context.RoleMaps.Remove(roleToRemove);
-        //                    }
-        //                }
-        //                context.SaveChanges();
-        //            }
-        //        }
-
-        //        public static void AddRoles(List<string> rolesToAdd, Guid userId)
-        //        {
-        //            using (var context = new RsmsTestContext())
-        //            {
-        //                foreach (var role in rolesToAdd)
-        //                {
-        //                    var roleToAdd = context.RoleMaps.FirstOrDefault(rm => rm.UserId == userId && rm.RoleName == role);
-        //                    if (roleToAdd == default(RoleMap))
-        //                    {
-        //                        context.RoleMaps.Add(new RoleMap() { UserId = userId, RoleName = role });
-        //                    }
-        //                }
-        //                context.SaveChanges();
-        //            }
-        //        }
-
-        public static string GetRoleOfUser(string username)
+        public static string? GetRoleOfUser(string username)
         {
             return (Enum.GetName(typeof(UserRole), (from userinfo in Context.UserInfos where userinfo.Username == username select userinfo.RoleId).First()));
         }
 
-        public static string GetRoleOfUser(Guid userid)
+        public static string? GetRoleOfUser(Guid userid)
         {
             return (Enum.GetName(typeof(UserRole), (from userinfo in Context.UserInfos where userinfo.UserId == userid select userinfo.RoleId).First()));
         }
 
-        public static UserInfo GetUser(Guid userId)
+        public static UserInfo? GetUser(Guid userId)
         {
             return Context.UserInfos.FirstOrDefault(u => u.UserId == userId);
         }
 
-        public static UserInfo GetUser(string userNameOrEmail)
+        public static UserInfo? GetUser(string userNameOrEmail)
         {
             return Context.UserInfos.FirstOrDefault(u => u.Username == userNameOrEmail || u.Email == userNameOrEmail);
         }
