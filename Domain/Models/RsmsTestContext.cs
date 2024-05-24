@@ -15,8 +15,6 @@ public partial class RsmsTestContext : DbContext
     {
     }
 
-    public virtual DbSet<Paydesk> Paydesks { get; set; }
-
     public virtual DbSet<PayrollHistory> PayrollHistories { get; set; }
 
     public virtual DbSet<ProductInfo> ProductInfos { get; set; }
@@ -34,28 +32,10 @@ public partial class RsmsTestContext : DbContext
     public virtual DbSet<UserInfo> UserInfos { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=RSMS_Test;Trusted_Connection=True;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:dbcs");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Paydesk>(entity =>
-        {
-            entity.HasKey(e => e.PaydeskNumber).HasName("PK__Paydesk__BC17994A7C09AC35");
-
-            entity.ToTable("Paydesk");
-
-            entity.Property(e => e.PaydeskNumber)
-                .ValueGeneratedNever()
-                .HasColumnName("paydesk_number");
-            entity.Property(e => e.IsManned).HasColumnName("is_manned");
-            entity.Property(e => e.StoreId).HasColumnName("store_id");
-
-            entity.HasOne(d => d.Store).WithMany(p => p.Paydesks)
-                .HasForeignKey(d => d.StoreId)
-                .HasConstraintName("FK__Paydesk__store_i__403A8C7D");
-        });
-
         modelBuilder.Entity<PayrollHistory>(entity =>
         {
             entity.HasKey(e => e.PayrollId).HasName("PK__Payroll___D99FC9441F3AEFDD");
@@ -187,48 +167,34 @@ public partial class RsmsTestContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AF7A49A39F");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFCE01C7FC");
 
             entity.Property(e => e.TransactionId)
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("transaction_id");
             entity.Property(e => e.CashierId).HasColumnName("cashier_id");
             entity.Property(e => e.CustomerId).HasColumnName("customer_id");
-            entity.Property(e => e.PaydeskNumber).HasColumnName("paydesk_number");
-            entity.Property(e => e.ProductId)
-                .HasMaxLength(5)
-                .HasColumnName("product_id");
             entity.Property(e => e.StoreId).HasColumnName("store_id");
 
             entity.HasOne(d => d.Cashier).WithMany(p => p.TransactionCashiers)
                 .HasForeignKey(d => d.CashierId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__cashi__571DF1D5");
+                .HasConstraintName("FK__Transacti__cashi__114A936A");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.TransactionCustomers)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__custo__5812160E");
-
-            entity.HasOne(d => d.PaydeskNumberNavigation).WithMany(p => p.Transactions)
-                .HasForeignKey(d => d.PaydeskNumber)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__payde__59063A47");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.Transactions)
-                .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__produ__5535A963");
+                .HasConstraintName("FK__Transacti__custo__123EB7A3");
 
             entity.HasOne(d => d.Store).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.StoreId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__store__5629CD9C");
+                .HasConstraintName("FK__Transacti__store__10566F31");
         });
 
         modelBuilder.Entity<TransactionDetail>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFF2A4EEA1");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__85C600AFBD05DCDE");
 
             entity.ToTable("Transaction_Details");
 
@@ -245,12 +211,12 @@ public partial class RsmsTestContext : DbContext
             entity.HasOne(d => d.Product).WithMany(p => p.TransactionDetails)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__produ__5CD6CB2B");
+                .HasConstraintName("FK__Transacti__produ__160F4887");
 
             entity.HasOne(d => d.Transaction).WithOne(p => p.TransactionDetail)
                 .HasForeignKey<TransactionDetail>(d => d.TransactionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Transacti__trans__5BE2A6F2");
+                .HasConstraintName("FK__Transacti__trans__151B244E");
         });
 
         modelBuilder.Entity<UserInfo>(entity =>

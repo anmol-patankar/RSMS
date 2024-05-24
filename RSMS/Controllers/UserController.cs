@@ -7,6 +7,7 @@ using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace RSMS.Controllers
 {
@@ -27,6 +28,21 @@ namespace RSMS.Controllers
             ViewBag.AllUsers = allUsers;
             List<Store> allStores = DatabaseService.GetAllStores();
             ViewBag.AllStores = allStores;
+            List<ProductInfo> productInfos = DatabaseService.GetAllProductInfos();
+            ViewBag.ProductInfos = productInfos;
+            List<Transaction> allTransactions = new();
+            if (currentAccessingUser.RoleId == 2)
+            {
+                allTransactions = DatabaseService.GetAllTransactions(currentAccessingUser.UserId);
+
+            }
+            else
+            {
+                allTransactions = DatabaseService.GetAllTransactions();
+
+            }
+            ViewBag.TransactionsByStore = allTransactions.GroupBy(t => t.StoreId);
+
             return View();
         }
         [Authorize]

@@ -9,90 +9,124 @@
 </div>
 @{
     bool isAdmin = ViewBag.CurrentUser.RoleId > 6;
-    bool isManager = ViewBag.CurrentUser.RoleId > 6;
-    bool isManagerOfStore = isManager || ViewBag.CurrentUser.StoreId == ViewBag.StoreId;
-}
-<div style="margin-top: 20px; display: flex; justify-content: center;">
-    <table class="data-table">
-        <caption class="table-caption">List of Store Products</caption>
-        <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Pretax Price</th>
-                @*<th>Photo</th>*@
-                <th style="text-wrap:nowrap;">Discount Percent</th>
-                <th>Quantity</th>
+    bool isManager = ViewBag.CurrentUser.RoleId == 6;
+    bool isManagerOfStore = isManager && ViewBag.CurrentUser.StoreId == ViewBag.StoreId;
+}<div style="margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center;">
+    @foreach (var product in Model)
+    {
+        <div class="product-card">
+            <div class="product-card-header">
+                <h3>@product.Name</h3>
+            </div>
+            <div class="product-card-body">
+                <div class="product-detail">
+                    <strong>Product ID:</strong>
+                    <span>@product.ProductId</span>
+                </div>
+                @* <div class="product-detail">
+            <strong>Description:</strong>
+            <span>@product.Description</span>
+            </div> *@
+                <div class="product-detail">
+                    <strong>Pretax Price:</strong>
+                    <span>@product.PriceBeforeTax</span>
+                </div>
+
                 @if (isAdmin || isManagerOfStore)
                 {
-                    <th>Actions</th>
+                    <div class="product-detail discount-wrapper">
+                        <strong>Discount Percent:</strong>
+                        <div class="button-group">
+                            <button type="button" class="discount-adjust-btn subtract-btn" data-operation="subtract">-</button>
+                            <input type="number" min="0" max="100" name="discountPercent" class="discount-input" id="@product.ProductId-discountPercent" value="@product.DiscountPercent" />
+                            <button type="button" class="discount-adjust-btn add-btn" data-operation="add">+</button>
+                        </div>
+                    </div>
+                    <div class="product-detail quantity-wrapper">
+                        <strong>Quantity:</strong>
+                        <div class="button-group">
+                            <button type="button" class="quantity-adjust-btn subtract-btn" data-operation="subtract">-</button>
+                            <input type="number" min="0" max="10000" name="quantity" class="quantity-input" id="@product.ProductId-quantity" value="@product.Quantity" />
+                            <button type="button" class="quantity-adjust-btn add-btn" data-operation="add">+</button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="product-detail">
+                        <strong>Discount Percent:</strong>
+                        <span>@product.DiscountPercent</span>
+                    </div>
+                    <div class="product-detail">
+                        <strong>Quantity:</strong>
+                        <span>@product.Quantity</span>
+                    </div>
                 }
 
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in Model)
-            {
-                <tr>
-                    <td>@product.ProductId</td>
-                    <td>@product.Name</td>
-                    <td>@product.Description</td>
-                    <td>@product.PriceBeforeTax</td>
+                @if (isAdmin || isManagerOfStore)
+                {
+                    <div class="actions">
+                        <button type="submit" data-product-id="@product.ProductId" class="qty-discount-update save-quantity-btn edit-btn">Save</button>
 
-                    @if (isAdmin || isManagerOfStore)
-                    {
-                        <td>
-                            <div class="discount-wrapper">
-                                <button type="button" class="discount-adjust-btn subtract-btn" data-operation="subtract">-</button>
-                                <input type="number" min="0" max="100" name="discountPercent" class="discount-input" id="@product.ProductId-discountPercent" value="@product.DiscountPercent" />
-                                <button type="button" class="discount-adjust-btn add-btn" data-operation="add">+</button>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="quantity-wrapper">
-                                <button type="button" class="quantity-adjust-btn subtract-btn" data-operation="subtract">-</button>
-                                <input type="number" min="0" max="10000" name="quantity" class="quantity-input" id="@product.ProductId-quantity" value="@product.Quantity" />
-                                <button type="button" class="quantity-adjust-btn add-btn" data-operation="add">+</button>
-                            </div>
-                        </td>
-                    }
-                    else
-                    {
-                        <td>@product.DiscountPercent</td>
-                        <td>@product.Quantity</td>
-                    }
-
-                    @if (isAdmin || isManagerOfStore)
-                    {
-                        <td style="text-align: center;">
-                            <div>
-                                <table class="button-column-table" id="buttonColumnTable">
-                                    <tr>
-                                        <td>
-                                            <button type="submit" data-product-id="@product.ProductId" class="qty-discount-update save-quantity-btn edit-btn">Save</button>
-
-
-                                        </td>
-                                        @if (isAdmin)
-                                        {
-                                            <td>
-                                                <form method="get" action="@Url.Action("EditProductInfo", "Product")">
-                                                    <input type="hidden" name="productId" value="@product.ProductId" />
-                                                    <button type="submit" class="edit-btn">Edit</button>
-                                                </form>
-                                            </td>
-                                        }
-                                    </tr>
-                                </table>
-                            </div>
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
+                        @if (isAdmin)
+                        {
+                            <form method="get" action="@Url.Action("EditProductInfo", "Product")" style="display: inline;">
+                                <input type="hidden" name="productId" value="@product.ProductId" />
+                                <button type="submit" class="edit-btn">Edit</button>
+                            </form>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
 </div>
+<style>
+    .product-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        padding: 20px;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .product-card-header {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .product-detail {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .discount-wrapper, .quantity-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .button-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .discount-adjust-btn, .quantity-adjust-btn {
+        margin: 0 5px;
+    }
+
+    .actions {
+        text-align: center;
+        margin-top: 10px;
+    }
+</style>
+
 <script>
     $(document).ready(function () {
         $(document).on("click", ".qty-discount-update", function () {

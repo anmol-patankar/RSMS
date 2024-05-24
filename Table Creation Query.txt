@@ -29,16 +29,6 @@ CREATE TABLE User_Info
 	FOREIGN KEY(store_id) REFERENCES Store(store_id),
 );
 
-
-
-CREATE TABLE Paydesk
-(
-	paydesk_number INT NOT NULL PRIMARY KEY,
-	store_id INT,
-	is_manned BIT,
-	FOREIGN KEY(store_id) REFERENCES Store(store_id)
-);
-
 CREATE TABLE Payroll_History
 (
 	payroll_id UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY,
@@ -96,14 +86,12 @@ CREATE TABLE Transactions
 	cashier_id UNIQUEIDENTIFIER NOT NULL,
 	
 	customer_id UNIQUEIDENTIFIER NOT NULL,
-	paydesk_number INT NOT NULL,
 	FOREIGN KEY(product_id) REFERENCES Product_Info(product_id),
 	
 	FOREIGN KEY(store_id) REFERENCES Store(store_id),
 	
 	FOREIGN KEY(cashier_id) REFERENCES User_Info(user_id),
 	FOREIGN KEY(customer_id) REFERENCES User_Info(user_id),
-	FOREIGN KEY(paydesk_number) REFERENCES Paydesk(paydesk_number),
 );
 
 CREATE TABLE Transaction_Details

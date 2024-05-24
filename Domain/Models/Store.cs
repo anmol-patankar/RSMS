@@ -15,8 +15,6 @@ public partial class Store
 
     public bool IsDeleted { get; set; }
 
-    public virtual ICollection<Paydesk> Paydesks { get; set; } = new List<Paydesk>();
-
     public virtual ICollection<PayrollHistory> PayrollHistories { get; set; } = new List<PayrollHistory>();
 
     public virtual ICollection<ProductStock> ProductStocks { get; set; } = new List<ProductStock>();

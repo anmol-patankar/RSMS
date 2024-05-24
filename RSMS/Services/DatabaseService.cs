@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Microsoft.CodeAnalysis;
 using RSMS.ViewModels;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RSMS.Services
@@ -13,6 +14,23 @@ namespace RSMS.Services
             Employee = 4,
             Manager = 6,
             Admin = 8
+        }
+        public static List<Transaction> GetAllTransactions(Guid? userId = null)
+        {
+            if (userId == null)
+            {
+                return Context.Transactions.ToList();
+            }
+            else
+            {
+
+                return Context.Transactions.Where(t => t.CustomerId == userId).ToList();
+            }
+        }
+
+        public static List<ProductInfo> GetAllProductInfos()
+        {
+            return Context.ProductInfos.ToList();
         }
         public static ProductInfo GetProductInfo(string productId)
         {

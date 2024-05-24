@@ -6,10 +6,9 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using RSMS.ActionAttributes;
-
 namespace RSMS.Controllers
 {
-    [Authorize(Roles = "Admin, Manager, Customer")]
+    [Authorize]
     [NoCache]
     public class ProductController : Controller
     {
@@ -47,6 +46,7 @@ namespace RSMS.Controllers
             var json = JsonSerializer.Serialize(result);
             return Ok(json);
         }
+        [Authorize(Roles = "Admin,Manager")]
         public IActionResult EditProductInfo(string productId)
         {
             return View(DatabaseService.GetProductInfo(productId));

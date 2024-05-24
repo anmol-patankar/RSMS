@@ -1,92 +1,94 @@
-﻿<h1 style="text-align: center;">Welcome to the dashboard</h1>
-<link rel="stylesheet" href="~/css/dashboard.css" />
-<div style="display: flex; justify-content: center;">
-    <p>This is the dashboard. You can manage users, stores, and roles here.</p>
-</div>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1 style="text-align: center;">Welcome to the dashboard</h1>
 
-<div style="display: flex; justify-content: center; margin-bottom: 20px;">
-    <button id="showUsersBtn" class="toggle-btn">Show Users</button>
-    <button id="showStoresBtn" class="toggle-btn">Show Stores</button>
-</div>
+    <div style="display: flex; justify-content: center;">
+        <p>This is the dashboard. You can manage users, stores, and roles here.</p>
+    </div>
 
-<div style="margin-top: 20px; display: flex; justify-content: center;">
-    <table id="userTable" class="data-table">
-        <caption class="table-caption">List of users</caption>
-        <thead>
-            <tr>
-                <th style="width: 150px;">Username</th>
-                <th style="width: 150px;">First Name</th>
-                <th style="width: 250px;">Email</th>
-                <th style="width: 150px;">Date of Birth</th>
-                @if (ViewBag.CurrentUser.RoleId >= 6)
-                {
-                    <th style="width: max-content;">Actions</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in ViewBag.AllUsers)
-            {
+    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <button id="showUsersBtn" class="toggle-btn">Show Users</button>
+        <button id="showStoresBtn" class="toggle-btn">Show Stores</button>
+        <button id="showProductInfosBtn" class="toggle-btn">View Products</button>
+        <button id="showTransactionsBtn" class="toggle-btn">View Transactions</button>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; justify-content: center;">
+        <table id="userTable" class="data-table">
+            <caption class="table-caption">List of users</caption>
+            <thead>
                 <tr>
-                    <td>@user.Username</td>
-                    <td>@user.FirstName</td>
-                    <td>@user.Email</td>
-                    <td>@user.Dob</td>
-
-                    @if (ViewBag.CurrentUser.RoleId == 8)
+                    <th style="width: 150px;">Username</th>
+                    <th style="width: 150px;">First Name</th>
+                    <th style="width: 250px;">Email</th>
+                    <th style="width: 150px;">Date of Birth</th>
+                    @if (ViewBag.CurrentUser.RoleId >= 6)
                     {
-                        <td style="text-align: center;">
-                            <div>
-                                <table class="button-column-table" id="buttonColumnTable">
-                                    <tr>
-                                        <td>
-                                            <form method="get" action="@Url.Action("EditUser", "User")">
-                                                <input type="hidden" name="userId" value="@user.UserId" />
-                                                <button type="submit" class="edit-btn">Edit</button>
-                                            </form>
-                                        </td>
-                                        <td>
-                                            <form method="post" action="@Url.Action("DeleteUser", "User")">
-                                                <input type="hidden" name="userId" value="@user.UserId" />
-                                                <button type="submit" class="delete-btn">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </td>
+                        <th style="width: max-content;">Actions</th>
                     }
-                    else if (ViewBag.CurrentUser.RoleId == 6)
-                    {
-                        <td style="text-align: center;">
-                            <div>
-                                <table class="button-column-table" id="buttonColumnTable">
-                                    <tr>
-
-                                        <td>
-                                            <form method="get" action="@Url.Action("EditUser", "User")">
-                                                <input type="hidden" name="userId" value="@user.UserId" />
-                                                @if (user.Store == ViewBag.CurrentUser.Store)
-                                                {
-                                                    <button type="submit" class="edit-btn">Edit</button>
-                                                }
-                                                else
-                                                {
-                                                    <button type="submit" class="disabled-edit-btn">Edit</button>
-                                                }
-                                            </form>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </td>
-                    }
-
                 </tr>
-            }
-        </tbody>
-    </table>
-    <div style="margin-top: 20px;  justify-content: center; ">
+            </thead>
+            <tbody>
+                @foreach (var user in ViewBag.AllUsers)
+                {
+                    var canEditUser = ViewBag.CurrentUser.RoleId == 8 || (ViewBag.CurrentUser.RoleId == 6 && user.Store == ViewBag.CurrentUser.Store);
+                    var canDeleteUser = ViewBag.CurrentUser.RoleId == 8;
+
+                    <tr>
+                        <td>@user.Username</td>
+                        <td>@user.FirstName</td>
+                        <td>@user.Email</td>
+                        <td>@user.Dob</td>
+
+                        @if (ViewBag.CurrentUser.RoleId >= 6)
+                        {
+                            <td style="text-align: center;">
+                                <div>
+                                    <table class="button-column-table" id="buttonColumnTable">
+                                        <tr>
+                                            @if (canEditUser)
+                                            {
+                                                <td>
+                                                    <form method="get" action="@Url.Action("EditUser", "User")">
+                                                        <input type="hidden" name="userId" value="@user.UserId" />
+                                                        <button type="submit" class="edit-btn">Edit</button>
+                                                    </form>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <button type="button" class="disabled-edit-btn" disabled>Edit</button>
+                                                </td>
+                                            }
+
+                                            @if (canDeleteUser)
+                                            {
+                                                <td>
+                                                    <form method="post" action="@Url.Action("DeleteUser", "User")">
+                                                        <input type="hidden" name="userId" value="@user.UserId" />
+                                                        <button type="submit" class="delete-btn">Delete</button>
+                                                    </form>
+                                                </td>
+                                            }
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
         <table id="storeTable" class="data-table" style="display: none;">
             <caption class="table-caption">List of Stores</caption>
             <thead>
@@ -96,16 +98,16 @@
                     <th style="width: 100px;">Rent</th>
                     <th style="width: 100px;">Store Status</th>
                     <th style="width: 100px;">Store Operation</th>
-
-
                     <th style="width: 200px;">Actions</th>
-
-
                 </tr>
             </thead>
             <tbody>
                 @foreach (var store in ViewBag.AllStores)
                 {
+                    var canEditStore = ViewBag.CurrentUser.RoleId == 8 || (ViewBag.CurrentUser.RoleId == 6 && ViewBag.CurrentUser.StoreId == store.StoreId);
+                    var canDeleteStore = ViewBag.CurrentUser.RoleId == 8;
+                    var isManager = ViewBag.CurrentUser.RoleId == 6;
+
                     <tr>
                         <td>@store.StoreId</td>
                         <td>@store.Address</td>
@@ -114,94 +116,200 @@
                         <td>@(store.IsDeleted ? "Out of business" : "Operating")</td>
                         <td style="text-align: center;">
                             <div>
-                                @if (ViewBag.CurrentUser.RoleId == 8)
-                                {
-                                    <table class="button-column-table" id="buttonColumnTable">
-                                        <tr>
+                                <table class="button-column-table" id="buttonColumnTable">
+                                    <tr>
+                                        @if (canEditStore)
+                                        {
                                             <td>
                                                 <form method="get" action="@Url.Action("EditStore", "Store")">
                                                     <input type="hidden" name="storeId" value="@store.StoreId" />
                                                     <button type="submit" class="edit-btn">Edit</button>
                                                 </form>
                                             </td>
+                                        }
+                                        else if (isManager)
+                                        {
+                                            <td>
+                                                <button type="button" class="disabled-edit-btn" disabled>Edit</button>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+
+                                        @if (canDeleteStore)
+                                        {
                                             <td>
                                                 <form method="post" action="@Url.Action("DeleteStore", "Store")">
                                                     <input type="hidden" name="storeId" value="@store.StoreId" />
                                                     <button type="submit" class="delete-btn">Delete</button>
                                                 </form>
                                             </td>
-                                            <td>
-                                                <form method="post" action="@Url.Action("StoreProducts", "Product")">
-                                                    <input type="hidden" name="storeId" value="@store.StoreId" />
-                                                    <button type="submit" class="viewproduct-btn">View Products</button>
-                                                </form>
-                                            </td>
+                                        }
 
-                                        </tr>
-                                    </table>
-                                }
-                                else if (ViewBag.CurrentUser.RoleId == 6)
-                                {
-                                    <table class="button-column-table" id="buttonColumnTable">
-                                        <tr>
-
-                                            <td>
-                                                <form method="get" action="@Url.Action("EditStore", "Store")">
-                                                    <input type="hidden" name="storeId" value="@store.StoreId" />
-                                                    @if (ViewBag.CurrentUser.StoreId == store.StoreId)
-                                                    {
-                                                        <button type="submit" class="edit-btn">Edit</button>
-                                                    }
-                                                    else
-                                                    {
-                                                        <button type="submit" class="disabled-edit-btn">Edit</button>
-                                                    }
-                                                </form>
-                                            </td>
-                                            <td>
-                                                <form method="post" action="@Url.Action("StoreProducts", "Product")">
-                                                    <input type="hidden" name="storeId" value="@store.StoreId" />
-                                                    <button type="submit" class="viewproduct-btn">View Products</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                }
-                                else
-                                {
-                                    <table class="button-column-table" id="buttonColumnTable">
-                                        <tr>
-                                            <td>
-                                                <form method="post" action="@Url.Action("StoreProducts", "Product")">
-                                                    <input type="hidden" name="storeId" value="@store.StoreId" />
-                                                    <button type="submit" class="viewproduct-btn">View Products</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                }
+                                        <td>
+                                            <form method="post" action="@Url.Action("StoreProducts", "Product")">
+                                                <input type="hidden" name="storeId" value="@store.StoreId" />
+                                                <button type="submit" class="viewproduct-btn">View Products</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
+
+
+        <table id="productInfoTable" class="data-table" style="display: none;">
+            <caption class="table-caption">List of Products</caption>
+            <thead>
+                <tr>
+                    <th style="width: 100px;">Product ID</th>
+                    <th style="width: 200px;">Name</th>
+                    <th>Description</th>
+                    <th style="width: 100px;">Price Before Tax</th>
+                    @*<th>Photo</th>*@
+                    @if (ViewBag.CurrentUser.RoleId == 8)
+                    {
+                        <th style="width: 100px;">Actions</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in ViewBag.ProductInfos)
+                {
+                    <tr>
+                        <td>@product.ProductId</td>
+                        <td>@product.Name</td>
+                        <td>@product.Description</td>
+                        <td>@product.PriceBeforeTax</td>
+                        @if (ViewBag.CurrentUser.RoleId == 8)
+                        {
+                            <td style="text-align: center;">
+                                <div>
+                                    <table class="button-column-table" id="buttonColumnTable">
+                                        <tr>
+                                            <td>
+                                                <form method="get" action="@Url.Action("EditProduct", "Product")">
+                                                    <input type="hidden" name="productId" value="@product.ProductId" />
+                                                    <button type="submit" class="edit-btn">Edit</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form method="post" action="@Url.Action("DeleteProduct", "Product")">
+                                                    <input type="hidden" name="productId" value="@product.ProductId" />
+                                                    <button type="submit" class="delete-btn">Delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <table id="transactionsTable" class="data-table" style="display: none;">
+            <caption class="table-caption">Transactions by Store</caption>
+            <thead>
+                <tr>
+                    <th>Store ID</th>
+                    <th>Transaction Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var storeGroup in ViewBag.TransactionsByStore)
+                {
+                    <tr>
+                        <td>@storeGroup.Key</td>
+                        @* <td>@storeGroup.Count</td> *@
+                        <td>
+                            <button class="toggle-transaction-btn" data-store-id="@storeGroup.Key">Show/Hide Transactions</button>
+                        </td>
+                    </tr>
+                    <tr class="transaction-details" data-store-id="@storeGroup.Key" style="display: none;">
+                        <td colspan="3">
+                            <table class="transaction-table data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <th>Cashier ID</th>
+                                        <th>Customer ID</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var transaction in storeGroup)
+                                    {
+                                        <tr>
+                                            <td>@transaction.TransactionId</td>
+                                            <td>@transaction.CashierId</td>
+                                            <td>@transaction.CustomerId</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        @section Scripts {
+            <script>
+
+                $(document).ready(function () {
+                    $('.toggle-transaction-btn').click(function () {
+                        var storeId = $(this).data('store-id');
+                        $('tr.transaction-details[data-store-id="' + storeId + '"]').toggle();
+                    });
+                    $('#showUsersBtn').click(function () {
+                        $('#userTable').show();
+                        $('#storeTable').hide();
+                        $('#productInfoTable').hide();
+                        $('#transactionsTable').hide();
+                    });
+
+                    $('#showStoresBtn').click(function () {
+                        $('#userTable').hide();
+                        $('#storeTable').show();
+                        $('#productInfoTable').hide();
+                        $('#transactionsTable').hide();
+                    });
+                    $('#showProductInfosBtn').click(function () {
+                        $('#userTable').hide();
+                        $('#storeTable').hide();
+                        $('#productInfoTable').show();
+                        $('#transactionsTable').hide();
+                    });
+                    $('#showTransactionsBtn').click(function () {
+                        $('#userTable').hide();
+                        $('#storeTable').hide();
+                        $('#productInfoTable').hide();
+                        $('#transactionsTable').show();
+                    });
+                });
+            </script>
+        }
     </div>
-    @section Scripts {
-        <script>
-            $(document).ready(function () {
-                $('#showUsersBtn').click(function () {
-                    $('#userTable').show();
-                    $('#storeTable').hide();
-                });
-
-                $('#showStoresBtn').click(function () {
-                    console.log("Show Stores button clicked");
-                    $('#userTable').hide();
-                    $('#storeTable').show();
-                });
-            });
-        </script>
-    }
-
-
+</body>
+</html>
