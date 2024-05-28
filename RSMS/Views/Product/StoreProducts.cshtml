@@ -119,6 +119,7 @@
 
     .discount-adjust-btn, .quantity-adjust-btn {
         margin: 0 5px;
+        margin-right: 0px;
     }
 
     .actions {
@@ -143,7 +144,6 @@
                     productId: product_id,
                     quantity: quantity,
                     discountPercent: discountPercent
-
                 },
                 success: function (response) {
                     const test = JSON.parse(response);
@@ -151,7 +151,6 @@
                     const discountPercentElement = document.getElementById(`${product_id}-discountPercent`);
                     quantityElement.value = test.Quantity;
                     discountPercentElement.value = test.DiscountPercent;
-                    console.log(test);
                 }
             });
         });

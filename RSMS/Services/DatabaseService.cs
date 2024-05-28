@@ -15,6 +15,18 @@ namespace RSMS.Services
             Manager = 6,
             Admin = 8
         }
+        public enum TaxRate
+        {
+            GeneralSalesTax = 1,
+            LuxuryGoodsTax = 2,
+            FoodAndBeverageTax = 3,
+            ElectronicsTax = 4,
+            EssentialGoodsTax = 5
+        }
+        public static List<TransactionDetail> GetTransactionDetails(Guid transactionId)
+        {
+            return Context.TransactionDetails.Where(td => td.TransactionId == transactionId).ToList();
+        }
         public static List<Transaction> GetAllTransactions(Guid? userId = null)
         {
             if (userId == null)
@@ -43,6 +55,7 @@ namespace RSMS.Services
             existingProductInfo.Description = productInfo.Description;
             existingProductInfo.PriceBeforeTax = productInfo.PriceBeforeTax;
             existingProductInfo.Photo = productInfo.Photo;
+            existingProductInfo.TaxType = productInfo.TaxType;
 
             Context.SaveChanges();
             return true;

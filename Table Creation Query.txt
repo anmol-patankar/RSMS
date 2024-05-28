@@ -43,13 +43,27 @@ CREATE TABLE Payroll_History
 	FOREIGN KEY (store_id) REFERENCES Store(store_id)
 );
 
+CREATE TABLE Tax_Rates
+(
+	tax_type INT PRIMARY KEY NOT NULL,
+	tax_rate INT NOT NULL
+);
+INSERT INTO Tax_Rates (tax_type, tax_rate) VALUES
+(0,0),
+(1, 5),   -- Example: General Sales Tax
+(2, 10),  -- Example: Luxury Goods Tax
+(3, 8),   -- Example: Food and Beverage Tax
+(4, 12),  -- Example: Electronics Tax
+(5, 0);   -- Example: Essential Goods Tax (e.g., medicines)
 CREATE TABLE Product_Info
 (
 	product_id NVARCHAR(5) UNIQUE NOT NULL PRIMARY KEY,
 	name NVARCHAR(200) NOT NULL,
 	description TEXT,
 	price_before_tax int NOT NULL,
-	photo NVARCHAR(256)
+	photo NVARCHAR(256),
+	tax_type INT NOT NULL DEFAULT 0,
+	FOREIGN KEY(tax_type) REFERENCES Tax_Rates(tax_type),
 );
 
 CREATE TABLE Product_Stock
@@ -63,46 +77,31 @@ CREATE TABLE Product_Stock
 	PRIMARY KEY(store_id, product_id)
 );
 
-CREATE TABLE Tax_Rate
-(
-	tax_type INT PRIMARY KEY NOT NULL,
-	tax_rate INT NOT NULL
-);
-
-CREATE TABLE Product_Taxes
-(
-	product_id NVARCHAR(5) NOT NULL,
-	tax_type INT NOT NULL,
-	FOREIGN KEY(product_id) REFERENCES Product_Info(product_id),
-	FOREIGN KEY(tax_type) REFERENCES Tax_Rate(tax_type),
-	PRIMARY KEY(product_id, tax_type)
-);
 
 CREATE TABLE Transactions
 (
-	transaction_id UNIQUEIDENTIFIER  DEFAULT NEWID() NOT NULL PRIMARY KEY,
-	product_id NVARCHAR(5) NOT NULL,
-	store_id INT  NOT NULL,
-	cashier_id UNIQUEIDENTIFIER NOT NULL,
-	
-	customer_id UNIQUEIDENTIFIER NOT NULL,
-	FOREIGN KEY(product_id) REFERENCES Product_Info(product_id),
-	
-	FOREIGN KEY(store_id) REFERENCES Store(store_id),
-	
-	FOREIGN KEY(cashier_id) REFERENCES User_Info(user_id),
-	FOREIGN KEY(customer_id) REFERENCES User_Info(user_id),
+    transaction_id UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY,
+    store_id INT NOT NULL,
+    cashier_id UNIQUEIDENTIFIER NOT NULL,
+    customer_id UNIQUEIDENTIFIER NOT NULL,
+    transaction_timestamp DATETIME DEFAULT GETDATE() NOT NULL,
+
+    FOREIGN KEY(store_id) REFERENCES Store(store_id),
+    FOREIGN KEY(cashier_id) REFERENCES User_Info(user_id),
+    FOREIGN KEY(customer_id) REFERENCES User_Info(user_id)
 );
 
 CREATE TABLE Transaction_Details
 (
-	transaction_id UNIQUEIDENTIFIER PRIMARY KEY  NOT NULL ,
-	product_id NVARCHAR(5) NOT NULL,
-	price_before_tax INT NOT NULL,
-	tax_amount INT NOT NULL,
-	discount_amount INT NOT NULL,
-	FOREIGN KEY(transaction_id) REFERENCES Transactions(transaction_id),
-	FOREIGN KEY(product_id) REFERENCES Product_Info(product_id),
+    transaction_id UNIQUEIDENTIFIER NOT NULL,
+    product_id NVARCHAR(5) NOT NULL,
+	quantity INT NOT NULL DEFAULT 1,
+    price_before_tax INT NOT NULL,
+    tax_amount INT NOT NULL,
+    discount_amount INT NOT NULL,
+    PRIMARY KEY (transaction_id, product_id),
+    FOREIGN KEY (transaction_id) REFERENCES Transactions(transaction_id),
+    FOREIGN KEY (product_id) REFERENCES Product_Info(product_id)
 );
 
 GO

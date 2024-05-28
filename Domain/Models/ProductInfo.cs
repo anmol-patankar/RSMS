@@ -15,9 +15,11 @@ public partial class ProductInfo
 
     public string? Photo { get; set; }
 
+    public int? TaxType { get; set; }
+
     public virtual ICollection<ProductStock> ProductStocks { get; set; } = new List<ProductStock>();
 
-    public virtual ICollection<TransactionDetail> TransactionDetails { get; set; } = new List<TransactionDetail>();
+    public virtual TaxRate? TaxTypeNavigation { get; set; }
 
-    public virtual ICollection<TaxRate> TaxTypes { get; set; } = new List<TaxRate>();
+    public virtual ICollection<TransactionDetail> TransactionDetails { get; set; } = new List<TransactionDetail>();
 }

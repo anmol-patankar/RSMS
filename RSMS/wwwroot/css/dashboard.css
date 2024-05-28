@@ -113,6 +113,7 @@
     font-weight: bold;
     font-size: 1.2em;
     padding: 10px;
+    caption-side: top;
 }
 
 .button-column-table {

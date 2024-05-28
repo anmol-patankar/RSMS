@@ -11,9 +11,11 @@ public partial class TransactionDetail
 
     public int PriceBeforeTax { get; set; }
 
-    public int TaxAmount { get; set; }
+    public int TaxPercent { get; set; }
 
-    public int DiscountAmount { get; set; }
+    public int DiscountPercent { get; set; }
+
+    public int Quantity { get; set; }
 
     public virtual ProductInfo Product { get; set; } = null!;
 

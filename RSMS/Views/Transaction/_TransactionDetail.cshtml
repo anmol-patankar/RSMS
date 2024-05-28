@@ -1,0 +1,44 @@
+﻿@model List<Domain.Models.TransactionDetail>
+@{
+    double allProductsTotal = 0;
+}<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Transaction Details</h5>
+        <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Quantity</th>
+                    <th>Price Before Tax</th>
+                    <th>Tax Amount</th>
+                    <th>Discount Amount</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var detail in Model)
+                {
+                    double currentProductTotal = Math.Ceiling(detail.Quantity*(detail.PriceBeforeTax * (1 + (double)detail.TaxPercent / 100) * (1 - (double)detail.DiscountPercent / 100)));
+                    allProductsTotal += currentProductTotal;
+                    <tr>
+                        <td>@detail.ProductId</td>
+                        <td>@detail.Quantity</td>
+                        <td>@detail.PriceBeforeTax</td>
+                        <td>@detail.TaxPercent</td>
+                        <td>@detail.DiscountPercent</td>
+                        <td>@currentProductTotal</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align: right; font-weight: bold;">Total Bill Amount</td>
+                    <td style="font-weight: bold;">@allProductsTotal</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

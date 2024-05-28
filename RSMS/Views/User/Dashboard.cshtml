@@ -194,7 +194,7 @@
                                     <table class="button-column-table" id="buttonColumnTable">
                                         <tr>
                                             <td>
-                                                <form method="get" action="@Url.Action("EditProduct", "Product")">
+                                                <form method="get" action="@Url.Action("EditProductInfo", "Product")">
                                                     <input type="hidden" name="productId" value="@product.ProductId" />
                                                     <button type="submit" class="edit-btn">Edit</button>
                                                 </form>
@@ -220,7 +220,7 @@
             <thead>
                 <tr>
                     <th>Store ID</th>
-                    <th>Transaction Count</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -238,19 +238,23 @@
                             <table class="transaction-table data-table">
                                 <thead>
                                     <tr>
-                                        <th>Transaction ID</th>
-                                        <th>Cashier ID</th>
-                                        <th>Customer ID</th>
-
+                                        <th>View Transaction Details</th>
+                                        <th>Cashier Name</th>
+                                        <th>Customer Name</th>
+                                        <th>Transaction Time</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var transaction in storeGroup)
                                     {
                                         <tr>
-                                            <td>@transaction.TransactionId</td>
-                                            <td>@transaction.CashierId</td>
-                                            <td>@transaction.CustomerId</td>
+                                            <td>
+                                                <button class="show-transaction-details-btn" data-transaction-id="@transaction.TransactionId">View Details</button>
+                                            </td>
+
+                                            <td>@RSMS.Services.DatabaseService.GetUser(transaction.CashierId).FirstName</td>
+                                            <td>@RSMS.Services.DatabaseService.GetUser(transaction.CustomerId).FirstName</td>
+                                            <td>@transaction.TransactionTimestamp</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -261,55 +265,72 @@
             </tbody>
         </table>
 
+        <div class="modal fade" id="transactionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="transactionDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content" id="modal-content">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-        @section Scripts {
-            <script>
-
-                $(document).ready(function () {
-                    $('.toggle-transaction-btn').click(function () {
-                        var storeId = $(this).data('store-id');
-                        $('tr.transaction-details[data-store-id="' + storeId + '"]').toggle();
-                    });
-                    $('#showUsersBtn').click(function () {
-                        $('#userTable').show();
-                        $('#storeTable').hide();
-                        $('#productInfoTable').hide();
-                        $('#transactionsTable').hide();
-                    });
-
-                    $('#showStoresBtn').click(function () {
-                        $('#userTable').hide();
-                        $('#storeTable').show();
-                        $('#productInfoTable').hide();
-                        $('#transactionsTable').hide();
-                    });
-                    $('#showProductInfosBtn').click(function () {
-                        $('#userTable').hide();
-                        $('#storeTable').hide();
-                        $('#productInfoTable').show();
-                        $('#transactionsTable').hide();
-                    });
-                    $('#showTransactionsBtn').click(function () {
-                        $('#userTable').hide();
-                        $('#storeTable').hide();
-                        $('#productInfoTable').hide();
-                        $('#transactionsTable').show();
-                    });
-                });
-            </script>
-        }
     </div>
 </body>
 </html>
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+            $('.show-transaction-details-btn').on('click', function () {
+                var transactionId = $(this).data('transaction-id');
+                var url = '@Url.Action("TransactionDetail", "Transaction")';
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        transactionId: transactionId
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        $('#modal-content').html(result);
+                        $('#transactionDetailsModal').modal('show');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error occurred: " + status + " " + error);
+
+                    }
+                });
+            });
+
+            $('.toggle-transaction-btn').click(function () {
+                var storeId = $(this).data('store-id');
+                $('tr.transaction-details[data-store-id="' + storeId + '"]').toggle();
+            });
+            $('#showUsersBtn').click(function () {
+                $('#userTable').show();
+                $('#storeTable').hide();
+                $('#productInfoTable').hide();
+                $('#transactionsTable').hide();
+            });
+
+            $('#showStoresBtn').click(function () {
+                $('#userTable').hide();
+                $('#storeTable').show();
+                $('#productInfoTable').hide();
+                $('#transactionsTable').hide();
+            });
+            $('#showProductInfosBtn').click(function () {
+                $('#userTable').hide();
+                $('#storeTable').hide();
+                $('#productInfoTable').show();
+                $('#transactionsTable').hide();
+            });
+            $('#showTransactionsBtn').click(function () {
+                $('#userTable').hide();
+                $('#storeTable').hide();
+                $('#productInfoTable').hide();
+                $('#transactionsTable').show();
+            });
+        });
+    </script>
+}

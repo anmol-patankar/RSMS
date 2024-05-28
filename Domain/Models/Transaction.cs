@@ -13,11 +13,13 @@ public partial class Transaction
 
     public Guid CustomerId { get; set; }
 
+    public DateTime TransactionTimestamp { get; set; }
+
     public virtual UserInfo Cashier { get; set; } = null!;
 
     public virtual UserInfo Customer { get; set; } = null!;
 
     public virtual Store Store { get; set; } = null!;
 
-    public virtual TransactionDetail? TransactionDetail { get; set; }
+    public virtual ICollection<TransactionDetail> TransactionDetails { get; set; } = new List<TransactionDetail>();
 }
