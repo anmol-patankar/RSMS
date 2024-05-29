@@ -49,7 +49,7 @@ namespace RSMS.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public IActionResult EditProductInfo(string productId)
         {
-            return View(DatabaseService.GetProductInfo(productId));
+            return View(DatabaseService.GetProductInfoFromID(productId));
         }
         [HttpPost]
         public IActionResult EditProductInfo(ProductInfo productInfo)

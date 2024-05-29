@@ -23,6 +23,20 @@ namespace RSMS.Services
             ElectronicsTax = 4,
             EssentialGoodsTax = 5
         }
+        public static void AddProductStockToStore(ProductStock stock)
+        {
+            Context.ProductStocks.Add(stock);
+            Context.SaveChanges();
+        }
+        public static List<string> GetNotAddedProducts(int storeId)
+        {
+
+            return (from p in Context.ProductInfos
+                    where !(from ps in Context.ProductStocks
+                            where ps.StoreId == storeId
+                            select ps.ProductId).Contains(p.ProductId)
+                    select p.Name).ToList();
+        }
         public static List<TransactionDetail> GetTransactionDetails(Guid transactionId)
         {
             return Context.TransactionDetails.Where(td => td.TransactionId == transactionId).ToList();
@@ -44,9 +58,13 @@ namespace RSMS.Services
         {
             return Context.ProductInfos.ToList();
         }
-        public static ProductInfo GetProductInfo(string productId)
+        public static ProductInfo GetProductInfoFromID(string productId)
         {
             return Context.ProductInfos.Where(p => p.ProductId == productId).First();
+        }
+        public static ProductInfo GetProductInfoFromName(string name)
+        {
+            return Context.ProductInfos.Where(p => p.Name == name).First();
         }
         public static bool EditProductInfo(ProductInfo productInfo)
         {
