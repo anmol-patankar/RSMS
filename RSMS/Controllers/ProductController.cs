@@ -6,12 +6,20 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using RSMS.ActionAttributes;
+using RSMS.ViewModels;
 namespace RSMS.Controllers
 {
     [Authorize]
     [NoCache]
     public class ProductController : Controller
     {
+        public IActionResult CheckAvailibility(string productId)
+        {
+
+            List<StoreAvailibilityModel> storeAvailibility = DatabaseService.GetProductAvailibility(productId);
+
+            return PartialView("_CheckAvailibilityPartial", storeAvailibility);
+        }
         public ProductController(RsmsTestContext context, IConfiguration config)
         {
             SecurityService.SetKeyConfig((config[Constants.AesKeyString]), config);

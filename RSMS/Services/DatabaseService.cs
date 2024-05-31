@@ -23,6 +23,22 @@ namespace RSMS.Services
             ElectronicsTax = 4,
             EssentialGoodsTax = 5
         }
+        public static List<StoreAvailibilityModel> GetProductAvailibility(string productId)
+        {
+            List<StoreAvailibilityModel> storeAvailibility = new();
+            var productPriceBeforeTax = Context.ProductInfos.Where(pi => pi.ProductId == productId).First().PriceBeforeTax;
+            var storeStockOfProduct = Context.ProductStocks.Where(ps => ps.ProductId == productId).ToList();
+            foreach (var storeStock in storeStockOfProduct)
+            {
+                storeAvailibility.Add(new StoreAvailibilityModel
+                {
+                    StoreId = storeStock.StoreId,
+                    DiscountPercent = storeStock.DiscountPercent,
+                    Quantity = storeStock.Quantity
+                });
+            }
+            return storeAvailibility.OrderBy(s => s.StoreId).ToList();
+        }
         public static void AddProductStockToStore(ProductStock stock)
         {
             Context.ProductStocks.Add(stock);
