@@ -41,6 +41,7 @@ namespace RSMS.Controllers
             }
             ViewBag.TransactionsByStore = allTransactions.GroupBy(t => t.StoreId);
 
+
             return View();
         }
 
@@ -149,13 +150,12 @@ namespace RSMS.Controllers
             return RedirectToAction("Dashboard", "User");
         }
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize]
         public IActionResult EditUser(Guid userId)
         {
             return View(DatabaseService.GetUser(userId));
         }
-
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize]
         [HttpPost]
         public IActionResult EditUser(UserInfo userToEdit)
         {

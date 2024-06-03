@@ -14,78 +14,80 @@
 }
 <button class="add-product-stock-btn" id="addProductStockbtn" class="toggle-btn">Add Product</button>
 <div style="margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center;">
-    @foreach (var product in Model)
-    {
-        <div class="product-card">
-            <div class="product-card-header">
-                <h3>@product.Name</h3>
-            </div>
-            <div class="product-card-body">
-                <div class="product-detail-img">
-
-                    <img src="~/ProductImages/@product.Photo" /> 
-                </div>
-                <div class="product-detail">
-                    <strong>Product ID:</strong>
-                    <span>@product.ProductId</span>
-                </div>
-                @* <div class="product-detail">
-            <strong>Description:</strong>
-            <span>@product.Description</span>
-            </div> *@
-                <div class="product-detail">
-                    <strong>Pretax Price:</strong>
-                    <span>@product.PriceBeforeTax</span>
-                </div>
-
-                @if (isAdmin || isManagerOfStore)
-                {
-                    <div class="product-detail discount-wrapper">
-                        <strong>Discount Percent:</strong>
-                        <div class="button-group">
-                            <button type="button" class="discount-adjust-btn subtract-btn" data-operation="subtract">-</button>
-                            <input type="number" min="0" max="100" name="discountPercent" class="discount-input" id="@product.ProductId-discountPercent" value="@product.DiscountPercent" />
-                            <button type="button" class="discount-adjust-btn add-btn" data-operation="add">+</button>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        @foreach (var product in Model)
+        {
+            <div class="col">
+                <div class="card h-100 border-dark">
+                    <div class="card-header">
+                        <small class="text-body-secondary">Product ID: @product.ProductId</small>
+                    </div>
+                    <img src="~/ProductImages/bananas.jpg" class="card-img-top" alt="@product.Description">
+                    <hr />
+                    <div class="card-body">
+                        <div class="card-title">
+                            <strong>@product.Name</strong>: @product.Description
                         </div>
-                    </div>
-                    <div class="product-detail quantity-wrapper">
-                        <strong>Quantity:</strong>
-                        <div class="button-group">
-                            <button type="button" class="quantity-adjust-btn subtract-btn" data-operation="subtract">-</button>
-                            <input type="number" min="0" max="10000" name="quantity" class="quantity-input" id="@product.ProductId-quantity" value="@product.Quantity" />
-                            <button type="button" class="quantity-adjust-btn add-btn" data-operation="add">+</button>
+
+
+                        <hr />
+                        <div class="product-detail">
+                            <p>Pretax Price:</p>
+                            <span>@product.PriceBeforeTax</span>
                         </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="product-detail">
-                        <strong>Discount Percent:</strong>
-                        <span>@product.DiscountPercent</span>
-                    </div>
-                    <div class="product-detail">
-                        <strong>Quantity:</strong>
-                        <span>@product.Quantity</span>
-                    </div>
-                }
 
-                @if (isAdmin || isManagerOfStore)
-                {
-                    <div class="actions">
-                        <button type="submit" data-product-id="@product.ProductId" class="qty-discount-update save-quantity-btn edit-btn">Save</button>
-
-                        @if (isAdmin)
+                        @if (isAdmin || isManagerOfStore)
                         {
-                            <form method="get" action="@Url.Action("EditProductInfo", "Product")" style="display: inline;">
-                                <input type="hidden" name="productId" value="@product.ProductId" />
-                                <button type="submit" class="edit-btn">Edit</button>
-                            </form>
+                            <div class="product-detail discount-wrapper">
+                                <p>Discount Percent:</p>
+                                <div class="button-group">
+                                    <button type="button" class="discount-adjust-btn subtract-btn" data-operation="subtract">-</button>
+                                    <input type="number" min="0" max="100" name="discountPercent" class="discount-input" id="@product.ProductId-discountPercent" value="@product.DiscountPercent" />
+                                    <button type="button" class="discount-adjust-btn add-btn" data-operation="add">+</button>
+                                </div>
+                            </div>
+                            <div class="product-detail quantity-wrapper">
+                                <p>Quantity:</p>
+                                <div class="button-group">
+                                    <button type="button" class="quantity-adjust-btn subtract-btn" data-operation="subtract">-</button>
+                                    <input type="number" min="0" max="10000" name="quantity" class="quantity-input" id="@product.ProductId-quantity" value="@product.Quantity" />
+                                    <button type="button" class="quantity-adjust-btn add-btn" data-operation="add">+</button>
+                                </div>
+                            </div>
                         }
+                        else
+                        {
+                            <div class="product-detail">
+                                <p>Discount Percent:</p>
+                                <span>@product.DiscountPercent</span>
+                            </div>
+                            <div class="product-detail">
+                                <strong>Quantity:</strong>
+                                <span>@product.Quantity</span>
+                            </div>
+                        }
+
+                        @if (isAdmin || isManagerOfStore)
+                        {
+                            <div class="actions">
+                                <button type="submit" data-product-id="@product.ProductId" class="qty-discount-update save-quantity-btn edit-btn">Save</button>
+
+                                @if (isAdmin)
+                                {
+                                    <form method="get" action="@Url.Action("EditProductInfo", "Product")" style="display: inline;">
+                                        <input type="hidden" name="productId" value="@product.ProductId" />
+                                        <button type="submit" class="edit-btn">Edit</button>
+                                    </form>
+                                }
+                            </div>
+                        }
+
                     </div>
-                }
+
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
     <div class="modal fade" id="transactionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="transactionDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content" id="modal-content">
@@ -95,6 +97,7 @@
     </div>
 </div>
 <style>
+
     .product-card {
         border: 1px solid #ccc;
         border-radius: 8px;
@@ -112,18 +115,13 @@
         margin-bottom: 10px;
     }
 
+    .card-body {
+        padding-top: 0px;
+    }
+
     .product-detail {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .product-detail-img {
-        background-image: url(../../wwwroot/ProductImages/toothpaSTE.jpg);
-        background-size: cover;
-        background-repeat: no-repeat;
-        height: 120px;
     }
 
     .discount-wrapper, .quantity-wrapper {

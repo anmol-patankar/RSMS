@@ -14,11 +14,15 @@
         <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="margin-top:40px">
             @if (ViewBag.CurrentUser.RoleId >= 4)
             {
-                <button class="nav-link active btn btn-lg mb-2" id="v-pills-users-tab" data-bs-toggle="pill" data-bs-target="#v-pills-users" type="button" role="tab" aria-controls="v-pills-users" aria-selected="true">Users</button>
+                <button class="nav-link active btn btn-lg mb-2 text-start" id="v-pills-users-tab" data-bs-toggle="pill" data-bs-target="#v-pills-users" type="button" role="tab" aria-controls="v-pills-users" aria-selected="true">Users</button>
             }
-            <button class="nav-link  btn btn-lg mb-2" id="v-pills-stores-tab" data-bs-toggle="pill" data-bs-target="#v-pills-stores" type="button" role="tab" aria-controls="v-pills-stores" aria-selected="false">Stores</button>
-            <button class="nav-link  btn btn-lg mb-2" id="v-pills-products-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products" type="button" role="tab" aria-controls="v-pills-products" aria-selected="false">Products</button>
-            <button class="nav-link  btn btn-lg mb-2" id="v-pills-transactions-tab" data-bs-toggle="pill" data-bs-target="#v-pills-transactions" type="button" role="tab" aria-controls="v-pills-transactions" aria-selected="false">Transactions</button>
+            else
+            {
+                <button class="nav-link active btn btn-lg mb-2 text-start" id="v-pills-userinfo-tab" data-bs-toggle="pill" data-bs-target="#v-pills-userinfo" type="button" role="tab" aria-controls="v-pills-userinfo" aria-selected="true">User Info</button>
+            }
+            <button class="nav-link btn btn-lg mb-2 text-start" id="v-pills-stores-tab" data-bs-toggle="pill" data-bs-target="#v-pills-stores" type="button" role="tab" aria-controls="v-pills-stores" aria-selected="false">Stores</button>
+            <button class="nav-link btn btn-lg mb-2 text-start" id="v-pills-products-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products" type="button" role="tab" aria-controls="v-pills-products" aria-selected="false">Products</button>
+            <button class="nav-link btn btn-lg mb-2 text-start" id="v-pills-transactions-tab" data-bs-toggle="pill" data-bs-target="#v-pills-transactions" type="button" role="tab" aria-controls="v-pills-transactions" aria-selected="false">Transactions</button>
         </div>
         <div class="tab-content" id="v-pills-tabContent">
             @if (ViewBag.CurrentUser.RoleId >= 4)
@@ -94,6 +98,30 @@
                         </tbody>
                     </table>
                 </div>
+            }
+            else
+            {
+                <div class="tab-pane fade show active" id="v-pills-userinfo" role="tabpanel" aria-labelledby="v-pills-userinfo-tab" tabindex="0">
+                    <div class="card" style="margin-top: 20px;">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>User Information</span>
+                            <form method="get" action="@Url.Action("EditUser", "User")" class="m-0">
+                                <input type="hidden" name="userId" value="@ViewBag.CurrentUser.UserId" />
+                                <button type="submit" class="btn btn-primary btn-sm"><em>Edit</em></button>
+                            </form>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>First Name:</strong> @ViewBag.CurrentUser.FirstName</p>
+                            <p class="card-text"><strong>Last Name:</strong> @ViewBag.CurrentUser.LastName</p>
+                            <p class="card-text"><strong>Username:</strong> @ViewBag.CurrentUser.Username</p>
+                            <p class="card-text"><strong>Email:</strong> @ViewBag.CurrentUser.Email</p>
+                            <p class="card-text"><strong>Phone:</strong> @ViewBag.CurrentUser.Phone</p>
+                            <p class="card-text"><strong>Date of Birth:</strong> @ViewBag.CurrentUser.Dob.ToString("yyyy-MM-dd")</p>
+                            <p class="card-text"><strong>Registration Date:</strong> @ViewBag.CurrentUser.RegistrationDate.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                        </div>
+                    </div>
+                </div>
+
             }
             <div class="tab-pane fade" id="v-pills-stores" role="tabpanel" aria-labelledby="v-pills-stores-tab" tabindex="0">
                 <table id="storeTable" class="data-table">
@@ -242,7 +270,7 @@
                                 <td>@storeGroup.Key</td>
                                 @* <td>@storeGroup.Count</td> *@
                                 <td>
-                                    <button class="toggle-transaction-btn" data-store-id="@storeGroup.Key">Show/Hide Transactions</button>
+                                    <button class="toggle-transaction-btn" data-store-id="@storeGroup.Key">Show Transactions</button>
                                 </td>
                             </tr>
                             <tr class="transaction-details" data-store-id="@storeGroup.Key" style="display: none;">
@@ -303,6 +331,7 @@
     <script>
 
         $(document).ready(function () {
+
             $('.show-transaction-details-btn').on('click', function () {
                 var transactionId = $(this).data('transaction-id');
                 var url = '@Url.Action("TransactionDetail", "Transaction")';
@@ -347,8 +376,16 @@
 
             $('.toggle-transaction-btn').click(function () {
                 var storeId = $(this).data('store-id');
-                $('tr.transaction-details[data-store-id="' + storeId + '"]').toggle();
+                var $detailsRow = $('tr.transaction-details[data-store-id="' + storeId + '"]');
+
+                if ($detailsRow.is(':visible')) {
+                    $detailsRow.hide();
+                } else {
+                    $('tr.transaction-details').hide(); // Hide all other rows
+                    $detailsRow.show();
+                }
             });
+
 
             $('#showUsersBtn').click(function () {
                 $('#userTable').show();
@@ -379,6 +416,4 @@
             });
         });
     </script>
-
-                                                                                        </script>
 }

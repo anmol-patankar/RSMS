@@ -14,8 +14,8 @@
                     <th>Product ID</th>
                     <th>Quantity</th>
                     <th>Pretax Price</th>
-                    <th>Tax Amount</th>
-                    <th>Discount Amount</th>
+                    <th>Tax Percent</th>
+                    <th>Discount Percent</th>
                     <th>Total Price</th>
                 </tr>
             </thead>
@@ -28,8 +28,8 @@
                         <td>@detail.ProductId</td>
                         <td>@detail.Quantity</td>
                         <td>@detail.PriceBeforeTax</td>
-                        <td>@detail.TaxPercent</td>
-                        <td>@detail.DiscountPercent</td>
+                        <td>@detail.TaxPercent%</td>
+                        <td>@detail.DiscountPercent%</td>
                         <td>@currentProductTotal</td>
                     </tr>
                 }
