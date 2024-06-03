@@ -97,8 +97,8 @@ CREATE TABLE Transaction_Details
     product_id NVARCHAR(5) NOT NULL,
 	quantity INT NOT NULL DEFAULT 1,
     price_before_tax INT NOT NULL,
-    tax_amount INT NOT NULL,
-    discount_amount INT NOT NULL,
+    tax_percent INT NOT NULL,
+    discount_percent INT NOT NULL,
     PRIMARY KEY (transaction_id, product_id),
     FOREIGN KEY (transaction_id) REFERENCES Transactions(transaction_id),
     FOREIGN KEY (product_id) REFERENCES Product_Info(product_id)

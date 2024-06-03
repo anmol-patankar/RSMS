@@ -1,6 +1,4 @@
-﻿using Domain.Models;
-
-namespace RSMS.ViewModels
+﻿namespace RSMS.ViewModels
 {
     public class StoreAvailibilityModel
     {
@@ -9,6 +7,5 @@ namespace RSMS.ViewModels
         public int Quantity { get; set; }
 
         public int DiscountPercent { get; set; }
-
     }
 }

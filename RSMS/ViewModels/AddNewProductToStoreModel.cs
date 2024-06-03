@@ -9,6 +9,5 @@
         public int Quantity { get; set; }
 
         public int DiscountPercent { get; set; }
-
     }
 }

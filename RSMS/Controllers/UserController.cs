@@ -7,7 +7,6 @@ using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
-using System.Linq;
 
 namespace RSMS.Controllers
 {
@@ -18,6 +17,7 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig(config[Constants.AesKeyString], config);
             DatabaseService.SetContext(context);
         }
+
         [Authorize]
         [NoCache]
         public IActionResult Dashboard()
@@ -34,22 +34,22 @@ namespace RSMS.Controllers
             if (currentAccessingUser.RoleId == 2)
             {
                 allTransactions = DatabaseService.GetAllTransactions(currentAccessingUser.UserId);
-
             }
             else
             {
                 allTransactions = DatabaseService.GetAllTransactions();
-
             }
             ViewBag.TransactionsByStore = allTransactions.GroupBy(t => t.StoreId);
 
             return View();
         }
+
         [Authorize]
         public IActionResult Index()
         {
             return RedirectToAction("Dashboard");
         }
+
         [AllowAnonymous]
         public IActionResult Login()
         {
@@ -57,6 +57,7 @@ namespace RSMS.Controllers
                 return RedirectToAction("Dashboard");
             return View();
         }
+
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Login(UserLoginModel login)
@@ -147,11 +148,13 @@ namespace RSMS.Controllers
             DatabaseService.DeleteUser(userId);
             return RedirectToAction("Dashboard", "User");
         }
+
         [Authorize(Roles = "Admin,Manager")]
         public IActionResult EditUser(Guid userId)
         {
             return View(DatabaseService.GetUser(userId));
         }
+
         [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         public IActionResult EditUser(UserInfo userToEdit)

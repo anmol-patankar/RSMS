@@ -1,7 +1,6 @@
 ﻿using Domain.Models;
 using Microsoft.CodeAnalysis;
 using RSMS.ViewModels;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RSMS.Services
@@ -46,7 +45,6 @@ namespace RSMS.Services
         }
         public static List<string> GetNotAddedProducts(int storeId)
         {
-
             return (from p in Context.ProductInfos
                     where !(from ps in Context.ProductStocks
                             where ps.StoreId == storeId
@@ -65,7 +63,6 @@ namespace RSMS.Services
             }
             else
             {
-
                 return Context.Transactions.Where(t => t.CustomerId == userId).ToList();
             }
         }
@@ -93,7 +90,6 @@ namespace RSMS.Services
 
             Context.SaveChanges();
             return true;
-
         }
         public static List<TotalProductInfoModel> GetTotalProductInfo(int storeId)
         {
@@ -120,13 +116,11 @@ namespace RSMS.Services
         {
             Context.ProductStocks.First(ps => ps.StoreId == storeId && ps.ProductId == productId).Quantity = quantity;
             Context.SaveChanges();
-
         }
         public static void UpdateProductDiscount(int storeId, string productId, int discountPercent)
         {
             Context.ProductStocks.First(ps => ps.StoreId == storeId && ps.ProductId == productId).DiscountPercent = discountPercent;
             Context.SaveChanges();
-
         }
         public static int RoleNameToRoleId(string roleName)
         {

@@ -1,5 +1,4 @@
 ﻿using Domain.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RSMS.Services;
 
@@ -12,6 +11,7 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig(config[Constants.AesKeyString], config);
             DatabaseService.SetContext(context);
         }
+
         [HttpGet]
         public IActionResult TransactionDetail(Guid transactionId)
         {

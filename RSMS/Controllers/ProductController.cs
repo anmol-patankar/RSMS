@@ -1,12 +1,12 @@
 ﻿using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RSMS.ActionAttributes;
 using RSMS.Services;
-using System.Text.Json.Serialization;
+using RSMS.ViewModels;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Authorization;
-using RSMS.ActionAttributes;
-using RSMS.ViewModels;
+
 namespace RSMS.Controllers
 {
     [Authorize]
@@ -15,16 +15,17 @@ namespace RSMS.Controllers
     {
         public IActionResult CheckAvailibility(string productId)
         {
-
             List<StoreAvailibilityModel> storeAvailibility = DatabaseService.GetProductAvailibility(productId);
 
             return PartialView("_CheckAvailibilityPartial", storeAvailibility);
         }
+
         public ProductController(RsmsTestContext context, IConfiguration config)
         {
             SecurityService.SetKeyConfig((config[Constants.AesKeyString]), config);
             DatabaseService.SetContext(context);
         }
+
         public IActionResult Index()
         {
             return View();
@@ -37,6 +38,7 @@ namespace RSMS.Controllers
             ViewBag.CurrentUser = DatabaseService.GetUser(User.Identity.Name);
             return View(productsOfStore);
         }
+
         [HttpPost]
         public IActionResult UpdateStoreQtyAndDiscount(int storeId, string productId, int quantity, int discountPercent)
         {
@@ -54,11 +56,13 @@ namespace RSMS.Controllers
             var json = JsonSerializer.Serialize(result);
             return Ok(json);
         }
+
         [Authorize(Roles = "Admin,Manager")]
         public IActionResult EditProductInfo(string productId)
         {
             return View(DatabaseService.GetProductInfoFromID(productId));
         }
+
         [HttpPost]
         public IActionResult EditProductInfo(ProductInfo productInfo)
         {

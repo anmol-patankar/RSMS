@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 
 namespace RSMS.Controllers
 {
-
     public class StoreController : Controller
     {
         public StoreController(RsmsTestContext context, IConfiguration config)
@@ -15,6 +14,7 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig((config[Constants.AesKeyString]), config);
             DatabaseService.SetContext(context);
         }
+
         [HttpPost]
         public IActionResult AddProductStock(AddNewProductToStoreModel model)
         {
@@ -25,7 +25,7 @@ namespace RSMS.Controllers
             {
                 ProductStock stock = new()
                 {
-                    StoreId = model.StoreId,
+                    StoreId = model.StoreId - 1,
                     DiscountPercent = model.DiscountPercent,
                     Quantity = model.Quantity,
                     ProductId = DatabaseService.GetProductInfoFromName(model.Name).ProductId
@@ -42,6 +42,7 @@ namespace RSMS.Controllers
             var tempModel = new AddNewProductToStoreModel() { StoreId = storeId };
             return PartialView("_AddProductStockPartial", tempModel);
         }
+
         [Authorize(Roles = "Admin,Manager")]
         public IActionResult EditStore(int storeId)
         {
@@ -54,8 +55,6 @@ namespace RSMS.Controllers
             DatabaseService.DeleteStore(storeId);
             return RedirectToAction("Dashboard", "User");
         }
-
-
 
         [HttpPost]
         public IActionResult EditStore(Store storeToEdit)

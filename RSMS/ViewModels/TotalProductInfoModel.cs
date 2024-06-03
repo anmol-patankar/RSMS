@@ -1,11 +1,7 @@
-﻿using Domain.Models;
-using System.ComponentModel.DataAnnotations;
-
-namespace RSMS.ViewModels
+﻿namespace RSMS.ViewModels
 {
     public class TotalProductInfoModel
     {
-
         public string ProductId { get; set; }
 
         public string Name { get; set; }
@@ -19,6 +15,5 @@ namespace RSMS.ViewModels
         public int Quantity { get; set; }
 
         public int DiscountPercent { get; set; }
-
     }
 }
