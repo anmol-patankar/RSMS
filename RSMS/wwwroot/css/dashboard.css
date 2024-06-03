@@ -1,30 +1,52 @@
-﻿
+﻿.tab-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    margin-top: 40px;
+}
+
 .data-table {
     border-collapse: collapse;
-    margin: 0 auto;
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-    .data-table th, .data-table td {
+    .data-table th,
+    .data-table td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: center;
     }
 
     .data-table th {
-        text-wrap: balance;
         background-color: #f2f2f2;
+        text-wrap: balance;
     }
 
-.disabled-edit-btn {
-    background-color: #144d7a;
-    color: lightgrey;
-    cursor: not-allowed;
-    pointer-events: none;
+.disabled-btn,
+.delete-btn,
+.edit-btn,
+.toggle-btn,
+.toggle-transaction-btn,
+.viewproduct-btn,
+.show-product-availibility-btn,
+.show-transaction-details-btn {
     border: none;
     border-radius: 4px;
     padding: 6px 12px;
+    color: white;
+    cursor: pointer;
+}
+
+.disabled-btn {
+    color: lightgrey;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.disabled-edit-btn {
+    background-color: #144d7a;
 }
 
     .disabled-edit-btn:hover {
@@ -33,12 +55,6 @@
 
 .disabled-delete-btn {
     background-color: #bf1b06;
-    color: lightgrey;
-    cursor: not-allowed;
-    pointer-events: none;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
 }
 
     .disabled-delete-btn:hover {
@@ -47,11 +63,6 @@
 
 .delete-btn {
     background-color: #e8250c;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 6px 12px;
 }
 
     .delete-btn:hover {
@@ -60,11 +71,6 @@
 
 .edit-btn {
     background-color: #2196F3;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 6px 12px;
 }
 
     .edit-btn:hover {
@@ -73,40 +79,28 @@
 
 .toggle-btn {
     background-color: #4CAF50;
-    border: none;
-    color: white;
     padding: 10px 24px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
     font-size: 16px;
     margin: 0 10px;
-    cursor: pointer;
-    border-radius: 4px;
 }
 
     .toggle-btn:hover {
         background-color: #45a049;
     }
 
-
-
-.viewproduct-btn {
+.toggle-transaction-btn,
+.viewproduct-btn,
+.show-product-availibility-btn,
+.show-transaction-details-btn {
     background-color: #2e55d9;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 6px 12px;
 }
 
-    .viewproduct-btn:hover {
+    .toggle-transaction-btn:hover,
+    .viewproduct-btn:hover,
+    .show-product-availibility-btn:hover,
+    .show-transaction-details-btn:hover {
         background-color: #2041b0;
     }
-
-
-
-
 
 .table-caption {
     text-align: center;
@@ -123,7 +117,8 @@
     text-wrap: nowrap;
 }
 
-    .button-column-table th, .button-column-table td {
+    .button-column-table th,
+    .button-column-table td {
         border: none;
         padding: 8px;
         text-align: center;
@@ -133,8 +128,6 @@
     .button-column-table th {
         background-color: #f2f2f2;
     }
-
-
 
 .button-column {
     border: none;
