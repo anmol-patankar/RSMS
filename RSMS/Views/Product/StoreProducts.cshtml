@@ -1,36 +1,27 @@
 ﻿@model List<RSMS.ViewModels.TotalProductInfoModel>
 <h1 style="text-align: center;">Store Products</h1>
-<link rel="stylesheet" href="~/css/dashboard.css" />
 <link rel="stylesheet" href="~/css/viewproducts.css" />
-@* <script src="~/js/storeproducts.js"></script> *@
 
-<div style="display: flex; justify-content: center;">
-    <p>This is the list of products available in the store.</p>
-</div>
 @{
     bool isAdmin = ViewBag.CurrentUser.RoleId > 6;
     bool isManager = ViewBag.CurrentUser.RoleId == 6;
     bool isManagerOfStore = isManager && ViewBag.CurrentUser.StoreId == ViewBag.StoreId;
 }
-<button class="add-product-stock-btn" id="addProductStockbtn" class="toggle-btn">Add Product</button>
+<button class="add-product-stock-btn" id="addProductStockbtn">Add Product</button>
 <div style="margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center;">
     <div class="row row-cols-1 row-cols-md-4 g-4">
         @foreach (var product in Model)
         {
-            <div class="col">
+            <div class="col" style="font-family: Arial; font-size: 16px;">
+
                 <div class="card h-100 border-dark">
-                    <div class="card-header">
-                        <small class="text-body-secondary">Product ID: @product.ProductId</small>
+                    <div class="card-header" style="text-align: center;">
+                        <large>@product.Name</large>
                     </div>
-                    <img src="~/ProductImages/bananas.jpg" class="card-img-top" alt="@product.Description">
+                    <img src="~/ProductImages/@product.Photo" class="card-img-top" alt="@product.Description">
                     <hr />
                     <div class="card-body">
-                        <div class="card-title">
-                            <strong>@product.Name</strong>: @product.Description
-                        </div>
 
-
-                        <hr />
                         <div class="product-detail">
                             <p>Pretax Price:</p>
                             <span>@product.PriceBeforeTax</span>
@@ -66,12 +57,14 @@
                                 <span>@product.Quantity</span>
                             </div>
                         }
-
-                        @if (isAdmin || isManagerOfStore)
-                        {
+                        <hr />
+                        @product.Description
+                    </div>
+                    @if (isAdmin || isManagerOfStore)
+                    {
+                        <small div class="card-footer align-center" style="display:flex; justify-content: space-between; align-items: baseline;">
+                            Product ID: @product.ProductId
                             <div class="actions">
-                                <button type="submit" data-product-id="@product.ProductId" class="qty-discount-update save-quantity-btn edit-btn">Save</button>
-
                                 @if (isAdmin)
                                 {
                                     <form method="get" action="@Url.Action("EditProductInfo", "Product")" style="display: inline;">
@@ -79,11 +72,11 @@
                                         <button type="submit" class="edit-btn">Edit</button>
                                     </form>
                                 }
+                                <button type="submit" data-product-id="@product.ProductId" class="qty-discount-update save-quantity-btn edit-btn">Save</button>
                             </div>
-                        }
 
-                    </div>
-
+                        </small>
+                    }
                 </div>
             </div>
         }
@@ -96,104 +89,48 @@
         </div>
     </div>
 </div>
-<style>
-
-    .product-card {
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin: 10px;
-        padding: 20px;
-        width: 300px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .product-card-header {
-        text-align: center;
-        margin-bottom: 10px;
-    }
-
-    .card-body {
-        padding-top: 0px;
-    }
-
-    .product-detail {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .discount-wrapper, .quantity-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .button-group {
-        display: flex;
-        align-items: center;
-    }
-
-    .discount-adjust-btn, .quantity-adjust-btn {
-        margin: 0 5px;
-        margin-right: 0px;
-    }
-
-    .actions {
-        text-align: center;
-        margin-top: 10px;
-    }
-</style>
-
 <script>
     $(document).ready(function () {
         $(document).on("click", ".qty-discount-update", function () {
-            const product_id = $(this).data("product-id");
-            const quantity = document.getElementById(`${product_id}-quantity`).value;
-            const discountPercent = document.getElementById(`${product_id}-discountPercent`).value;
-            const store_id = @ViewBag.StoreId;
-            console.log(quantity + discountPercent);
+            const productId = $(this).data("product-id");
+            const quantity = document.getElementById(`${productId}-quantity`).value;
+            const discountPercent = document.getElementById(`${productId}-discountPercent`).value;
+            const storeId = @ViewBag.StoreId;
+
             $.ajax({
                 url: '/Product/UpdateStoreQtyAndDiscount',
                 type: 'POST',
                 data: {
-                    storeId: store_id,
-                    productId: product_id,
+                    storeId: storeId,
+                    productId: productId,
                     quantity: quantity,
                     discountPercent: discountPercent
                 },
                 success: function (response) {
-                    const test = JSON.parse(response);
-                    const quantityElement = document.getElementById(`${product_id}-quantity`);
-                    const discountPercentElement = document.getElementById(`${product_id}-discountPercent`);
-                    quantityElement.value = test.Quantity;
-                    discountPercentElement.value = test.DiscountPercent;
+                    const data = JSON.parse(response);
+                    const quantityElement = document.getElementById(`${productId}-quantity`);
+                    const discountPercentElement = document.getElementById(`${productId}-discountPercent`);
+                    quantityElement.value = data.Quantity;
+                    discountPercentElement.value = data.DiscountPercent;
                 },
-
             });
         });
 
-
-
-
         $(document).on("click", ".add-product-stock-btn", function () {
-            const store_id = @ViewBag.StoreId;
+            const storeId = @ViewBag.StoreId;
+
             $.ajax({
                 url: '/Store/AddProductStock',
                 type: 'GET',
                 data: {
-                    storeId: store_id
+                    storeId: storeId
                 },
                 success: function (response) {
-                    console.log(response);
                     $('#modal-content').html(response);
                     $('#transactionDetailsModal').modal('show');
                 },
-
                 error: function (xhr, status, error) {
-                    console.error("Error occurred: " + status + " " + error);
-
+                    console.error(`Error occurred: ${status} ${error}`);
                 }
             });
         });
@@ -225,6 +162,5 @@
         function updateHiddenInputs(input, hiddenInputId) {
             document.getElementById(hiddenInputId).value = input.value;
         }
-
     });
 </script>

@@ -48,9 +48,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="StoreId">Store ID</label>
-                    <input asp-for="StoreId" class="form-control form-control-sm" readonly="@(currentEditingUser.RoleId<8)" />
+                    <div class="form-group">
+                        <label asp-for="StoreId">Store Posting</label>
+                        <select asp-for="StoreId" class="form-control form-control-sm" disabled="@(currentEditingUser.RoleId < 8)" asp-items="@(new SelectList(ViewBag.StoreNames, "Key", "Value", currentEditingUser.StoreId))">
+                        </select>
+                        <span asp-validation-for="StoreId" class="text-danger"></span>
+                    </div>
+
                     <span asp-validation-for="StoreId" class="text-danger"></span>
+
                 </div>
 
                 <div class="form-group">

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/dashboard.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -12,22 +13,50 @@
 
     <div class="d-flex align-items-start">
         <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="margin-top:40px">
+            <button class="nav-link active btn btn-lg mb-2 text-start" id="v-pills-userinfo-tab" data-bs-toggle="pill" data-bs-target="#v-pills-userinfo" type="button" role="tab" aria-controls="v-pills-userinfo" aria-selected="true">User Info</button>
+
             @if (ViewBag.CurrentUser.RoleId >= 4)
             {
-                <button class="nav-link active btn btn-lg mb-2 text-start" id="v-pills-users-tab" data-bs-toggle="pill" data-bs-target="#v-pills-users" type="button" role="tab" aria-controls="v-pills-users" aria-selected="true">Users</button>
+                <button class="nav-link  btn btn-lg mb-2 text-start" id="v-pills-users-tab" data-bs-toggle="pill" data-bs-target="#v-pills-users" type="button" role="tab" aria-controls="v-pills-users" aria-selected="false">Users</button>
             }
-            else
-            {
-                <button class="nav-link active btn btn-lg mb-2 text-start" id="v-pills-userinfo-tab" data-bs-toggle="pill" data-bs-target="#v-pills-userinfo" type="button" role="tab" aria-controls="v-pills-userinfo" aria-selected="true">User Info</button>
-            }
+
+
             <button class="nav-link btn btn-lg mb-2 text-start" id="v-pills-stores-tab" data-bs-toggle="pill" data-bs-target="#v-pills-stores" type="button" role="tab" aria-controls="v-pills-stores" aria-selected="false">Stores</button>
             <button class="nav-link btn btn-lg mb-2 text-start" id="v-pills-products-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products" type="button" role="tab" aria-controls="v-pills-products" aria-selected="false">Products</button>
             <button class="nav-link btn btn-lg mb-2 text-start" id="v-pills-transactions-tab" data-bs-toggle="pill" data-bs-target="#v-pills-transactions" type="button" role="tab" aria-controls="v-pills-transactions" aria-selected="false">Transactions</button>
+
         </div>
         <div class="tab-content" id="v-pills-tabContent">
+
+            <div class="tab-pane fade show active" id="v-pills-userinfo" role="tabpanel" aria-labelledby="v-pills-userinfo-tab" tabindex="0">
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>User Information</span>
+                        <form method="get" action="@Url.Action("EditUser", "User")" class="m-0">
+                            <input type="hidden" name="userId" value="@ViewBag.CurrentUser.UserId" />
+                            <button type="submit" class="btn btn-primary btn-sm"><em>Edit</em></button>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><strong>First Name:</strong> @ViewBag.CurrentUser.FirstName</p>
+                        <p class="card-text"><strong>Last Name:</strong> @ViewBag.CurrentUser.LastName</p>
+                        <p class="card-text"><strong>Username:</strong> @ViewBag.CurrentUser.Username</p>
+                        <p class="card-text"><strong>Email:</strong> @ViewBag.CurrentUser.Email</p>
+                        <p class="card-text"><strong>Phone:</strong> @ViewBag.CurrentUser.Phone</p>
+                        <p class="card-text"><strong>Date of Birth:</strong> @ViewBag.CurrentUser.Dob.ToString("yyyy-MM-dd")</p>
+                        <p class="card-text"><strong>Registration Date:</strong> @ViewBag.CurrentUser.RegistrationDate.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                    </div>
+                </div>
+            </div>
             @if (ViewBag.CurrentUser.RoleId >= 4)
             {
-                <div class="tab-pane fade show active" id="v-pills-users" role="tabpanel" aria-labelledby="v-pills-users-tab" tabindex="0">
+                <div class="tab-pane fade" id="v-pills-users" role="tabpanel" aria-labelledby="v-pills-users-tab" tabindex="0">
+                    <div class="mb-3 search-box d-flex justify-content-between">
+                        <input type="text" class="form-control" id="userSearch" placeholder="Search users...">
+                        <form asp-action="Register" asp-controller="User" method="get">
+                            <button type="submit" class="btn btn-primary" style="text-wrap:nowrap;">Add User</button>
+                        </form>
+                    </div>
                     <table id="userTable" class="data-table">
 
                         <thead>
@@ -98,37 +127,15 @@
                         </tbody>
                     </table>
                 </div>
-            }
-            else
-            {
-                <div class="tab-pane fade show active" id="v-pills-userinfo" role="tabpanel" aria-labelledby="v-pills-userinfo-tab" tabindex="0">
-                    <div class="card" style="margin-top: 20px;">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span>User Information</span>
-                            <form method="get" action="@Url.Action("EditUser", "User")" class="m-0">
-                                <input type="hidden" name="userId" value="@ViewBag.CurrentUser.UserId" />
-                                <button type="submit" class="btn btn-primary btn-sm"><em>Edit</em></button>
-                            </form>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text"><strong>First Name:</strong> @ViewBag.CurrentUser.FirstName</p>
-                            <p class="card-text"><strong>Last Name:</strong> @ViewBag.CurrentUser.LastName</p>
-                            <p class="card-text"><strong>Username:</strong> @ViewBag.CurrentUser.Username</p>
-                            <p class="card-text"><strong>Email:</strong> @ViewBag.CurrentUser.Email</p>
-                            <p class="card-text"><strong>Phone:</strong> @ViewBag.CurrentUser.Phone</p>
-                            <p class="card-text"><strong>Date of Birth:</strong> @ViewBag.CurrentUser.Dob.ToString("yyyy-MM-dd")</p>
-                            <p class="card-text"><strong>Registration Date:</strong> @ViewBag.CurrentUser.RegistrationDate.ToString("yyyy-MM-dd HH:mm:ss")</p>
-                        </div>
-                    </div>
-                </div>
 
             }
+
+
             <div class="tab-pane fade" id="v-pills-stores" role="tabpanel" aria-labelledby="v-pills-stores-tab" tabindex="0">
                 <table id="storeTable" class="data-table">
 
                     <thead>
                         <tr>
-                            <th style="width: 100px;">Store ID</th>
                             <th style="width: 300px;">Address</th>
                             <th style="width: 100px;">Rent</th>
                             <th style="width: 100px;">Store Status</th>
@@ -144,7 +151,6 @@
                             var isManager = ViewBag.CurrentUser.RoleId == 6;
 
                             <tr>
-                                <td>@store.StoreId</td>
                                 <td>@store.Address</td>
                                 <td>@store.Rent</td>
                                 <td>@(store.IsOpen ? "Open" : "Closed")</td>
@@ -165,7 +171,7 @@
                                                 else if (isManager)
                                                 {
                                                     <td>
-                                                        <button type="button" class="disabled-edit-btn" disabled>Edit</button>
+                                                        <button type="button" class="disabled-btn disabled-edit-btn" disabled>Edit</button>
                                                     </td>
                                                 }
                                                 else
@@ -200,6 +206,10 @@
                 </table>
             </div>
             <div class="tab-pane fade" id="v-pills-products" role="tabpanel" aria-labelledby="v-pills-products-tab" tabindex="0">
+                <div class="mb-3 search-box">
+                    <input type="text" class="form-control" id="productSearch" placeholder="Search products..." autocomplete="off">
+                    <div class="suggestions"></div>
+                </div>
                 <table id="productInfoTable" class="data-table">
 
                     <thead>
@@ -259,7 +269,7 @@
 
                     <thead>
                         <tr>
-                            <th>Store ID</th>
+                            <th>Store Name</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -267,7 +277,8 @@
                         @foreach (var storeGroup in ViewBag.TransactionsByStore)
                         {
                             <tr>
-                                <td>@storeGroup.Key</td>
+                                <td>@RSMS.Services.DatabaseService.GetStore(storeGroup.Key).Address</td>
+
                                 @* <td>@storeGroup.Count</td> *@
                                 <td>
                                     <button class="toggle-transaction-btn" data-store-id="@storeGroup.Key">Show Transactions</button>
@@ -307,7 +318,7 @@
             </div>
         </div>
     </div>
-    <div style="margin-top: 20px; display: flex; justify-content: center;">
+    <div style="margin-top: 20px; display: flex; justify-content: center; max-width:fit-content;">
         <div class="modal fade" id="transactionDetailsModal" role="dialog" aria-labelledby="transactionDetailsModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="transaction-modal-content" id="transaction-modal-content">
@@ -315,6 +326,7 @@
                 </div>
             </div>
         </div>
+
         <div class="modal fade" id="storeAvailibilityModal" role="dialog" aria-labelledby="storeAvailibilityModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="availibility-modal-content" id="availibility-modal-content">
@@ -324,6 +336,9 @@
         </div>
 
     </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 </body>
 </html>
@@ -331,6 +346,26 @@
     <script>
 
         $(document).ready(function () {
+            $('#productSearch').on('keyup', function () {
+                var searchTerm = $(this).val().toLowerCase();
+                $('#productInfoTable > tbody > tr').each(function () {
+                    var productId = $(this).find('td:first').text().toLowerCase();
+                    var productName = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    var match = productId.includes(searchTerm) || productName.includes(searchTerm);
+                    $(this).toggle(match);
+                });
+            });
+            $('#userSearch').on('keyup', function () {
+                var searchTerm = $(this).val().toLowerCase();
+                $('#userTable > tbody > tr').each(function () {
+                    var username = $(this).find('td:first').text().toLowerCase();
+                    var firstName = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    var email = $(this).find('td:nth-child(3)').text().toLowerCase();
+                    var match = username.includes(searchTerm) || firstName.includes(searchTerm) || email.includes(searchTerm);
+                    $(this).toggle(match);
+                });
+            });
+
 
             $('.show-transaction-details-btn').on('click', function () {
                 var transactionId = $(this).data('transaction-id');
@@ -386,34 +421,6 @@
                 }
             });
 
-
-            $('#showUsersBtn').click(function () {
-                $('#userTable').show();
-                $('#storeTable').hide();
-                $('#productInfoTable').hide();
-                $('#transactionsTable').hide();
-            });
-
-            $('#showStoresBtn').click(function () {
-                $('#userTable').hide();
-                $('#storeTable').show();
-                $('#productInfoTable').hide();
-                $('#transactionsTable').hide();
-            });
-
-            $('#showProductInfosBtn').click(function () {
-                $('#userTable').hide();
-                $('#storeTable').hide();
-                $('#productInfoTable').show();
-                $('#transactionsTable').hide();
-            });
-
-            $('#showTransactionsBtn').click(function () {
-                $('#userTable').hide();
-                $('#storeTable').hide();
-                $('#productInfoTable').hide();
-                $('#transactionsTable').show();
-            });
         });
     </script>
 }

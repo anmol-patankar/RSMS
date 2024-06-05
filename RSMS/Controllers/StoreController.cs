@@ -25,7 +25,7 @@ namespace RSMS.Controllers
             {
                 ProductStock stock = new()
                 {
-                    StoreId = model.StoreId - 1,
+                    StoreId = model.StoreId,
                     DiscountPercent = model.DiscountPercent,
                     Quantity = model.Quantity,
                     ProductId = DatabaseService.GetProductInfoFromName(model.Name).ProductId

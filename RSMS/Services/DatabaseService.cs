@@ -59,7 +59,7 @@ namespace RSMS.Services
         {
             if (userId == null)
             {
-                return Context.Transactions.ToList();
+                return Context.Transactions.Where(tr => tr.StoreId != 0).ToList();
             }
             else
             {
@@ -67,9 +67,9 @@ namespace RSMS.Services
             }
         }
 
-        public static List<ProductInfo> GetAllProductInfos()
+        public static IEnumerable<ProductInfo> GetAllProductInfos()
         {
-            return Context.ProductInfos.ToList();
+            return Context.ProductInfos.OrderBy(t => t.ProductId);
         }
         public static ProductInfo GetProductInfoFromID(string productId)
         {
@@ -162,14 +162,18 @@ namespace RSMS.Services
             return true;
         }
 
-        public static List<Store> GetAllStores()
+        public static IEnumerable<Store> GetAllStores(bool getNullStore = false)
         {
-            return Context.Stores.ToList();
+            if (getNullStore)
+            {
+                return Context.Stores.OrderBy(s => s.StoreId);
+            }
+            return Context.Stores.Where(store => store.StoreId != 0).OrderBy(s => s.StoreId);
         }
 
-        public static List<UserInfo> GetAllUsers()
+        public static IEnumerable<UserInfo> GetAllUsers()
         {
-            return Context.UserInfos.ToList();
+            return Context.UserInfos.OrderBy(user => user.Username);
         }
 
         public static Store GetStore(int storeId)

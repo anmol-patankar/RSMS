@@ -24,22 +24,18 @@ namespace RSMS.Controllers
         {
             var currentAccessingUser = DatabaseService.GetUser(User.Identity.Name);
             ViewBag.CurrentUser = currentAccessingUser;
-            List<UserInfo> allUsers = DatabaseService.GetAllUsers();
+            IEnumerable<UserInfo> allUsers = DatabaseService.GetAllUsers();
             ViewBag.AllUsers = allUsers;
-            List<Store> allStores = DatabaseService.GetAllStores();
+            IEnumerable<Store> allStores = DatabaseService.GetAllStores();
             ViewBag.AllStores = allStores;
-            List<ProductInfo> productInfos = DatabaseService.GetAllProductInfos();
+            IEnumerable<ProductInfo> productInfos = DatabaseService.GetAllProductInfos();
             ViewBag.ProductInfos = productInfos;
-            List<Transaction> allTransactions = new();
-            if (currentAccessingUser.RoleId == 2)
-            {
-                allTransactions = DatabaseService.GetAllTransactions(currentAccessingUser.UserId);
-            }
-            else
-            {
-                allTransactions = DatabaseService.GetAllTransactions();
-            }
-            ViewBag.TransactionsByStore = allTransactions.GroupBy(t => t.StoreId);
+            var allTransactions = currentAccessingUser.RoleId == 2
+                ? DatabaseService.GetAllTransactions(currentAccessingUser.UserId)
+                : DatabaseService.GetAllTransactions();
+            ViewBag.TransactionsByStore = allTransactions
+                .GroupBy(t => t.StoreId)
+                .OrderBy(g => g.Key);
 
 
             return View();
@@ -93,7 +89,8 @@ namespace RSMS.Controllers
         [AllowAnonymous]
         public IActionResult Register()
         {
-            if (User.Identity != null && User.Identity.IsAuthenticated == true)
+            if (User.Identity != null && User.Identity.IsAuthenticated == true
+                && !(User.IsInRole("Admin") || User.IsInRole("Manager")))
             {
                 return RedirectToAction("Dashboard");
             }
@@ -153,6 +150,9 @@ namespace RSMS.Controllers
         [Authorize]
         public IActionResult EditUser(Guid userId)
         {
+            bool getNullStore = User.IsInRole("Admin");
+            Dictionary<int, string> AllStoreNames = DatabaseService.GetAllStores(getNullStore).ToDictionary(s => s.StoreId, s => s.Address);
+            ViewBag.StoreNames = AllStoreNames;
             return View(DatabaseService.GetUser(userId));
         }
         [Authorize]
@@ -165,7 +165,7 @@ namespace RSMS.Controllers
             if (userToEdit.LastName == null || !Regex.Match(userToEdit.LastName, "^[a-zA-Z'-]+$").Success) ModelState.AddModelError(("LastName"), "Name can only have the English alphabet, hyphens, and apostrophes");
             if (userToEdit.Email == null || !Regex.Match(userToEdit.Email, "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").Success) ModelState.AddModelError(("Email"), "Invalid email adress");
             if (userToEdit.Phone == null || !Regex.Match(userToEdit.Phone, "^\\d{10}(?:\\d{3})?$").Success) ModelState.AddModelError("Phone", "Phone number should be 10 digits long in case of domestic phone number, or 13 digits without '+' sign in case of international phone number");
-            if (userToEdit.StoreId == null || userToEdit.StoreId < 0 || !DatabaseService.GetAllStores().Any(store => store.StoreId == userToEdit.StoreId)) ModelState.AddModelError(("StoreId"), "Store ID is not of valid store");
+            if (userToEdit.StoreId == null || userToEdit.StoreId < 0 || !DatabaseService.GetAllStores(getNullStore: true).Any(store => store.StoreId == userToEdit.StoreId)) ModelState.AddModelError(("StoreId"), "Store ID is not of valid store");
 
             if (userToEdit.Dob.ToString() == null || userToEdit.Dob.CompareTo(dateNow) > -1) ModelState.AddModelError(("Dob"), "Date of birth should be a valid date");
             else if (userToEdit.Dob.AddYears(122).CompareTo(dateNow) < 0) ModelState.AddModelError(("Dob"), "User is not that old, input a valid date");

@@ -24,12 +24,29 @@
         text-wrap: balance;
     }
 
+.modal-dialog-centered {
+    max-width: fit-content;
+}
+
+.search-box {
+    width: 100%;
+}
+
+    .search-box input[type="text"] {
+        width: 200px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
 .disabled-btn,
 .delete-btn,
 .edit-btn,
 .toggle-btn,
 .toggle-transaction-btn,
 .viewproduct-btn,
+.add-product-stock-btn,
 .show-product-availibility-btn,
 .show-transaction-details-btn {
     border: none;
@@ -69,7 +86,8 @@
         background-color: #d32f2f;
     }
 
-.edit-btn {
+.edit-btn,
+.add-product-stock-btn {
     background-color: #2196F3;
 }
 
@@ -149,14 +167,9 @@
     background-color: #007bff;
     color: #fff;
     font-weight: bold;
-    padding: 1rem;
 }
 
     .card-header h2 {
         margin-bottom: 0;
         text-align: center;
     }
-
-.card-body {
-    padding: 2rem;
-}

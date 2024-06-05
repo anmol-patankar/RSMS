@@ -37,7 +37,7 @@ namespace RSMS.Services
                 issuer: Config[Constants.JwtKeyIssuer],
                 audience: Config[Constants.JwtKeyAudience],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(10),
+                expires: DateTime.Now.AddMinutes(180),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

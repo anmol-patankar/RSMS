@@ -8,24 +8,23 @@
     <div class="modal-body">
 
         <form asp-action="AddProductStock" asp-controller="Store" method="post">
-            <div class="form-group">
-                <input type="hidden" asp-for="StoreId" />
-            </div>
-            <div class="form-group">
 
-                <label asp-for="Name" class="control-label"></label>
-                <select asp-for="Name" class="form-control" asp-items="@(new SelectList(ViewBag.NotAddedNamesList as List<string>, "Select a product"))">
-                    <option value="">Select a product</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" type="number" min="0" />
-            </div>
-            <div class="form-group">
-                <label asp-for="DiscountPercent" class="control-label"></label>
-                <input asp-for="DiscountPercent" class="form-control" type="number" min="0" max="100" />
-            </div>
+            <input type="hidden" asp-for="StoreId" />
+
+
+
+            <label asp-for="Name" class="control-label"></label>
+            <select asp-for="Name" class="form-control" asp-items="@(new SelectList(ViewBag.NotAddedNamesList as List<string>, "Select a product"))">
+            </select>
+
+
+            <label asp-for="Quantity" class="control-label"></label>
+            <input asp-for="Quantity" class="form-control" type="number" min="0" />
+
+
+            <label asp-for="DiscountPercent" class="control-label"></label>
+            <input asp-for="DiscountPercent" class="form-control" type="number" min="0" max="100" />
+
             <button type="submit" class="btn btn-primary">Add Product</button>
         </form>
 
