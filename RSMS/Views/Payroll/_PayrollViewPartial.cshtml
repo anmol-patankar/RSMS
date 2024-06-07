@@ -1,0 +1,62 @@
+﻿@model List<Domain.Models.PayrollHistory>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group" id="storeList" role="tablist">
+                @foreach (var storeGroup in Model.GroupBy(t => t.StoreId).OrderBy(g => g.Key))
+                {
+                    <a class="list-group-item list-group-item-action" id="store-@storeGroup.Key-tab" data-bs-toggle="list" href="#store-@storeGroup.Key" role="tab" aria-controls="store-@storeGroup.Key">
+                        Store @storeGroup.Key
+                    </a>
+                }
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="tab-content">
+                @foreach (var storeGroup in Model.GroupBy(t => t.StoreId).OrderBy(g => g.Key))
+                {
+                    <div class="tab-pane fade" id="store-@storeGroup.Key" role="tabpanel" aria-labelledby="store-@storeGroup.Key-tab">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Payroll ID</th>
+                                    <th>Payee ID</th>
+                                    <th>Authorizer ID</th>
+                                    <th>Transaction Time</th>
+                                    <th>Base Amount</th>
+                                    <th>Tax Deduction</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var transaction in storeGroup)
+                                {
+                                    <tr>
+                                        <td>@transaction.PayrollId</td>
+                                        <td>@transaction.PayeeId</td>
+                                        <td>@transaction.AuthorizerId</td>
+                                        <td>@transaction.TransactionTime.ToString("g")</td>
+                                        <td>@transaction.BaseAmount</td>
+                                        <td>@transaction.TaxDeduction</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#storeList a').on('click', function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        // Automatically show the first tab on page load
+        $('#storeList a:first-child').tab('show');
+    });
+</script>

@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Microsoft.CodeAnalysis;
 using RSMS.ViewModels;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RSMS.Services
@@ -21,6 +22,24 @@ namespace RSMS.Services
             FoodAndBeverageTax = 3,
             ElectronicsTax = 4,
             EssentialGoodsTax = 5
+        }
+        public static List<PayrollHistory> GetSalaryHistory(Guid? userId = null, int? storeId = null)
+        {
+            List<PayrollHistory>? payrollHistory;
+            if (userId != null)
+            {
+                payrollHistory = Context.PayrollHistories.Where(ph => ph.PayeeId == userId).ToList();
+            }
+            if (storeId != null)
+            {
+                payrollHistory = Context.PayrollHistories.Where(ph => ph.PayeeId == userId).ToList();
+
+            }
+            else
+            {
+                payrollHistory = Context.PayrollHistories.OrderBy(ph => ph.StoreId).ToList();
+            }
+            return payrollHistory.ToList();
         }
         public static List<StoreAvailibilityModel> GetProductAvailibility(string productId)
         {

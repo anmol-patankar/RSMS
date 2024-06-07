@@ -173,3 +173,18 @@
         margin-bottom: 0;
         text-align: center;
     }
+
+.navbar-nav {
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+    flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+}
+
+    .navbar-nav:last-child {
+        justify-content: flex-end; /* Align the last ul element (containing links) to the right */
+    }
+
+
+.nav-link.active, .nav-link[aria-selected="true"] {
+    color: #fff;
+}

@@ -12,20 +12,8 @@
 
 
     <div class="d-flex align-items-start">
-        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="margin-top:40px">
-            <button class="nav-link active btn btn-lg mb-2 text-start" id="v-pills-userinfo-tab" data-bs-toggle="pill" data-bs-target="#v-pills-userinfo" type="button" role="tab" aria-controls="v-pills-userinfo" aria-selected="true">User Info</button>
 
-            @if (ViewBag.CurrentUser.RoleId >= 4)
-            {
-                <button class="nav-link  btn btn-lg mb-2 text-start" id="v-pills-users-tab" data-bs-toggle="pill" data-bs-target="#v-pills-users" type="button" role="tab" aria-controls="v-pills-users" aria-selected="false">Users</button>
-            }
-
-
-            <button class="nav-link btn btn-lg mb-2 text-start" id="v-pills-stores-tab" data-bs-toggle="pill" data-bs-target="#v-pills-stores" type="button" role="tab" aria-controls="v-pills-stores" aria-selected="false">Stores</button>
-            <button class="nav-link btn btn-lg mb-2 text-start" id="v-pills-products-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products" type="button" role="tab" aria-controls="v-pills-products" aria-selected="false">Products</button>
-            <button class="nav-link btn btn-lg mb-2 text-start" id="v-pills-transactions-tab" data-bs-toggle="pill" data-bs-target="#v-pills-transactions" type="button" role="tab" aria-controls="v-pills-transactions" aria-selected="false">Transactions</button>
-
-        </div>
+        <div class="payroll-content" id="payroll-content"></div>
         <div class="tab-content" id="v-pills-tabContent">
 
             <div class="tab-pane fade show active" id="v-pills-userinfo" role="tabpanel" aria-labelledby="v-pills-userinfo-tab" tabindex="0">
@@ -336,7 +324,6 @@
         </div>
 
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
@@ -346,6 +333,55 @@
     <script>
 
         $(document).ready(function () {
+            $('#v-pills-payroll-tab').on('click', function () {
+
+                var storeId = 1;
+
+                $.ajax({
+                    url: '/Payroll/GetPayrollHistory',
+                    method: 'GET',
+                    data: { storeId: storeId },
+                    success: function (response) {
+
+                        $('#payroll-content').html(response);
+                    },
+                    error: function (xhr, status, error) {
+
+                        console.error('AJAX Error:', status, error);
+                    }
+                });
+            });
+            $('.nav-link').click(function () {
+                var targetId = $(this).data('bs-target');
+
+                $('.tab-pane').hide();
+                $('#payroll-content').hide();
+
+                if (targetId === '#v-pills-payroll') {
+                    loadPayrollHistory();
+                    $('#payroll-content').show();
+                } else {
+                    $(targetId).show();
+                }
+            });
+
+            function loadPayrollHistory() {
+                $.ajax({
+                    url: '@Url.Action("GetPayrollHistory", "Payroll")',
+                    data: {
+                        userId: `@ViewBag.CurrentUser.UserId`,
+                        storeId: @ViewBag.CurrentUser.StoreId,
+                    },
+                    type: 'GET',
+                    success: function (result) {
+                        console.log(result);
+                        $('#payroll-content').html(result);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
             $('#productSearch').on('keyup', function () {
                 var searchTerm = $(this).val().toLowerCase();
                 $('#productInfoTable > tbody > tr').each(function () {
