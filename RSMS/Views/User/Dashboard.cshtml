@@ -10,10 +10,10 @@
 <body>
     <style>
         .dashboard-nav {
-            background-color: #f8f9fa;
+            background-color: #e6e6e6;
             max-width: fit-content;
             position: fixed;
-            top: 57px;
+            top: 0;
             bottom: 0;
             left: 0;
             z-index: 1;
@@ -29,21 +29,29 @@
             justify-content: center;
             align-items: center;
         }
-
+        .btn:focus,
+        .btn.active{
+            box-shadow:none;
+            background-color:lightskyblue;
+        }
+        .btn-group-vertical{
+            z-index:2
+        }
         .btn-group-vertical .btn {
             background-color: transparent;
             color: #000;
             border: none;
             text-align: left;
-            padding: 10px 15px;
+            padding: 15px 15px;
             width: 100%;
             transition: background-color 0.3s;
+            
         }
 
             .btn-group-vertical .btn:hover,
             .btn-group-vertical .btn:focus,
             .btn-group-vertical .btn.active {
-                background-color: #ced4da;
+                background-color: lightskyblue;
                 color: #000;
             }
 
@@ -55,21 +63,23 @@
             padding: 10px 15px;
             width: 100%;
             transition: background-color 0.3s;
+            font-size: large;
         }
 
             .btn-group-vertical .dropdown-toggle:hover,
             .btn-group-vertical .dropdown-toggle:focus,
             .btn-group-vertical .dropdown-toggle.active {
-                background-color: #ced4da;
+                background-color: lightskyblue;
                 color: #000;
             }
 
         .dropdown-menu {
-            width: 100%;
+            width: auto;
+            min-width: 50px;
+            padding: 0;
         }
-
-        .dropdown-item {
-            padding: 10px 15px;
+        .dropdown-item{
+            font-size:small;
         }
 
         .content {
@@ -85,46 +95,76 @@
             display: block;
         }
     </style>
-    <h1>Welcome @ViewBag.CurrentUser.FirstName!</h1>
+    <h1 style="text-align:center;">Welcome @ViewBag.CurrentUser.FirstName!</h1>
+    <hr style="width:100vw;height:2px;color:blue; opacity:0.7" />
     <div class="content-div">
         <div class="dashboard-nav">
             <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                <button type="button" class="btn btn-primary" id="userinfo-btn">User Info</button>
+                <div class="btn-group">
+                <a href="#" class="btn " style="font-size:large;">Back To Top </a>
+                </div>
+                <div class="btn-group dropend" role="group">
+                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Profile
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item">
+                            <button class="btn dropdown-item" id="userinfo-btn">View</button>
+                        </li>
+                        <li>
+                            <form method="get" action="@Url.Action("EditUser", "User")">
+                                <input type="hidden" name="userId" value="@ViewBag.CurrentUser.UserId" />
+                                <button type="submit" class="btn dropdown-item">Edit</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
                 @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
                 {
                     <div class="btn-group dropend" role="group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
+                        <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            User List
                         </button>
                         <ul class="dropdown-menu">
                             <li class="nav-item">
                                 <button class="btn dropdown-item" id="users-btn">Users</button>
                             </li>
+                            <li>
+                                <form asp-action="Register" asp-controller="User" method="get">
+                                    <button type="submit" class="btn dropdown-item" style="white-space:nowrap;">Add User</button>
+                                </form>
+                            </li>
                         </ul>
                     </div>
                 }
                 <div class="btn-group dropend" role="group">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         Stores
                     </button>
                     <ul class="dropdown-menu">
                         <li class="nav-item">
                             <button class="btn dropdown-item" id="stores-btn">View Stores</button>
                         </li>
+                        <li>
+                            <button class="btn dropdown-item" id="add-store-btn" style="white-space:nowrap;">Add Store</button>
+                        </li>
                     </ul>
                 </div>
                 <div class="btn-group dropend" role="group">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         Products
                     </button>
                     <ul class="dropdown-menu">
                         <li class="nav-item">
                             <button class="btn dropdown-item" id="products-btn">View Products</button>
                         </li>
+                        <li>
+                            <button class="btn dropdown-item" id="add-product-btn" style="white-space:nowrap;">Add New Product</button>
+                        </li>
                     </ul>
                 </div>
                 <div class="btn-group dropend" role="group">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         Transactions
                     </button>
                     <ul class="dropdown-menu">
@@ -132,10 +172,13 @@
                         <li class="nav-item">
                             <button class="btn dropdown-item" id="transactions-btn">View Transactions</button>
                         </li>
+                        <li>
+                            <button class="btn dropdown-item" id="add-transaction-btn" style="white-space:nowrap;">New Transaction</button>
+                        </li>
                     </ul>
                 </div>
                 <div class="btn-group dropend" role="group">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         Payroll
                     </button>
                     <ul class="dropdown-menu">

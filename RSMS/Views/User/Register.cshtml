@@ -47,7 +47,7 @@
 
                 <div class="form-group">
                     <label asp-for="Dob">Date of Birth</label>
-                    <input asp-for="Dob" type="date" class="form-control form-control-sm" />
+                    <input asp-for="Dob" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control form-control-sm" />
                     <span asp-validation-for="Dob" class="text-danger"></span>
                 </div>
 
