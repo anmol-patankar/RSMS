@@ -26,12 +26,6 @@
                         <div class="navbar-collapse collapse">
                             <div>
                                 <ul class="navbar-nav flex-grow-1">
-
-
-
-
-
-
                                     @if (!User.Identity.IsAuthenticated)
                                     {
                                         <li class="nav-item">
@@ -106,6 +100,14 @@
         });
 
         $('.nav-link').click(function () {
+            var currentUrl = window.location.href;
+            console.log("hit");
+            if (currentUrl != 'https://localhost:7245/User/Dashboard') {
+                window.location.href = "https://localhost:7245/User/Dashboard";
+
+                alert("It's loaded!");
+
+            }
             var targetId = $(this).data('bs-target');
 
             // Remove "active" class from all buttons
