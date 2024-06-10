@@ -69,7 +69,6 @@
                     <label asp-for="IsDisabled"> Disable User</label>
                     <input asp-for="IsDisabled" type="checkbox" class="form-check-input" disabled="@(currentEditingUser.RoleId<8)" />
                 </div>
-
                 @if (Model.Username == User.Identity.Name)
                 {
                     <div class="form-group">

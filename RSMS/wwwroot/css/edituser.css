@@ -36,3 +36,7 @@
     display: block;
     width: 100%;
 }
+
+.form-check-input {
+    margin-left: 0.5rem;
+}
