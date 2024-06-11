@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RSMS.ActionAttributes;
 using RSMS.Services;
 using RSMS.ViewModels;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -13,12 +14,6 @@ namespace RSMS.Controllers
     [NoCache]
     public class ProductController : Controller
     {
-        public IActionResult CheckAvailibility(string productId)
-        {
-            List<StoreAvailibilityModel> storeAvailibility = DatabaseService.GetProductAvailibility(productId);
-
-            return PartialView("_CheckAvailibilityPartial", storeAvailibility);
-        }
 
         public ProductController(RsmsTestContext context, IConfiguration config)
         {
@@ -30,7 +25,36 @@ namespace RSMS.Controllers
         {
             return View();
         }
+        public IActionResult CheckAvailibility(string productId)
+        {
+            List<StoreAvailibilityModel> storeAvailibility = DatabaseService.GetProductAvailibility(productId);
 
+            return PartialView("_CheckAvailibilityPartial", storeAvailibility);
+        }
+        [HttpGet]
+        public IActionResult ProductRegistrationPartial()
+        {
+
+            return PartialView("_ProductRegistrationPartial");
+        }
+        [HttpPost]
+        public IActionResult AddNewProduct(ProductRegistrationModel newProduct)
+        {
+
+            ModelState.Clear();
+            var validationResults = newProduct.Validate(new ValidationContext(newProduct));
+            foreach (var validationResult in validationResults)
+                ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
+
+            if (ModelState.IsValid)
+            {
+                DatabaseService.AddNewProduct((ProductInfo)newProduct);
+                return Json(new { success = true });
+            }
+            return PartialView("_ProductRegistrationPartial", newProduct);
+
+
+        }
         public IActionResult StoreProducts(int storeId)
         {
             var productsOfStore = DatabaseService.GetTotalProductInfo(storeId);

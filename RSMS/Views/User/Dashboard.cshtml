@@ -29,57 +29,60 @@
             justify-content: center;
             align-items: center;
         }
+
         .btn:focus,
-        .btn.active{
-            box-shadow:none;
-            background-color:lightskyblue;
-        }
-        .btn-group-vertical{
-            z-index:2
-        }
-        .btn-group-vertical .btn {
-            background-color: transparent;
-            color: #000;
-            border: none;
-            text-align: left;
-            padding: 15px 15px;
-            width: 100%;
-            transition: background-color 0.3s;
-            
+        .btn.active {
+            box-shadow: none;
+            background-color: lightskyblue;
         }
 
-            .btn-group-vertical .btn:hover,
-            .btn-group-vertical .btn:focus,
-            .btn-group-vertical .btn.active {
-                background-color: lightskyblue;
+        .btn-group-vertical {
+            z-index: 2
+        }
+
+            .btn-group-vertical .btn {
+                background-color: transparent;
                 color: #000;
+                border: none;
+                text-align: left;
+                padding: 15px 15px;
+                width: 100%;
+                transition: background-color 0.3s;
             }
 
-        .btn-group-vertical .dropdown-toggle {
-            background-color: transparent;
-            color: #000;
-            border: none;
-            text-align: left;
-            padding: 10px 15px;
-            width: 100%;
-            transition: background-color 0.3s;
-            font-size: large;
-        }
+                .btn-group-vertical .btn:hover,
+                .btn-group-vertical .btn:focus,
+                .btn-group-vertical .btn.active {
+                    background-color: lightskyblue;
+                    color: #000;
+                }
 
-            .btn-group-vertical .dropdown-toggle:hover,
-            .btn-group-vertical .dropdown-toggle:focus,
-            .btn-group-vertical .dropdown-toggle.active {
-                background-color: lightskyblue;
+            .btn-group-vertical .dropdown-toggle {
+                background-color: transparent;
                 color: #000;
+                border: none;
+                text-align: left;
+                padding: 10px 15px;
+                width: 100%;
+                transition: background-color 0.3s;
+                font-size: large;
             }
+
+                .btn-group-vertical .dropdown-toggle:hover,
+                .btn-group-vertical .dropdown-toggle:focus,
+                .btn-group-vertical .dropdown-toggle.active {
+                    background-color: lightskyblue;
+                    color: #000;
+                }
 
         .dropdown-menu {
             width: auto;
             min-width: 50px;
             padding: 0;
         }
-        .dropdown-item{
-            font-size:small;
+
+        .dropdown-item {
+            font-size: small;
         }
 
         .content {
@@ -96,12 +99,12 @@
         }
     </style>
     <h1 style="text-align:center;">Welcome @ViewBag.CurrentUser.FirstName!</h1>
-    <hr style="width:100vw;height:2px;color:blue; opacity:0.7" />
+    <hr style="width:100%;height:2px;color:blue; opacity:0.7; position:absolute; left:0;" />
     <div class="content-div">
         <div class="dashboard-nav">
             <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
                 <div class="btn-group">
-                <a href="#" class="btn " style="font-size:large;">Back To Top </a>
+                    <a href="#" class="btn " style="font-size:large;">Back To Top </a>
                 </div>
                 <div class="btn-group dropend" role="group">
                     <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -146,7 +149,7 @@
                             <button class="btn dropdown-item" id="stores-btn">View Stores</button>
                         </li>
                         <li>
-                            <button class="btn dropdown-item" id="add-store-btn" style="white-space:nowrap;">Add Store</button>
+                            <button class="btn dropdown-item add-store-btn" id="add-store-btn" style="white-space:nowrap;">Add Store</button>
                         </li>
                     </ul>
                 </div>
@@ -159,7 +162,7 @@
                             <button class="btn dropdown-item" id="products-btn">View Products</button>
                         </li>
                         <li>
-                            <button class="btn dropdown-item" id="add-product-btn" style="white-space:nowrap;">Add New Product</button>
+                            <button class="btn dropdown-item add-product-btn" id="add-product-btn" style="white-space:nowrap;">Add New Product</button>
                         </li>
                     </ul>
                 </div>
@@ -293,6 +296,10 @@
                     </div>
                 }
                 <div class="tab-pane" id="v-pills-stores" role="tabpanel" aria-labelledby="v-pills-stores-tab" tabindex="0">
+                    <div class="mb-3 search-box d-flex justify-content-between">
+                        <input type="text" class="form-control" id="storeSearch" placeholder="Search store..." autocomplete="off">
+                        <button class="btn btn-primary add-store-btn" id="add-store-btn" style="white-space:nowrap;">Add Store</button>
+                    </div>
                     <table id="storeTable" class="data-table">
                         <thead>
                             <tr>
@@ -365,9 +372,9 @@
                     </table>
                 </div>
                 <div class="tab-pane" id="v-pills-products" role="tabpanel" aria-labelledby="v-pills-products-tab" tabindex="0">
-                    <div class="mb-3 search-box">
+                    <div class="mb-3 search-box d-flex justify-content-between">
                         <input type="text" class="form-control" id="productSearch" placeholder="Search products..." autocomplete="off">
-                        <div class="suggestions"></div>
+                        <button class="btn btn-primary add-product-btn" id="add-product-btn" style="white-space:nowrap;">Add Product</button>
                     </div>
                     <table id="productInfoTable" class="data-table">
                         <thead>
@@ -397,12 +404,6 @@
                                                             <form method="get" action="@Url.Action("EditProductInfo", "Product")">
                                                                 <input type="hidden" name="productId" value="@product.ProductId" />
                                                                 <button type="submit" class="edit-btn">Edit</button>
-                                                            </form>
-                                                        </td>
-                                                        <td>
-                                                            <form method="post" action="@Url.Action("DeleteProduct", "Product")">
-                                                                <input type="hidden" name="productId" value="@product.ProductId" />
-                                                                <button type="submit" class="delete-btn">Delete</button>
                                                             </form>
                                                         </td>
                                                     }
@@ -482,7 +483,20 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="storeRegistrationModal" role="dialog" aria-labelledby="storeRegistrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="storeregistration-modal-content" id="storeregistration-modal-content">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="productRegistrationModal" role="dialog" aria-labelledby="productRegistrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="productregistration-modal-content" id="productregistration-modal-content">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
@@ -514,7 +528,7 @@
                 });
             }
 
-            $('.btn').click(function () {
+            $('.dropdown-item').click(function () {
                 // Get the ID of the clicked button
                 var buttonId = $(this).attr('id');
 
@@ -550,8 +564,46 @@
                     $(this).toggle(match);
                 });
             });
+            $('#storeSearch').on('keyup', function () {
+                var searchTerm = $(this).val().toLowerCase();
+                $('#storeTable > tbody > tr').each(function () {
+                    var address = $(this).find('td:first').text().toLowerCase();
+                    var match = address.includes(searchTerm);
+                    $(this).toggle(match);
+                });
+            });
+            $('.add-store-btn').on('click', function () {
+                console.log('ababasb');
+                var url = '@Url.Action("StoreRegistrationPartial", "Store")';
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (data) {
+                        $('#storeregistration-modal-content').html(data);
+                        $('#storeRegistrationModal').modal('show');
+                        $('#stores-btn').click();
+                    },
+                    error: function () {
+                        alert('Failed to load the store registration form.');
+                    }
+                });
+            });
+            $('.add-product-btn').on('click', function () {
 
-
+                var url = '@Url.Action("ProductRegistrationPartial", "Product")';
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (data) {
+                        $('#productregistration-modal-content').html(data);
+                        $('#productRegistrationModal').modal('show');
+                        $('#products-btn').click();
+                    },
+                    error: function () {
+                        alert('Failed to load the product registration form.');
+                    }
+                });
+            });
             $('.show-transaction-details-btn').on('click', function () {
                 var transactionId = $(this).data('transaction-id');
                 var url = '@Url.Action("TransactionDetail", "Transaction")';

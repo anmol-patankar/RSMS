@@ -1,0 +1,58 @@
+﻿@model RSMS.ViewModels.StoreRegistrationModel
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Add New Store Location</h5>
+        <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+
+        <form id="registerNewStoreForm" asp-action="AddNewStoreLocation" asp-controller="Store" method="post">
+            <div class="form-group">
+                <label asp-for="Address" class="control-label">Store Address</label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Rent" class="control-label">Store Rent</label>
+                <input asp-for="Rent" class="form-control" />
+                <span asp-validation-for="Rent" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check">
+                <input asp-for="IsOpen" class="form-check-input" />
+                <label asp-for="IsOpen" class="form-check-label"> Is Store Open</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Store</button>
+        </form>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#registerNewStoreForm').submit(function (event) {
+            event.preventDefault();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        // Close the modal on success
+                        $('#storeRegistrationModal').modal('hide');
+                        // Optionally refresh the part of the page that shows the list of stores
+                        //$('#"v-pills-stores').load('/Store/GetStores'); // Example of reloading a part of the page
+                    } else {
+                        $('#storeregistration-modal-content').html(response);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while adding the store.');
+                }
+            });
+        });
+    });
+</script>

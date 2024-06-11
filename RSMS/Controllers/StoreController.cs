@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RSMS.Services;
 using RSMS.ViewModels;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace RSMS.Controllers
@@ -14,7 +15,31 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig((config[Constants.AesKeyString]), config);
             DatabaseService.SetContext(context);
         }
+        [HttpGet]
+        public IActionResult StoreRegistrationPartial()
+        {
 
+            return PartialView("_StoreRegistrationPartial");
+        }
+        [HttpPost]
+        public IActionResult AddNewStoreLocation(StoreRegistrationModel newStore)
+        {
+
+            ModelState.Clear();
+            var validationResults = newStore.Validate(new ValidationContext(newStore));
+            foreach (var validationResult in validationResults)
+                ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
+
+            if (ModelState.IsValid)
+            {
+                newStore.IsDeleted = false;
+                DatabaseService.AddNewStoreLocation((Store)newStore);
+                return Json(new { success = true });
+            }
+            return PartialView("_StoreRegistrationPartial", newStore);
+
+
+        }
         [HttpPost]
         public IActionResult AddProductStock(AddNewProductToStoreModel model)
         {

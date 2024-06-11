@@ -23,6 +23,17 @@ namespace RSMS.Services
             ElectronicsTax = 4,
             EssentialGoodsTax = 5
         }
+
+        public static void AddNewStoreLocation(Store newStore)
+        {
+            Context.Stores.Add(newStore);
+            Context.SaveChanges();
+        }
+        public static void AddNewProduct(ProductInfo newProduct)
+        {
+            Context.ProductInfos.Add(newProduct);
+            Context.SaveChanges();
+        }
         public static List<PayrollHistory> GetSalaryHistory(Guid? userId = null, int? storeId = null)
         {
             List<PayrollHistory>? payrollHistory;

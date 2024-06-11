@@ -1,0 +1,72 @@
+﻿@model RSMS.ViewModels.ProductRegistrationModel
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Add New Product Stock</h5>
+        <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <form id="registerNewProductForm" asp-action="AddNewProduct" asp-controller="Product" method="post">
+            <div class="form-group">
+                <label asp-for="Name">Product Name</label>
+                <input asp-for="Name" class="form-control form-control-sm" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductId">Product ID</label>
+                <input asp-for="ProductId" class="form-control form-control-sm" />
+                <span asp-validation-for="ProductId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description">Description</label>
+                <textarea asp-for="Description" class="form-control form-control-sm"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PriceBeforeTax">Price Before Tax</label>
+                <input asp-for="PriceBeforeTax" type="number" class="form-control form-control-sm" />
+                <span asp-validation-for="PriceBeforeTax" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaxType">Tax Type</label>
+                <select asp-for="TaxType" class="form-control form-control-sm " asp-items="Html.GetEnumSelectList<RSMS.Services.DatabaseService.TaxRate>()">
+                </select>
+                <span asp-validation-for="TaxType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @* <label asp-for="Photo">Photo URL</label> *@
+                <input type="hidden" asp-for="Photo" class="form-control form-control-sm" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Product</button>
+        </form>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#registerNewProductForm').submit(function (event) {
+            event.preventDefault();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        // Close the modal on success
+                        $('#productRegistrationModal').modal('hide');
+                        // Optionally refresh the part of the page that shows the list of products
+                        //$('#"v-pills-products').load('/Product/GetProducts'); // Example of reloading a part of the page
+                    } else {
+                        $('#productregistration-modal-content').html(response);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while adding the product.');
+                }
+            });
+        });
+    });
+</script>
