@@ -376,46 +376,93 @@
                         <input type="text" class="form-control" id="productSearch" placeholder="Search products..." autocomplete="off">
                         <button class="btn btn-primary add-product-btn" id="add-product-btn" style="white-space:nowrap;">Add Product</button>
                     </div>
-                    <table id="productInfoTable" class="data-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 100px;">Product ID</th>
-                                <th style="width: 200px;">Name</th>
-                                <th>Description</th>
-                                <th style="width: 100px;">Price Before Tax</th>
-                                <th style="width: 100px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    @* <table id="productInfoTable" class="data-table">
+                    <thead>
+                    <tr>
+                    <th style="width: 100px;">Product ID</th>
+                    <th style="width: 200px;">Name</th>
+                    <th>Description</th>
+                    <th style="width: 100px;">Price Before Tax</th>
+                    <th style="width: 100px;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var product in ViewBag.ProductInfos)
+                    {
+                    <tr>
+                    <td>@product.ProductId</td>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.PriceBeforeTax</td>
+                    <td style="text-align: center;">
+                    <div>
+                    <table class="button-column-table" id="buttonColumnTable">
+                    <tr>
+                    @if (ViewBag.CurrentUser.RoleId == 8)
+                    {
+                    <td>
+                    <form method="get" action="@Url.Action("EditProductInfo", "Product")">
+                    <input type="hidden" name="productId" value="@product.ProductId" />
+                    <button type="submit" class="edit-btn">Edit</button>
+                    </form>
+                    </td>
+                    }
+                    <td><button class="show-product-availibility-btn" data-product-id="@product.ProductId">View Details</button></td>
+                    </tr>
+                    </table>
+                    </div>
+                    </td>
+                    </tr>
+                    }
+                    </tbody>
+                    </table> *@
+                    <div style="margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center;">
+                        <div class="row row-cols-5 row-cols-md-4 g-4">
                             @foreach (var product in ViewBag.ProductInfos)
                             {
-                                <tr>
-                                    <td>@product.ProductId</td>
-                                    <td>@product.Name</td>
-                                    <td>@product.Description</td>
-                                    <td>@product.PriceBeforeTax</td>
-                                    <td style="text-align: center;">
-                                        <div>
-                                            <table class="button-column-table" id="buttonColumnTable">
-                                                <tr>
-                                                    @if (ViewBag.CurrentUser.RoleId == 8)
-                                                    {
-                                                        <td>
-                                                            <form method="get" action="@Url.Action("EditProductInfo", "Product")">
-                                                                <input type="hidden" name="productId" value="@product.ProductId" />
-                                                                <button type="submit" class="edit-btn">Edit</button>
-                                                            </form>
-                                                        </td>
-                                                    }
-                                                    <td><button class="show-product-availibility-btn" data-product-id="@product.ProductId">View Details</button></td>
-                                                </tr>
-                                            </table>
+
+                                <div class="col " style="font-family: Arial; font-size: 16px;">
+
+                                    <div class="card product-card h-100 border-dark">
+                                        <div class="card-header" style="text-align: center;">
+                                            <large>@product.Name</large>
                                         </div>
-                                    </td>
-                                </tr>
+                                        <img src="~/ProductImages/@product.Photo" class="card-img-top" alt="@product.Description">
+                                        <hr />
+                                        <div class="card-body">
+
+                                            <div class="product-detail">
+                                                <p>Pretax Price:</p>
+                                                <span>@product.PriceBeforeTax</span>
+                                            </div>
+
+
+                                            <hr />
+                                            @product.Description
+                                        </div>
+
+                                        <small div class="card-footer align-center" style="display:flex; justify-content: space-between; align-items: baseline;">
+                                            Product ID: @product.ProductId
+                                            <div class="actions">
+                                                @if (ViewBag.CurrentUser.RoleId == 8)
+                                                {
+                                                    <button class="show-product-availibility-btn" style="margin-right:5px;" data-product-id="@product.ProductId">View Details</button>
+                                                    <form method="get" action="@Url.Action("EditProductInfo", "Product")">
+                                                        <input type="hidden" name="productId" value="@product.ProductId" />
+                                                        <button type="submit" class="edit-btn">Edit</button>
+                                                    </form>
+                                                }
+
+
+                                            </div>
+
+                                        </small>
+                                    </div>
+                                </div>
+
                             }
-                        </tbody>
-                    </table>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane" id="v-pills-transactions" role="tabpanel" aria-labelledby="v-pills-transactions-tab" tabindex="0">
                     <table id="transactionsTable" class="data-table">
@@ -545,11 +592,13 @@
 
             // Show the User Info content by default
             $('#v-pills-userinfo').show();
+
             $('#productSearch').on('keyup', function () {
                 var searchTerm = $(this).val().toLowerCase();
-                $('#productInfoTable > tbody > tr').each(function () {
-                    var productId = $(this).find('td:first').text().toLowerCase();
-                    var productName = $(this).find('td:nth-child(2)').text().toLowerCase();
+                debugger;
+                $('.product-card').each(function () {
+                    var productId = $(this).find('.card-footer').text().toLowerCase().split(':')[1].trim();
+                    var productName = $(this).find('.card-header large').text().toLowerCase();
                     var match = productId.includes(searchTerm) || productName.includes(searchTerm);
                     $(this).toggle(match);
                 });
@@ -570,6 +619,15 @@
                     var address = $(this).find('td:first').text().toLowerCase();
                     var match = address.includes(searchTerm);
                     $(this).toggle(match);
+
+                    // Remove or add padding based on the visibility of the row
+                    if (match) {
+                        $(this).css('padding', '');
+                        $(this).css('height', '');
+                    } else {
+                        $(this).css('padding', '0');
+                        $(this).css('height', '0');
+                    }
                 });
             });
             $('.add-store-btn').on('click', function () {

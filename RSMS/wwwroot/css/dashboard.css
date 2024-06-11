@@ -159,7 +159,7 @@
 .card {
     border: none;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
+    min-width: 350px;
     margin: 0 auto;
 }
 
@@ -187,4 +187,55 @@
 
 .nav-link.active, .nav-link[aria-selected="true"] {
     color: #fff;
+}
+
+.product-detail {
+    display: flex;
+    justify-content: space-between;
+}
+
+.quantity-wrapper,
+.discount-wrapper {
+    display: flex;
+    align-items: baseline;
+}
+
+.quantity-input,
+.discount-input {
+    width: 50px;
+    padding: 2px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 5px;
+}
+
+.quantity-adjust-btn,
+.discount-adjust-btn {
+    background-color: #f0c14b;
+    color: #111;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 0 5px;
+    margin-right: 0px;
+    width: 31px;
+}
+
+    .quantity-adjust-btn:hover,
+    .discount-adjust-btn:hover {
+        background-color: #e0b040;
+    }
+
+.button-group {
+    display: flex;
+    align-items: center;
+    padding: 0.1rem;
+}
+
+.actions {
+    text-align: center;
+    display: flex;
 }
