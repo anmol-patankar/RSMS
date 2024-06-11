@@ -1,4 +1,5 @@
-﻿.tab-content {
+﻿/* General Styles */
+.tab-content {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,6 +29,7 @@
     max-width: fit-content;
 }
 
+/* Search Box */
 .search-box {
     width: 100%;
 }
@@ -40,6 +42,7 @@
         font-size: 14px;
     }
 
+/* Button Styles */
 .disabled-btn,
 .delete-btn,
 .edit-btn,
@@ -125,6 +128,7 @@
         background-color: #2041b0;
     }
 
+/* Table Styles */
 .table-caption {
     text-align: center;
     font-weight: bold;
@@ -156,6 +160,7 @@
     border: none;
 }
 
+/* Card Styles */
 .card {
     border: none;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -174,21 +179,23 @@
         text-align: center;
     }
 
+/* Navigation Styles */
 .navbar-nav {
     display: flex;
-    justify-content: flex-start; /* Align items to the left */
-    flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+    justify-content: flex-start;
+    flex-wrap: wrap;
 }
 
     .navbar-nav:last-child {
-        justify-content: flex-end; /* Align the last ul element (containing links) to the right */
+        justify-content: flex-end;
     }
 
-
-.nav-link.active, .nav-link[aria-selected="true"] {
+.nav-link.active,
+.nav-link[aria-selected="true"] {
     color: #fff;
 }
 
+/* Product Detail Styles */
 .product-detail {
     display: flex;
     justify-content: space-between;
@@ -220,7 +227,7 @@
     cursor: pointer;
     border-radius: 4px;
     margin: 0 5px;
-    margin-right: 0px;
+    margin-right: 0;
     width: 31px;
 }
 
@@ -239,9 +246,11 @@
     text-align: center;
     display: flex;
 }
+
+/* Dashboard Styles */
 .dashboard-nav {
     background-color: #e6e6e6;
-    max-width: fit-content;
+    width: fit-content;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -251,7 +260,7 @@
 }
 
 .dashboard-content {
-    margin-left: 250px; /* Adjust margin to accommodate sidebar width */
+    margin-left: 250px;
     padding: 20px;
     background-color: #e9ecef;
     min-height: 100vh;
@@ -267,10 +276,11 @@
 }
 
 .btn-group-vertical {
-    z-index: 2
+    z-index: 2;
 }
 
-    .btn-group-vertical .btn {
+    .btn-group-vertical .btn,
+    .btn-group-vertical .dropdown-toggle {
         background-color: transparent;
         color: #000;
         border: none;
@@ -282,28 +292,18 @@
 
         .btn-group-vertical .btn:hover,
         .btn-group-vertical .btn:focus,
-        .btn-group-vertical .btn.active {
-            background-color: lightskyblue;
-            color: #000;
-        }
-
-    .btn-group-vertical .dropdown-toggle {
-        background-color: transparent;
-        color: #000;
-        border: none;
-        text-align: left;
-        padding: 10px 15px;
-        width: 100%;
-        transition: background-color 0.3s;
-        font-size: large;
-    }
-
+        .btn-group-vertical .btn.active,
         .btn-group-vertical .dropdown-toggle:hover,
         .btn-group-vertical .dropdown-toggle:focus,
         .btn-group-vertical .dropdown-toggle.active {
             background-color: lightskyblue;
             color: #000;
         }
+
+    .btn-group-vertical .dropdown-toggle {
+        padding: 10px 15px;
+        font-size: large;
+    }
 
 .dropdown-menu {
     width: auto;
