@@ -151,8 +151,8 @@ namespace RSMS.Controllers
         public IActionResult EditUser(Guid userId)
         {
             bool getNullStore = User.IsInRole("Admin");
-            Dictionary<int, string> AllStoreNames = DatabaseService.GetAllStores(getNullStore).ToDictionary(s => s.StoreId, s => s.Address);
-            ViewBag.StoreNames = AllStoreNames;
+            Dictionary<int, string> allStoreNames = DatabaseService.GetAllStores(getNullStore).ToDictionary(s => s.StoreId, s => s.Address);
+            ViewBag.StoreNames = allStoreNames;
             return View(DatabaseService.GetUser(userId));
         }
         [Authorize]

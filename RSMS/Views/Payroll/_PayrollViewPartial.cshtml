@@ -1,8 +1,7 @@
 ﻿@model List<Domain.Models.PayrollHistory>
-
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3" style=" z-index: 0;">
             <div class="list-group" id="storeList" role="tablist">
                 @foreach (var storeGroup in Model.GroupBy(t => t.StoreId).OrderBy(g => g.Key))
                 {

@@ -23,7 +23,10 @@ namespace RSMS.Services
             ElectronicsTax = 4,
             EssentialGoodsTax = 5
         }
-
+        public static List<ProductStock> GetAllProductsOfStore(int storeId)
+        {
+            return Context.ProductStocks.Where(ps => ps.StoreId == storeId).ToList();
+        }
         public static void AddNewStoreLocation(Store newStore)
         {
             Context.Stores.Add(newStore);
@@ -136,7 +139,9 @@ namespace RSMS.Services
                     Name = productInfo.Name,
                     PriceBeforeTax = productInfo.PriceBeforeTax,
                     Quantity = product.Quantity,
-                    Photo = productInfo.Photo
+                    Photo = productInfo.Photo,
+                    TaxType = ((DatabaseService.TaxRate)(int)productInfo.TaxType).ToString(),
+                    TaxRate = Context.TaxRates.Where(tr => tr.TaxType == productInfo.TaxType).First().TaxRate
                 });
             }
             return totalProductInfo;

@@ -6,39 +6,181 @@
         <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
+        <table id="transactionInfoTable">
+            <thead>
+                <tr>
+                    <th>Store ID</th>
+                    <th>Cashier ID</th>
+                    <th>Customer ID</th>
+                    <th>Transaction Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="position-relative">
+                            <select class="form-control form-control-sm" asp-items="@(new SelectList(ViewBag.AllStoreNames, "Key", "Value"))">
+                            </select>
+                            <div id="storeError" class="invalid-feedback">Please select a store location.</div>
+                        </div>
+                    </td>
+                    <td><input type="text" id="cashierId" disabled placeholder="CurrentUser"></td>
+                    <td>
+                        <div class="position-relative">
+                            <select class="form-control form-control-sm" asp-items="@(new SelectList(ViewBag.CustomerNames, "Key", "Value"))">
+                            </select>
+                            <div id="customerError" class="invalid-feedback">Please select a customer from the list.</div>
+                        </div>
+                    </td>
+                    <td><input type="datetime-local" id="transactionTimestamp"></td>
+                </tr>
+            </tbody>
+        </table>
 
-        <form id="registerNewTransactionForm" asp-action="AddNewTransaction" asp-controller="Transaction" method="post">
+        <h2>New Transaction</h2>
+        <table id="transactionProductsTable">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Pretax Price</th>
+                    <th>Tax Rate</th>
+                    <th>Tax Type</th>
+                    <th>Discount</th>
+                    <th>Max Quantity</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be added here -->
+            </tbody>
+        </table>
+        <br>
+
+        <div class="position-relative">
+            <select id="productSelect" class="form-control form-control-sm" asp-items="@(new SelectList(ViewBag.AllProductsInStoreDict, "Key", "Value"))">
+            </select>
+            <label for="pretaxPrice">Pretax Price:</label>
+            <input type="number" id="pretaxPrice">
+            <label for="taxRate">Tax Rate:</label>
+            <input type="number" id="taxRate">
+            <label for="taxType">Tax Type:</label>
+            <input type="text" id="taxType"
+            <label for="discount">Discount:</label>
+            <input type="number" id="discount">
+            <label for="maxQuantity">Max: </label>
+            <input type="number" id="maxQuantity">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity">
+            <span id="quantityError" class="text-danger" style="display:none;"></span>
+            <button onclick="addRow()">Add Row</button>
+        </div>
 
 
-            <button type="submit" class="btn btn-primary">Add Transaction</button>
-        </form>
+
+        <button type="submit" class="btn btn-primary">Add Transaction</button>
 
     </div>
 </div>
 <script>
+    document.getElementById('productSelect').addEventListener('change', function () {
+        var selectedProductId = this.value;
+        var products = @Html.Raw(Json.Serialize(ViewBag.AllProductsInStore));
+        var selectedProduct;
+        debugger;
+        for (var key in products) {
+            console.log(key);
+            if (products[key].productId == selectedProductId) {
+
+                selectedProduct = products[key];
+                document.getElementById('pretaxPrice').value = selectedProduct.priceBeforeTax;
+                document.getElementById('taxRate').value = selectedProduct.taxRate;
+                document.getElementById('taxType').value = selectedProduct.taxType;
+                document.getElementById('maxQuantity').value = selectedProduct.quantity;
+                document.getElementById('discount').value = selectedProduct.discountPercent;
+
+                console.log(selectedProduct);
+                break;
+            }
+        }
+    });
+    function addRow() {
+        // Get the table body element
+        var table = document.getElementById("transactionProductsTable").getElementsByTagName('tbody')[0];
+
+        // Get the input values
+        var productIdSelect = document.getElementById("productSelect");
+        var productId = productIdSelect.value;
+        var productName = productIdSelect.options[productIdSelect.selectedIndex].text;
+        var pretaxPrice = document.getElementById("pretaxPrice").value;
+        var taxRate = document.getElementById("taxRate").value;
+        var taxType = document.getElementById("taxType").value;
+        var discount = document.getElementById("discount").value;
+        var maxQuantity = document.getElementById("maxQuantity").value;
+        var quantity = document.getElementById("quantity").value;
+        if (parseInt(quantity) > parseInt(maxQuantity)) {
+            document.getElementById('quantityError').style.display = 'inline';
+            document.getElementById('quantityError').innerText = "Error: Quantity exceeds maximum allowed.";
+            return;
+        }
+        // Calculate the subtotal
+        var subtotal = (pretaxPrice * (1 + taxRate / 100) * (1 - discount / 100)) * quantity;
+
+        // Create a new row and cells
+        var newRow = table.insertRow();
+        var productIdCell = newRow.insertCell(0);
+        var pretaxPriceCell = newRow.insertCell(1);
+        var taxRateCell = newRow.insertCell(2);
+        var taxTypeCell = newRow.insertCell(3);
+        var discountCell = newRow.insertCell(4);
+        var maxQuantityCell = newRow.insertCell(5);
+        var quantityCell = newRow.insertCell(6);
+        var subtotalCell = newRow.insertCell(7);
+
+        // Insert the input values into the cells
+        productIdCell.innerHTML = productName;
+        pretaxPriceCell.innerHTML = pretaxPrice;
+        taxRateCell.innerHTML = taxRate;
+        taxTypeCell.innerHTML = taxType;
+        discountCell.innerHTML = discount;
+        maxQuantityCell.innerHTML = maxQuantity;
+        quantityCell.innerHTML = quantity;
+        subtotalCell.innerHTML = subtotal.toFixed(2);
+
+        // Remove the selected product from the dropdown
+        productIdSelect.removeChild(productIdSelect.options[productIdSelect.selectedIndex]);
+
+        // Clear the input fields
+        document.getElementById("pretaxPrice").value = "";
+        document.getElementById("taxRate").value = "";
+        document.getElementById("taxType").value = "";
+        document.getElementById("discount").value = "";
+        document.getElementById("maxQuantity").value = "";
+        document.getElementById("quantity").value = "";
+    }
+
     $(document).ready(function () {
-        $('#registerNewTransactionForm').submit(function (event) {
-            event.preventDefault();
+        // $('#registerNewTransactionForm').submit(function (event) {
+        //     event.preventDefault();
 
-            $.ajax({
-                url: $(this).attr('action'),
-                type: $(this).attr('method'),
-                data: $(this).serialize(),
-                success: function (response) {
-                    if (response.success) {
+        //     $.ajax({
+        //         url: $(this).attr('action'),
+        //         type: $(this).attr('method'),
+        //         data: $(this).serialize(),
+        //         success: function (response) {
+        //             if (response.success) {
 
-                        // Close the modal on success
-                        $('#transactionRegistrationModal').modal('hide');
-                        // Optionally refresh the part of the page that shows the list of stores
-                        //$('#"v-pills-stores').load('/Store/GetStores'); // Example of reloading a part of the page
-                    } else {
-                        $('#transactionregistration-modal-content').html(response);
-                    }
-                },
-                error: function () {
-                    alert('An error occurred while adding the store.');
-                }
-            });
-        });
+        //                 $('#transactionRegistrationModal').modal('hide');
+
+        //             } else {
+        //                 $('#transactionregistration-modal-content').html(response);
+        //             }
+        //         },
+        //         error: function () {
+        //             alert('An error occurred while adding the transaction.');
+        //         }
+        //     });
+        // });
+
     });
 </script>

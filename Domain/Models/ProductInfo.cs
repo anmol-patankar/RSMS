@@ -16,7 +16,7 @@ public partial class ProductInfo
 
     public virtual ICollection<ProductStock> ProductStocks { get; set; } = new List<ProductStock>();
 
-    public virtual TaxRate? TaxTypeNavigation { get; set; }
+    public virtual TaxRates? TaxTypeNavigation { get; set; }
 
     public virtual ICollection<TransactionDetail> TransactionDetails { get; set; } = new List<TransactionDetail>();
 }

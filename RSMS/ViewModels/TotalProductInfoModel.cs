@@ -15,5 +15,7 @@
         public int Quantity { get; set; }
 
         public int DiscountPercent { get; set; }
+        public string TaxType { get; set; }
+        public int TaxRate { get; set; }
     }
 }

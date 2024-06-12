@@ -286,7 +286,7 @@
                         <input type="text" class="form-control" id="productSearch" placeholder="Search products..." autocomplete="off">
                         <button class="btn btn-primary add-product-btn" id="add-product-btn" style="white-space:nowrap;">Add Product</button>
                     </div>
-                    
+
                     <div style="margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center;">
                         <div class="row row-cols-5 row-cols-md-4 g-4">
                             @foreach (var product in ViewBag.ProductInfos)
@@ -415,6 +415,13 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="transactionRegistrationModal" role="dialog" aria-labelledby="transactionRegistrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="transactionregistration-modal-content" id="transactionregistration-modal-content">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
@@ -527,6 +534,21 @@
                         $('#productregistration-modal-content').html(data);
                         $('#productRegistrationModal').modal('show');
                         $('#products-btn').click();
+                    },
+                    error: function () {
+                        alert('Failed to load the product registration form.');
+                    }
+                });
+            });
+            $('#add-transaction-btn').on('click', function () {
+                var url = '@Url.Action("TransactionRegistrationPartial", "Transaction")';
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (data) {
+                        $('#transactionregistration-modal-content').html(data);
+                        $('#transactionRegistrationModal').modal('show');
+                        $('#transactions-btn').click();
                     },
                     error: function () {
                         alert('Failed to load the product registration form.');

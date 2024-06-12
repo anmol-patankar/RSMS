@@ -21,7 +21,7 @@ public partial class RsmsTestContext : DbContext
 
     public virtual DbSet<Store> Stores { get; set; }
 
-    public virtual DbSet<TaxRate> TaxRates { get; set; }
+    public virtual DbSet<TaxRates> TaxRates { get; set; }
 
     public virtual DbSet<Transaction> Transactions { get; set; }
 
@@ -137,7 +137,7 @@ public partial class RsmsTestContext : DbContext
             entity.Property(e => e.Rent).HasColumnName("rent");
         });
 
-        modelBuilder.Entity<TaxRate>(entity =>
+        modelBuilder.Entity<TaxRates>(entity =>
         {
             entity.HasKey(e => e.TaxType).HasName("PK__Tax_Rate__F8B6202EB2E1EB61");
 
@@ -146,7 +146,7 @@ public partial class RsmsTestContext : DbContext
             entity.Property(e => e.TaxType)
                 .ValueGeneratedNever()
                 .HasColumnName("tax_type");
-            entity.Property(e => e.TaxRate1).HasColumnName("tax_rate");
+            entity.Property(e => e.TaxRate).HasColumnName("tax_rate");
         });
 
         modelBuilder.Entity<Transaction>(entity =>
