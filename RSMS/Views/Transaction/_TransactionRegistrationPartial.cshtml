@@ -2,7 +2,7 @@
 
 <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title">Add New Product Stock</h5>
+        <h5 class="modal-title">New Transaction</h5>
         <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
@@ -12,32 +12,24 @@
                     <th>Store ID</th>
                     <th>Cashier ID</th>
                     <th>Customer ID</th>
-                    <th>Transaction Timestamp</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
+                    <td><input type="text" id="storeName" disabled value="@ViewBag.StoreName"></td>
+                    <td><input type="text" id="cashierUsername" disabled value="@ViewBag.UsernameOfCurrentUser"></td>
                     <td>
                         <div class="position-relative">
-                            <select id="storeId" class="form-control form-control-sm" asp-items="@(new SelectList(ViewBag.AllStoreNames, "Key", "Value"))">
-                            </select>
-                            <div id="storeError" class="invalid-feedback">Please select a store location.</div>
-                        </div>
-                    </td>
-                    <td><input type="text" id="cashierId" disabled placeholder="CurrentUser"></td>
-                    <td>
-                        <div class="position-relative">
-                            <select class="form-control form-control-sm" asp-items="@(new SelectList(ViewBag.CustomerNames, "Key", "Value"))">
+                            <select id="customerSelect" class="form-control form-control-sm" asp-items="@(new SelectList(ViewBag.CustomerNames, "Key", "Value"))">
                             </select>
                             <div id="customerError" class="invalid-feedback">Please select a customer from the list.</div>
                         </div>
                     </td>
-                    <td><input type="datetime-local" id="transactionTimestamp"></td>
                 </tr>
             </tbody>
         </table>
 
-        <h2>New Transaction</h2>
+        <h6>Product List</h6>
         <table id="transactionProductsTable" class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -75,7 +67,7 @@
             <span id="productAddError" class="text-danger" style="display:none;"></span>
         </div>
         <button class="btn btn-primary" onclick="addRow()">Add Row</button>
-        <button type="submit" class="btn btn-primary">Add Transaction</button>
+        <button id="addTransactionButton" type="submit" class="btn btn-primary">Add Transaction</button>
 
 
     </div>
@@ -83,15 +75,13 @@
 <script>
     document.getElementById('productSelect').addEventListener('change', function () {
         var selectedProductId = this.value;
-        var storeId = document.getElementById('storeId').value;
+        var storeId = @ViewBag.StoreId;
         var products = @Html.Raw(Json.Serialize(ViewBag.AllProductsInStore));
         var selectedProduct;
         debugger;
-        for (var key in products)
-        {
+        for (var key in products) {
             console.log(key);
-            if (products[key].productId == selectedProductId)
-            {
+            if (products[key].productId == selectedProductId) {
 
                 selectedProduct = products[key];
                 document.getElementById('productId').value = selectedProduct.productId;
@@ -105,110 +95,120 @@
                 break;
             }
         }
-        });
-        document.addEventListener('DOMContentLoaded', function () {
-            var productSelect = document.getElementById('productSelect');
-            var event = new Event('change');
-            productSelect.dispatchEvent(event);
-        });
-        function addRow() {
-            // Get the table body element
-            var table = document.getElementById("transactionProductsTable").getElementsByTagName('tbody')[0];
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        var productSelect = document.getElementById('productSelect');
+        var event = new Event('change');
+        productSelect.dispatchEvent(event);
+    });
+    function addRow() {
+        // Get the table body element
+        var table = document.getElementById("transactionProductsTable").getElementsByTagName('tbody')[0];
 
-            // Get the input values
-            debugger;
-            var productIdInput = document.getElementById("productId");
-            var productSelect = document.getElementById("productSelect");
-            var productId = productSelect.value;
-            var productName = productSelect.options[productSelect.selectedIndex].text;
-            var pretaxPrice = document.getElementById("pretaxPrice").value;
-            var taxRate = document.getElementById("taxRate").value;
-            var taxType = document.getElementById("taxType").value;
-            var discount = document.getElementById("discount").value;
-            var maxQuantity = document.getElementById("maxQuantity").value;
-            var quantity = document.getElementById("quantity").value;
-            if (pretaxPrice == "") {
-                document.getElementById('productAddError').style.display = 'inline';
-                document.getElementById('productAddError').innerText = "Select a product and a quantity.";
-                return;
-            }
-            else if (!(Number.isInteger(Number(quantity)) && Number(quantity) > 0)) {
-                document.getElementById('productAddError').style.display = 'inline';
-                document.getElementById('productAddError').innerText = "Quantity invalid.";
-                return;
-            }
-            if (parseInt(quantity) > parseInt(maxQuantity)) {
-                document.getElementById('productAddError').style.display = 'inline';
-                document.getElementById('productAddError').innerText = "Quantity exceeds maximum allowed.";
-                return;
-            }
-
-            // Calculate the subtotal
-            var subtotal = (pretaxPrice * (1 + taxRate / 100) * (1 - discount / 100)) * quantity;
-
-            // Create a new row and cells
-            var newRow = table.insertRow();
-            var productIdCell = newRow.insertCell(0);
-            var productNameCell = newRow.insertCell(1);
-            var pretaxPriceCell = newRow.insertCell(2);
-            var taxRateCell = newRow.insertCell(3);
-            var taxTypeCell = newRow.insertCell(4);
-            var discountCell = newRow.insertCell(5);
-            var maxQuantityCell = newRow.insertCell(6);
-            var quantityCell = newRow.insertCell(7);
-            var subtotalCell = newRow.insertCell(8);
-
-            // Insert the input values into the cells
-            productIdCell.innerHTML = productId;
-            productNameCell.innerHTML = productName;
-            pretaxPriceCell.innerHTML = pretaxPrice;
-            taxRateCell.innerHTML = taxRate;
-            taxTypeCell.innerHTML = taxType;
-            discountCell.innerHTML = discount;
-            maxQuantityCell.innerHTML = maxQuantity;
-            quantityCell.innerHTML = quantity;
-            subtotalCell.innerHTML = subtotal.toFixed(2);
-
-            productSelect.remove(productSelect.selectedIndex);
-
-            // Clear the input fields
-            document.getElementById("pretaxPrice").value = "";
-            document.getElementById("taxRate").value = "";
-            document.getElementById("taxType").value = "";
-            document.getElementById("discount").value = "";
-            document.getElementById("maxQuantity").value = "";
-            document.getElementById("quantity").value = "";
-            document.getElementById("productId").value = "";
-
-
-            // Optionally, update the productId field based on the selection
-            if (productSelect.selectedIndex >= 0) {
-                productIdInput.value = productId;
-            }
+        // Get the input values
+        debugger;
+        var productIdInput = document.getElementById("productId");
+        var productSelect = document.getElementById("productSelect");
+        var productId = productSelect.value;
+        var productName = productSelect.options[productSelect.selectedIndex].text;
+        var pretaxPrice = document.getElementById("pretaxPrice").value;
+        var taxRate = document.getElementById("taxRate").value;
+        var taxType = document.getElementById("taxType").value;
+        var discount = document.getElementById("discount").value;
+        var maxQuantity = document.getElementById("maxQuantity").value;
+        var quantity = document.getElementById("quantity").value;
+        if (pretaxPrice == "") {
+            document.getElementById('productAddError').style.display = 'inline';
+            document.getElementById('productAddError').innerText = "Select a product and a quantity.";
+            return;
+        }
+        else if (!(Number.isInteger(Number(quantity)) && Number(quantity) > 0)) {
+            document.getElementById('productAddError').style.display = 'inline';
+            document.getElementById('productAddError').innerText = "Quantity invalid.";
+            return;
+        }
+        if (parseInt(quantity) > parseInt(maxQuantity)) {
+            document.getElementById('productAddError').style.display = 'inline';
+            document.getElementById('productAddError').innerText = "Quantity exceeds maximum allowed.";
+            return;
         }
 
-        $(document).ready(function () {
-            // $('#registerNewTransactionForm').submit(function (event) {
-            //     event.preventDefault();
+        // Calculate the subtotal
+        var subtotal = (pretaxPrice * (1 + taxRate / 100) * (1 - discount / 100)) * quantity;
 
-            //     $.ajax({
-            //         url: $(this).attr('action'),
-            //         type: $(this).attr('method'),
-            //         data: $(this).serialize(),
-            //         success: function (response) {
-            //             if (response.success) {
+        // Create a new row and cells
+        var newRow = table.insertRow();
+        var productIdCell = newRow.insertCell(0);
+        var productNameCell = newRow.insertCell(1);
+        var pretaxPriceCell = newRow.insertCell(2);
+        var taxRateCell = newRow.insertCell(3);
+        var taxTypeCell = newRow.insertCell(4);
+        var discountCell = newRow.insertCell(5);
+        var maxQuantityCell = newRow.insertCell(6);
+        var quantityCell = newRow.insertCell(7);
+        var subtotalCell = newRow.insertCell(8);
 
-            //                 $('#transactionRegistrationModal').modal('hide');
+        // Insert the input values into the cells
+        productIdCell.innerHTML = productId;
+        productNameCell.innerHTML = productName;
+        pretaxPriceCell.innerHTML = pretaxPrice;
+        taxRateCell.innerHTML = taxRate;
+        taxTypeCell.innerHTML = taxType;
+        discountCell.innerHTML = discount;
+        maxQuantityCell.innerHTML = maxQuantity;
+        quantityCell.innerHTML = quantity;
+        subtotalCell.innerHTML = subtotal.toFixed(2);
 
-            //             } else {
-            //                 $('#transactionregistration-modal-content').html(response);
-            //             }
-            //         },
-            //         error: function () {
-            //             alert('An error occurred while adding the transaction.');
-            //         }
-            //     });
-            // });
+        productSelect.remove(productSelect.selectedIndex);
 
+        // Clear the input fields
+        document.getElementById("pretaxPrice").value = "";
+        document.getElementById("taxRate").value = "";
+        document.getElementById("taxType").value = "";
+        document.getElementById("discount").value = "";
+        document.getElementById("maxQuantity").value = "";
+        document.getElementById("quantity").value = "";
+        document.getElementById("productId").value = "";
+
+
+        // Optionally, update the productId field based on the selection
+        if (productSelect.selectedIndex >= 0) {
+            productIdInput.value = productId;
+        }
+    }
+
+    $(document).ready(function () {
+        $('#addTransactionButton').click(function (event) {
+            event.preventDefault();
+
+            var transaction = {
+                StoreId: @ViewBag.StoreId,
+                CashierId: `@ViewBag.UserIdOfCurrentUser`,
+                CustomerId: document.getElementById("customerSelect").value,
+
+            };
+
+            var transactionDetails = [];
+            var rows = document.getElementById("transactionProductsTable").getElementsByTagName('tbody')[0].rows;
+
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].cells;
+                var detail = {
+                    ProductId: cells[0].innerText,
+                    PriceBeforeTax: parseFloat(cells[2].innerText),
+                    TaxPercent: parseFloat(cells[3].innerText),
+                    DiscountPercent: parseFloat(cells[5].innerText),
+                    Quantity: parseInt(cells[7].innerText),
+                };
+                transactionDetails.push(detail);
+            }
+
+            var totalTransactionModel = {
+                Transaction: transaction,
+                TransactionDetailList: transactionDetails
+            };
+            debugger;
         });
+
+    });
 </script>

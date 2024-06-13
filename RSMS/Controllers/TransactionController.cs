@@ -22,9 +22,25 @@ namespace RSMS.Controllers
         {
             Dictionary<int, string> allStoreNames = DatabaseService.GetAllStores().ToDictionary(s => s.StoreId, s => s.Address);
             Dictionary<Guid, string> CustomerNames = DatabaseService.GetAllUsers().ToDictionary(u => u.UserId, u => u.Username);
-            var allProductsInStore = DatabaseService.GetTotalProductInfo(1);
+            int storeIdOfCurrentUser = (int)DatabaseService.GetUser(HttpContext.User.Identity.Name).StoreId;
+            string usernameOfCurrentUser = DatabaseService.GetUser(HttpContext.User.Identity.Name).Username;
+            string userIdOfCurrentUser = DatabaseService.GetUser(HttpContext.User.Identity.Name).UserId.ToString();
+            string storeNameOfCurrentUser = DatabaseService.GetStore(storeIdOfCurrentUser).Address;
+            ViewBag.StoreId = storeIdOfCurrentUser;
+            ViewBag.StoreName = storeNameOfCurrentUser;
+            ViewBag.UsernameOfCurrentUser = usernameOfCurrentUser;
+            ViewBag.UserIdOfCurrentUser = userIdOfCurrentUser;
+            List<ViewModels.TotalProductInfoModel> allProductsInStore;
+            if (HttpContext.User.IsInRole("Admin"))
+            {
+                allProductsInStore = DatabaseService.GetTotalProductInfo(storeId: 1);
 
-            ViewBag.AllStoreNames = allStoreNames;
+            }
+            else
+            {
+                allProductsInStore = DatabaseService.GetTotalProductInfo(storeId: storeIdOfCurrentUser);
+
+            }
             ViewBag.CustomerNames = CustomerNames;
             ViewBag.AllProductsInStore = allProductsInStore;
             ViewBag.AllProductsInStoreDict = allProductsInStore.ToDictionary(ps => ps.ProductId, ps => ps.Name);
