@@ -78,7 +78,6 @@
         var storeId = @ViewBag.StoreId;
         var products = @Html.Raw(Json.Serialize(ViewBag.AllProductsInStore));
         var selectedProduct;
-        debugger;
         for (var key in products) {
             console.log(key);
             if (products[key].productId == selectedProductId) {
@@ -106,7 +105,6 @@
         var table = document.getElementById("transactionProductsTable").getElementsByTagName('tbody')[0];
 
         // Get the input values
-        debugger;
         var productIdInput = document.getElementById("productId");
         var productSelect = document.getElementById("productSelect");
         var productId = productSelect.value;
@@ -120,17 +118,17 @@
         if (pretaxPrice == "") {
             document.getElementById('productAddError').style.display = 'inline';
             document.getElementById('productAddError').innerText = "Select a product and a quantity.";
-            return;
+            return false;
         }
         else if (!(Number.isInteger(Number(quantity)) && Number(quantity) > 0)) {
             document.getElementById('productAddError').style.display = 'inline';
             document.getElementById('productAddError').innerText = "Quantity invalid.";
-            return;
+            return false;
         }
         if (parseInt(quantity) > parseInt(maxQuantity)) {
             document.getElementById('productAddError').style.display = 'inline';
             document.getElementById('productAddError').innerText = "Quantity exceeds maximum allowed.";
-            return;
+            return false;
         }
 
         // Calculate the subtotal
@@ -175,22 +173,25 @@
         if (productSelect.selectedIndex >= 0) {
             productIdInput.value = productId;
         }
+        return true;
     }
 
     $(document).ready(function () {
         $('#addTransactionButton').click(function (event) {
             event.preventDefault();
-
             var transaction = {
                 StoreId: @ViewBag.StoreId,
                 CashierId: `@ViewBag.UserIdOfCurrentUser`,
                 CustomerId: document.getElementById("customerSelect").value,
 
             };
-
-            var transactionDetails = [];
             var rows = document.getElementById("transactionProductsTable").getElementsByTagName('tbody')[0].rows;
-
+            if (rows.length < 1) {
+                if (addRow() === false) {
+                    return;
+                }
+            }
+            var transactionDetails = [];
             for (var i = 0; i < rows.length; i++) {
                 var cells = rows[i].cells;
                 var detail = {
@@ -208,6 +209,23 @@
                 TransactionDetailList: transactionDetails
             };
             debugger;
+            $.ajax({
+                url: '/Transaction/RegisterTransaction',
+                type: 'POST',
+                data: {
+                    totalTransaction: totalTransactionModel
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Close the modal on success
+                        $('#transactionRegistrationModal').modal('hide');
+                        // Optionally refresh the part of the page that shows the list of transactions
+                        //$('#"v-pills-transactions').load('/Store/GetStores'); // Example of reloading a part of the page
+                    } else {
+                        $('#payrollregistration-modal-content').html(response);
+                    }
+                },
+            });
         });
 
     });

@@ -23,6 +23,28 @@ namespace RSMS.Services
             ElectronicsTax = 4,
             EssentialGoodsTax = 5
         }
+        public static void AddNewPayroll(PayrollHistory payrollRecord)
+        {
+            Context.PayrollHistories.Add(payrollRecord);
+            Context.SaveChanges();
+        }
+        public static void AddNewTransaction(Transaction transaction)
+        {
+            Context.Transactions.Add(transaction);
+            Context.SaveChanges();
+        }
+        public static void AddTransactionDetails(List<TransactionDetail> transactionDetails)
+        {
+            foreach (var transactionDetail in transactionDetails)
+            {
+                Context.TransactionDetails.Add(transactionDetail);
+                Context.ProductStocks.First(
+                    ps => ps.ProductId == transactionDetail.ProductId
+                    && ps.StoreId == Context.Transactions.First(t => t.TransactionId == transactionDetail.TransactionId).StoreId
+                    ).Quantity -= transactionDetail.Quantity;
+            }
+            Context.SaveChanges();
+        }
         public static List<ProductStock> GetAllProductsOfStore(int storeId)
         {
             return Context.ProductStocks.Where(ps => ps.StoreId == storeId).ToList();
@@ -44,9 +66,9 @@ namespace RSMS.Services
             {
                 payrollHistory = Context.PayrollHistories.Where(ph => ph.PayeeId == userId).ToList();
             }
-            if (storeId != null)
+            else if (storeId != null)
             {
-                payrollHistory = Context.PayrollHistories.Where(ph => ph.PayeeId == userId).ToList();
+                payrollHistory = Context.PayrollHistories.Where(ph => ph.StoreId == storeId).ToList();
 
             }
             else

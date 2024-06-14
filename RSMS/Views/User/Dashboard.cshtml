@@ -97,7 +97,10 @@
                     <ul class="dropdown-menu">
 
                         <li class="nav-item">
-                            <button class="btn dropdown-item" id="payroll-btn">Check Payroll History</button>
+                            <button class="btn dropdown-item" id="payrolls-btn">Check Payroll History</button>
+                        </li>
+                        <li>
+                            <button class="btn dropdown-item" id="add-payroll-btn" style="white-space:nowrap;">New Payroll</button>
                         </li>
                     </ul>
                 </div>
@@ -422,6 +425,13 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="payrollRegistrationModal" role="dialog" aria-labelledby="payrollRegistrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="payrollregistration-modal-content" id="payrollregistration-modal-content">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
@@ -431,7 +441,8 @@
     <script>
 
         $(document).ready(function () {
-            $('#payroll-btn').on('click', function () {
+            $('#payrolls-btn').on('click', function () {
+                debugger;
                 loadPayrollHistory();
             });
 
@@ -446,6 +457,7 @@
                     success: function (result) {
                         console.log(result);
                         $('#v-pills-payroll').html(result);
+                        $('#v-pills-payroll').show();
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);
@@ -551,8 +563,31 @@
                         $('#transactions-btn').click();
                     },
                     error: function () {
-                        alert('Failed to load the product registration form.');
+                        alert('Failed to load the transaction registration form.');
                     }
+                });
+            });
+            $('#add-payroll-btn').on('click', function () {
+                loadPayrollHistory();
+
+                // URL for the payroll registration partial
+                var url = '@Url.Action("PayrollRegistrationPartial", "Payroll")';
+
+                // Show the payroll registration modal
+                $('#payrollRegistrationModal').modal('show');
+
+                // Bind an event handler to the modal's shown.bs.modal event
+                $('#payrollRegistrationModal').on('shown.bs.modal', function () {
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (data) {
+                            $('#payrollregistration-modal-content').html(data);
+                        },
+                        error: function () {
+                            alert('Failed to load the payroll registration form.');
+                        }
+                    });
                 });
             });
             $('.show-transaction-details-btn').on('click', function () {

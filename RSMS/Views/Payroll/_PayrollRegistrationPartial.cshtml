@@ -1,0 +1,74 @@
+﻿@model RSMS.ViewModels.PayrollRegistrationModel
+@{
+    var currentUser = Context.User.Identity.Name;
+}
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Add New Payroll</h5>
+        <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <form id="registerNewPayrollForm" asp-action="PayrollRegistration" asp-controller="Payroll" method="post">
+            <div class="form-group">
+                <label asp-for="AuthorizerId" class="control-label">Authorizer ID</label>
+                <input id="authorizerId" asp-for="AuthorizerId" class="form-control" readonly value="@currentUser" />
+            </div>
+            <div class="form-group">
+                <select id="payeeId" class="form-control form-control-sm" asp-items="@(new SelectList(ViewBag.EmployeeNames, "Key", "Value"))">
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="BaseAmount" class="control-label">Base Amount</label>
+                <input id="baseAmount" asp-for="BaseAmount" class="form-control" />
+                <span id="baseAmountValidation" asp-validation-for="BaseAmount" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        $('#registerNewPayrollForm').submit(function (event) {
+            event.preventDefault();
+
+            // Collect input field values
+            var payeeId = $('#payeeId').val();
+            var baseAmount = $('#baseAmount').val();
+
+            // Create data object
+            var PayrollRegistrationModel = {
+                PayeeId: payeeId,
+                BaseAmount: baseAmount
+            };
+            debugger;
+            if (baseAmount == null || baseAmount < 0 || baseAmount == "") {
+                document.getElementById("baseAmountValidation").innerText = 'Enter valid amount.';
+                return;
+            }
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: { payrollEntry: PayrollRegistrationModel },
+                success: function (response) {
+                    if (response.success) {
+                        // Close the modal on success
+                        $('#payrollRegistrationModal').modal('hide');
+                        // Optionally refresh the part of the page that shows the list of payrolls
+                        // $('#v-pills-payroll').load('/Payroll/GetPayrolls'); // Example of reloading a part of the page
+                    } else {
+                        // Update the modal content with the partial view
+                        $('#payrollregistration-modal-content').html(response);
+                        $('#payeeId').val(payeeId);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+
+                    alert('An error occurred.');
+                }
+            });
+        });
+    });
+</script>
