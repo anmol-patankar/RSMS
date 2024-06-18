@@ -47,6 +47,12 @@
             <tbody>
                 <!-- Rows will be added here -->
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="8" style="text-align: right; font-weight: bold;">Total Bill Amount</td>
+                    <td id="totalBillAmount" style="font-weight: bold;"></td>
+                </tr>
+            </tfoot>
         </table>
         <br>
 
@@ -103,7 +109,7 @@
     function addRow() {
         // Get the table body element
         var table = document.getElementById("transactionProductsTable").getElementsByTagName('tbody')[0];
-
+        let total = 0;
         // Get the input values
         var productIdInput = document.getElementById("productId");
         var productSelect = document.getElementById("productSelect");
@@ -132,8 +138,8 @@
         }
 
         // Calculate the subtotal
-        var subtotal = (pretaxPrice * (1 + taxRate / 100) * (1 - discount / 100)) * quantity;
-
+        var subtotal = Math.ceil((pretaxPrice * (1 + taxRate / 100) * (1 - discount / 100)) * quantity);
+        total += subtotal;
         // Create a new row and cells
         var newRow = table.insertRow();
         var productIdCell = newRow.insertCell(0);
@@ -145,7 +151,7 @@
         var maxQuantityCell = newRow.insertCell(6);
         var quantityCell = newRow.insertCell(7);
         var subtotalCell = newRow.insertCell(8);
-
+        document.getElementById('totalBillAmount').innerText = total;
         // Insert the input values into the cells
         productIdCell.innerHTML = productId;
         productNameCell.innerHTML = productName;
@@ -155,7 +161,7 @@
         discountCell.innerHTML = discount;
         maxQuantityCell.innerHTML = maxQuantity;
         quantityCell.innerHTML = quantity;
-        subtotalCell.innerHTML = subtotal.toFixed(2);
+        subtotalCell.innerHTML = subtotal;
 
         productSelect.remove(productSelect.selectedIndex);
 
@@ -169,7 +175,7 @@
         document.getElementById("productId").value = "";
 
 
-        // Optionally, update the productId field based on the selection
+        // update the productId field based on the selection
         if (productSelect.selectedIndex >= 0) {
             productIdInput.value = productId;
         }
@@ -219,8 +225,6 @@
                     if (response.success) {
                         // Close the modal on success
                         $('#transactionRegistrationModal').modal('hide');
-                        // Optionally refresh the part of the page that shows the list of transactions
-                        //$('#"v-pills-transactions').load('/Store/GetStores'); // Example of reloading a part of the page
                     } else {
                         $('#payrollregistration-modal-content').html(response);
                     }

@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 
 namespace RSMS.Controllers
 {
-    [Authorize]
     [NoCache]
     public class ProductController : Controller
     {
@@ -20,23 +19,21 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig((config[Constants.AesKeyString]), config);
             DatabaseService.SetContext(context);
         }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
+        [Authorize]
         public IActionResult CheckAvailibility(string productId)
         {
             List<StoreAvailibilityModel> storeAvailibility = DatabaseService.GetProductAvailibility(productId);
 
             return PartialView("_CheckAvailibilityPartial", storeAvailibility);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult ProductRegistrationPartial()
         {
 
             return PartialView("_ProductRegistrationPartial");
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult AddNewProduct(ProductRegistrationModel newProduct)
         {
@@ -55,6 +52,7 @@ namespace RSMS.Controllers
 
 
         }
+        [Authorize]
         public IActionResult StoreProducts(int storeId)
         {
             var productsOfStore = DatabaseService.GetTotalProductInfo(storeId);
@@ -62,7 +60,7 @@ namespace RSMS.Controllers
             ViewBag.CurrentUser = DatabaseService.GetUser(User.Identity.Name);
             return View(productsOfStore);
         }
-
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         public IActionResult UpdateStoreQtyAndDiscount(int storeId, string productId, int quantity, int discountPercent)
         {
@@ -86,7 +84,7 @@ namespace RSMS.Controllers
         {
             return View(DatabaseService.GetProductInfoFromID(productId));
         }
-
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         public IActionResult EditProductInfo(ProductInfo productInfo)
         {

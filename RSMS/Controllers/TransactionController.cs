@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RSMS.Services;
 using RSMS.ViewModels;
@@ -12,13 +13,14 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig(config[Constants.AesKeyString], config);
             DatabaseService.SetContext(context);
         }
-
+        [Authorize]
         [HttpGet]
         public IActionResult TransactionDetail(Guid transactionId)
         {
             var test = DatabaseService.GetTransactionDetails(transactionId);
             return PartialView("_TransactionDetail", test);
         }
+        [Authorize(Roles = "Admin,Manager,Employee")]
         public IActionResult TransactionRegistrationPartial()
         {
             Dictionary<int, string> allStoreNames = DatabaseService.GetAllStores().ToDictionary(s => s.StoreId, s => s.Address);
@@ -47,6 +49,7 @@ namespace RSMS.Controllers
             ViewBag.AllProductsInStoreDict = allProductsInStore.ToDictionary(ps => ps.ProductId, ps => ps.Name);
             return PartialView("_TransactionRegistrationPartial");
         }
+        [Authorize(Roles = "Admin,Manager,Employee")]
         [HttpPost]
         public IActionResult RegisterTransaction(TotalTransactionModel totalTransaction)
         {

@@ -15,12 +15,14 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig((config[Constants.AesKeyString]), config);
             DatabaseService.SetContext(context);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult StoreRegistrationPartial()
         {
 
             return PartialView("_StoreRegistrationPartial");
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult AddNewStoreLocation(StoreRegistrationModel newStore)
         {
@@ -40,6 +42,7 @@ namespace RSMS.Controllers
 
 
         }
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         public IActionResult AddProductStock(AddNewProductToStoreModel model)
         {
@@ -59,7 +62,7 @@ namespace RSMS.Controllers
             }
             return RedirectToAction("StoreProducts", "Product", new { storeId = model.StoreId });
         }
-
+        [Authorize(Roles = "Admin,Manager")]
         [HttpGet]
         public IActionResult AddProductStock(int storeId)
         {
@@ -73,14 +76,14 @@ namespace RSMS.Controllers
         {
             return View(DatabaseService.GetStore(storeId));
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult DeleteStore(int storeId)
         {
             DatabaseService.DeleteStore(storeId);
             return RedirectToAction("Dashboard", "User");
         }
-
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         public IActionResult EditStore(Store storeToEdit)
         {

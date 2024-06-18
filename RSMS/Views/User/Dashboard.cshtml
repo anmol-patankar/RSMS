@@ -32,7 +32,7 @@
                         </li>
                     </ul>
                 </div>
-                @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+                @if (ViewBag.CurrentUser.RoleId >= 6)
                 {
                     <div class="btn-group dropend" role="group">
                         <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,9 +58,12 @@
                         <li class="nav-item">
                             <button class="btn dropdown-item" id="stores-btn">View Stores</button>
                         </li>
-                        <li>
-                            <button class="btn dropdown-item add-store-btn" id="add-store-btn" style="white-space:nowrap;">Add Store</button>
-                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li>
+                                <button class="btn dropdown-item add-store-btn" id="add-store-btn" style="white-space:nowrap;">Add Store</button>
+                            </li>
+                        }
                     </ul>
                 </div>
                 <div class="btn-group dropend" role="group">
@@ -71,9 +74,12 @@
                         <li class="nav-item">
                             <button class="btn dropdown-item" id="products-btn">View Products</button>
                         </li>
-                        <li>
-                            <button class="btn dropdown-item add-product-btn" id="add-product-btn" style="white-space:nowrap;">Add New Product</button>
-                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li>
+                                <button class="btn dropdown-item add-product-btn" id="add-product-btn" style="white-space:nowrap;">Add New Product</button>
+                            </li>
+                        }
                     </ul>
                 </div>
                 <div class="btn-group dropend" role="group">
@@ -85,9 +91,12 @@
                         <li class="nav-item">
                             <button class="btn dropdown-item" id="transactions-btn">View Transactions</button>
                         </li>
-                        <li>
-                            <button class="btn dropdown-item" id="add-transaction-btn" style="white-space:nowrap;">New Transaction</button>
-                        </li>
+                        @if (ViewBag.CurrentUser.RoleId >= 4)
+                        {
+                            <li>
+                                <button class="btn dropdown-item" id="add-transaction-btn" style="white-space:nowrap;">New Transaction</button>
+                            </li>
+                        }
                     </ul>
                 </div>
                 <div class="btn-group dropend" role="group">
@@ -96,12 +105,18 @@
                     </button>
                     <ul class="dropdown-menu">
 
-                        <li class="nav-item">
-                            <button class="btn dropdown-item" id="payrolls-btn">Check Payroll History</button>
-                        </li>
-                        <li>
-                            <button class="btn dropdown-item" id="add-payroll-btn" style="white-space:nowrap;">New Payroll</button>
-                        </li>
+                        @if (ViewBag.CurrentUser.RoleId >= 4)
+                        {
+                            <li class="nav-item">
+                                <button class="btn dropdown-item" id="payrolls-btn">Check Payroll History</button>
+                            </li>
+                        }
+                        @if (ViewBag.CurrentUser.RoleId >= 6)
+                        {
+                            <li>
+                                <button class="btn dropdown-item" id="add-payroll-btn" style="white-space:nowrap;">New Payroll</button>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -392,7 +407,6 @@
     <div class="modal fade" id="transactionDetailsModal" role="dialog" aria-labelledby="transactionDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="transaction-modal-content" id="transaction-modal-content">
-                <!-- Content will be loaded here -->
             </div>
         </div>
     </div>
@@ -400,35 +414,30 @@
     <div class="modal fade" id="storeAvailibilityModal" role="dialog" aria-labelledby="storeAvailibilityModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="availibility-modal-content" id="availibility-modal-content">
-                <!-- Content will be loaded here -->
             </div>
         </div>
     </div>
     <div class="modal fade" id="storeRegistrationModal" role="dialog" aria-labelledby="storeRegistrationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="storeregistration-modal-content" id="storeregistration-modal-content">
-                <!-- Content will be loaded here -->
             </div>
         </div>
     </div>
     <div class="modal fade" id="productRegistrationModal" role="dialog" aria-labelledby="productRegistrationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="productregistration-modal-content" id="productregistration-modal-content">
-                <!-- Content will be loaded here -->
             </div>
         </div>
     </div>
     <div class="modal fade" id="transactionRegistrationModal" role="dialog" aria-labelledby="transactionRegistrationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="transactionregistration-modal-content" id="transactionregistration-modal-content">
-                <!-- Content will be loaded here -->
             </div>
         </div>
     </div>
     <div class="modal fade" id="payrollRegistrationModal" role="dialog" aria-labelledby="payrollRegistrationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="payrollregistration-modal-content" id="payrollregistration-modal-content">
-                <!-- Content will be loaded here -->
             </div>
         </div>
     </div>
@@ -482,17 +491,34 @@
 
             // Show the User Info content by default
             $('#v-pills-userinfo').show();
-
             $('#productSearch').on('keyup', function () {
                 var searchTerm = $(this).val().toLowerCase();
-                debugger;
                 $('.product-card').each(function () {
+                    var $col = $(this).closest('.col');
                     var productId = $(this).find('.card-footer').text().toLowerCase().split(':')[1].trim();
                     var productName = $(this).find('.card-header large').text().toLowerCase();
                     var match = productId.includes(searchTerm) || productName.includes(searchTerm);
-                    $(this).toggle(match);
+
+                    if (match) {
+                        $col.css({
+                            'width': '',
+                            'height': '',
+                            'padding': '',
+                            'display': ''
+                        });
+                    } else {
+                        $col.css({
+                            'width': '0',
+                            'height': '0',
+                            'padding': '0',
+                            'display': 'none'
+                        });
+                    }
                 });
             });
+
+
+
             $('#userSearch').on('keyup', function () {
                 var searchTerm = $(this).val().toLowerCase();
                 $('#userTable > tbody > tr').each(function () {
@@ -569,14 +595,8 @@
             });
             $('#add-payroll-btn').on('click', function () {
                 loadPayrollHistory();
-
-                // URL for the payroll registration partial
                 var url = '@Url.Action("PayrollRegistrationPartial", "Payroll")';
-
-                // Show the payroll registration modal
                 $('#payrollRegistrationModal').modal('show');
-
-                // Bind an event handler to the modal's shown.bs.modal event
                 $('#payrollRegistrationModal').on('shown.bs.modal', function () {
                     $.ajax({
                         url: url,

@@ -55,8 +55,6 @@
                     if (response.success) {
                         // Close the modal on success
                         $('#payrollRegistrationModal').modal('hide');
-                        // Optionally refresh the part of the page that shows the list of payrolls
-                        // $('#v-pills-payroll').load('/Payroll/GetPayrolls'); // Example of reloading a part of the page
                     } else {
                         // Update the modal content with the partial view
                         $('#payrollregistration-modal-content').html(response);

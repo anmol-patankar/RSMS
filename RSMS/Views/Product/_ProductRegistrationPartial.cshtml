@@ -57,8 +57,6 @@
                     if (response.success) {
                         // Close the modal on success
                         $('#productRegistrationModal').modal('hide');
-                        // Optionally refresh the part of the page that shows the list of products
-                        //$('#"v-pills-products').load('/Product/GetProducts'); // Example of reloading a part of the page
                     } else {
                         $('#productregistration-modal-content').html(response);
                     }

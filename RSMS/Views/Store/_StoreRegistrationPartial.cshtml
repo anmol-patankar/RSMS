@@ -43,8 +43,6 @@
                     if (response.success) {
                         // Close the modal on success
                         $('#storeRegistrationModal').modal('hide');
-                        // Optionally refresh the part of the page that shows the list of stores
-                        //$('#"v-pills-stores').load('/Store/GetStores'); // Example of reloading a part of the page
                     } else {
                         $('#storeregistration-modal-content').html(response);
                     }

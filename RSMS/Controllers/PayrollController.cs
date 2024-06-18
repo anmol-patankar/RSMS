@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RSMS.Services;
 using RSMS.ViewModels;
@@ -13,7 +14,7 @@ namespace RSMS.Controllers
             SecurityService.SetKeyConfig(config[Constants.AesKeyString], config);
             DatabaseService.SetContext(context);
         }
-
+        [Authorize(Roles = "Admin,Manager,Employee")]
         [HttpGet]
         public IActionResult GetPayrollHistory(Guid userId, int storeId)
         {
@@ -33,6 +34,8 @@ namespace RSMS.Controllers
             return PartialView("_PayrollViewPartial", payrollList);
         }
         [HttpGet]
+        [Authorize(Roles = "Admin,Manager")]
+
         public IActionResult PayrollRegistrationPartial()
         {
             Dictionary<Guid, string> employeeNames;
@@ -51,6 +54,7 @@ namespace RSMS.Controllers
             ViewBag.EmployeeNames = employeeNames;
             return PartialView("_PayrollRegistrationPartial");
         }
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         public IActionResult PayrollRegistration(PayrollRegistrationModel payrollEntry)
         {
