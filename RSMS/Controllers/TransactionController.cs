@@ -1,11 +1,13 @@
 ﻿using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RSMS.ActionAttributes;
 using RSMS.Services;
 using RSMS.ViewModels;
 
 namespace RSMS.Controllers
 {
+    [NoCache]
     public class TransactionController : Controller
     {
         public TransactionController(RsmsTestContext context, IConfiguration config)

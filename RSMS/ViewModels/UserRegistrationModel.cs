@@ -23,7 +23,7 @@ namespace RSMS.ViewModels
             if (Email == null || !Regex.Match(Email, "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").Success) results.Add(new ValidationResult("Invalid email adress", [nameof(Email)]));
             if (Password == null || !Regex.Match(Password, "^.{4,}$").Success) results.Add(new ValidationResult("Password should be atleast 4 characters long", [nameof(Password)]));
             if (Phone == null || !Regex.Match(Phone, "^\\d{10}(?:\\d{3})?$").Success) results.Add(new ValidationResult("Phone number should be 10 digits long in case of domestic phone number, or 13 digits without '+' sign in case of international phone number", [nameof(Phone)]));
-            if (Dob.ToString() == null || Dob.CompareTo(dateNow) > -1) results.Add(new ValidationResult("Date of birth should be a valid date", [nameof(Dob)]));
+            if (Dob.ToString() == null || Dob.CompareTo(dateNow) == -1) results.Add(new ValidationResult("Date of birth should be a valid date", [nameof(Dob)]));
             else if (Dob.AddYears(122).CompareTo(dateNow) < 0) results.Add(new ValidationResult("You are not that old, input a valid date", [nameof(Dob)]));
             else if (Dob.AddYears(18).CompareTo(dateNow) > -1) results.Add(new ValidationResult("You must be atleast 18 years old to register", [nameof(Dob)]));
 

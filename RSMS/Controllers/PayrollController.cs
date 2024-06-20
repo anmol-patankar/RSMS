@@ -1,12 +1,14 @@
 ﻿using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RSMS.ActionAttributes;
 using RSMS.Services;
 using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
 namespace RSMS.Controllers
 {
+    [NoCache]
     public class PayrollController : Controller
     {
         public PayrollController(RsmsTestContext context, IConfiguration config)

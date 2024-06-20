@@ -7,6 +7,7 @@ using RSMS.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RSMS.Controllers
 {
@@ -59,9 +60,14 @@ namespace RSMS.Controllers
         [HttpPost]
         public IActionResult Login(UserLoginModel login)
         {
+            bool success = DatabaseService.LoginCredentialValidity(login.Username, login.Password);
+            if (!success)
+            {
+                ModelState.AddModelError("Username", "Invalid or incorrect username or password");
+            }
             if (ModelState.IsValid)
             {
-                bool success = DatabaseService.LoginCredentialValidity(login.Username, login.Password);
+
                 if (success)
                 {
                     string token = SecurityService.GenerateEncryptedToken(login);
@@ -76,7 +82,6 @@ namespace RSMS.Controllers
                     return RedirectToAction("Dashboard", "User");
                 }
             }
-            ViewBag.Message = "Invalid username or password";
             return View(login);
         }
 
@@ -167,7 +172,7 @@ namespace RSMS.Controllers
             if (userToEdit.Phone == null || !Regex.Match(userToEdit.Phone, "^\\d{10}(?:\\d{3})?$").Success) ModelState.AddModelError("Phone", "Phone number should be 10 digits long in case of domestic phone number, or 13 digits without '+' sign in case of international phone number");
             if (userToEdit.StoreId == null || userToEdit.StoreId < 0 || !DatabaseService.GetAllStores(getNullStore: true).Any(store => store.StoreId == userToEdit.StoreId)) ModelState.AddModelError(("StoreId"), "Store ID is not of valid store");
 
-            if (userToEdit.Dob.ToString() == null || userToEdit.Dob.CompareTo(dateNow) > -1) ModelState.AddModelError(("Dob"), "Date of birth should be a valid date");
+            if (userToEdit.Dob.ToString() == null || userToEdit.Dob.CompareTo(dateNow) == 0) ModelState.AddModelError(("Dob"), "Date of birth should be a valid date");
             else if (userToEdit.Dob.AddYears(122).CompareTo(dateNow) < 0) ModelState.AddModelError(("Dob"), "User is not that old, input a valid date");
             else if (userToEdit.Dob.AddYears(18).CompareTo(dateNow) > -1) ModelState.AddModelError(("Dob"), "User must be atleast 18 years old ");
             var roleIdOfEditingUser = DatabaseService.RoleNameToRoleId(User.FindFirstValue(ClaimTypes.Role));
